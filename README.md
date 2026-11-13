@@ -10,15 +10,22 @@ The goal is readable code, not necessarily the shortest code.
 
 _Proposed syntax — subject to change._
 
-```python
-fn two_sum(nums: [int], target: int):
+```text
+fn twoSum(nums: [int], target: int) [int]:
     seen = map()
 
-    for i, n in enumerate(nums):
-        if target - n in seen:
-            return [seen[target - n], i]
-        seen[n] = i
+    for i, num in nums:
+        diff = target - num
+
+        if diff in seen:
+            return [seen[diff], i]
+
+        seen[num] = i
+
+    return []
 ```
+
+See [the first language decisions](docs/language-design.md) for the syntax rules.
 
 ### Design
 
