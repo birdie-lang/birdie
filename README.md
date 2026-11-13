@@ -25,7 +25,8 @@ fn twoSum(nums: list[int], target: int) list[int]:
     return []
 ```
 
-See [the first language decisions](docs/language-design.md) for the syntax rules.
+Read the [guide](https://birdie.jakmaz.com/docs/) or the [draft language specification](https://birdie.jakmaz.com/docs/specification/).
+Documentation is maintained in the [website repository](https://github.com/birdie-lang/website).
 
 ### Design
 
