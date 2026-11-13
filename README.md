@@ -11,7 +11,7 @@ The goal is readable code, not necessarily the shortest code.
 _Proposed syntax — subject to change._
 
 ```text
-fn twoSum(nums: [int], target: int) [int]:
+fn twoSum(nums: list[int], target: int) list[int]:
     seen = map()
 
     for i, num in nums:

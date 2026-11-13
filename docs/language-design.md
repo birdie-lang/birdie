@@ -4,7 +4,8 @@ Proposed syntax, not yet implemented.
 
 Examples: [Two Sum](../examples/leetcode/two-sum.bd),
 [Valid Parentheses](../examples/leetcode/valid-parentheses.bd),
-[Binary Search](../examples/leetcode/binary-search.bd).
+[Binary Search](../examples/leetcode/binary-search.bd),
+[Group Anagrams](../examples/leetcode/group-anagrams.bd).
 
 ## Functions
 
@@ -30,6 +31,7 @@ Examples: [Two Sum](../examples/leetcode/two-sum.bd),
 ## Integers and division
 
 - `int`: signed, arbitrary precision; no fixed bit width or wrapping overflow.
+- `int()`: zero.
 - Value size is limited by available resources; operation costs depend on operand size.
 - `//`: floor division; integer operands produce an integer.
 - Floor rounds toward negative infinity: `7 // 2` is `3`; `-7 // 2` is `-4`.
@@ -48,18 +50,43 @@ Examples: [Two Sum](../examples/leetcode/two-sum.bd),
 ## Strings and characters
 
 - `str`: string, written with double quotes: `"text"`, `"a"`.
+- Strings are immutable; indexed assignment is a type error.
+- String equality and hashing use the Unicode scalar sequence as stored.
 - `char`: one Unicode scalar value, written with single quotes: `'a'`.
 - Empty or multi-scalar character literals are errors: `''`, `'ab'`.
 - A visible symbol can contain multiple Unicode scalar values.
 - String iteration yields `char` values.
 - String length and indices count Unicode scalar values, not bytes.
 - String indexing returns `char`.
+- `s.sorted()`: new `str` with characters sorted by Unicode scalar value;
+  no locale-dependent ordering or mutation of the original string.
 
-## Lists and tuples
+## Lists
 
-- `[T]`: growable list of elements of type `T`.
+- `list[T]`: growable list of elements of type `T`.
+- `list[list[str]]`: list of lists of strings.
+- `list()`: new empty list.
+- List literals: `[]`, `[1, 2, 3]`.
+- Use `push` for adding one element; no `append` alias.
+
+### Operations
+
+For `items: list[T]`, `value` must have type `T` and `i` must have type `int`.
+
+| Operation | Returns | Mutates | Behavior |
+| --- | --- | --- | --- |
+| `items.push(value)` | No value | Yes | Add one element at the end. |
+| `items.pop()` | `T` | Yes | Remove and return the last element; runtime error if empty. |
+| `items[i]` | `T` | No | Read an element; requires a valid index. |
+| `items[i] = value` | No value | Yes | Replace an element; requires a valid index. |
+| `items.last` | `T` | No | Read the last element; runtime error if empty. |
+| `items.size` | `int` | No | Number of elements. |
+| `items.sorted()` | `list[T]` | No | Allocate a new list in ascending order; `T` must have a defined ordering. |
+
+## Tuples
+
 - `(A, B)`: fixed pair with a type for each position.
-- `[(int, int)]`: list of integer pairs.
+- `list[(int, int)]`: list of integer pairs.
 - Tuple unpacking requires parentheses: `(x, y) = point`.
 
 ## Size and indexing
@@ -68,24 +95,74 @@ Examples: [Two Sum](../examples/leetcode/two-sum.bd),
   Unicode scalar count for strings.
 - List and string indices are zero-based: `0 <= i < value.size`.
 - Negative and out-of-bounds indices cause a runtime error.
-- `list.last`: final element; an empty list causes a runtime error.
 
 ## Maps
 
-- `map()`: empty map; infer key and value types from usage.
+- `map[K, V]`: map from keys of type `K` to values of type `V`.
+- `map()`: empty map with no default; infer key and value types from usage.
 - `{'a': 1, 'b': 2}`: populated map literal; same map type as the constructor.
-- `key in m`: key membership.
-- `m[key] = value`: insert or replace.
-- `m[key]`: lookup; missing keys cause a runtime error.
+
+### Operations
+
+For `m: map[K, V]`, `key` must have type `K`; `value` and `fallback` must have type `V`.
+
+| Operation | Returns | Mutates | Behavior |
+| --- | --- | --- | --- |
+| `m[key]` | `V` | On a miss with a default | Return the stored value; on a miss, insert the configured default or raise a runtime error if there is none. |
+| `m[key] = value` | No value | Yes | Insert or replace the entry; never call the default factory. |
+| `key in m` | `bool` | No | Check stored keys; never call the default factory. |
+| `m.get(key, fallback)` | `V` | No | Return the stored value or the supplied fallback; never insert or call the default factory. |
+| `m.size` | `int` | No | Number of stored entries. |
+| `m.values()` | `list[V]` | No | Allocate a snapshot of stored values in map iteration order; never call the default factory. |
+
+`get` requires an explicit fallback, even on maps with configured defaults.
+An existing `0`, `false`, or empty collection is returned as stored.
+
+`values()` copies only the outer container. Later map entry changes do not update
+the returned list; nested mutable collections remain shared.
+
+### Defaults
+
+- `map(value)`: non-callable immutable default value, evaluated at construction.
+- `map(factory)`: callable default factory; must accept no arguments.
+- Callable arguments always mean factories. A function-valued default requires a
+  factory that returns that function.
+- Argument types determine whether the constructor receives a value or a factory.
+- The map's value type is inferred from the default value or factory return type.
+- On a missing-key lookup, obtain the default, insert it under the key, and return it.
+- Call factories only for missing keys; store and return their results without copying.
+- Existing values, including `0`, `false`, and empty collections, are returned unchanged.
+- Mutable value defaults such as `map([])` or `map(list())` are type errors.
+
+```text
+map(0)       # default 0
+map(int)     # factory returns 0
+map(1)       # default 1
+map(list)    # fresh empty list per missing key
+map(map)     # fresh map with no default per missing key
+map(stack)   # fresh empty stack per missing key
+```
+
+Custom factories can construct nested collections. Each missing-key lookup calls
+the factory independently; any sharing of returned values is controlled by the factory.
 
 ## Stacks
 
+- `stack[T]`: stack of elements of type `T`.
 - `stack()`: empty stack; infer the element type from usage.
 - Separate type with LIFO access; no indexing, arbitrary insertion, or sorting.
-- `s.push(value)`: add to the top.
-- `s.pop()`: remove and return the top; an empty stack causes a runtime error.
 - Use truthiness for emptiness checks: `while s`, `if not s`.
-- Lists can also support `push` and `pop` at the end.
+
+### Operations
+
+For `s: stack[T]`, `value` must have type `T`.
+
+| Operation | Returns | Mutates | Behavior |
+| --- | --- | --- | --- |
+| `s.push(value)` | No value | Yes | Add one element to the top. |
+| `s.pop()` | `T` | Yes | Remove and return the top element; runtime error if empty. |
+| `s.peek()` | `T` | No | Read the top element; runtime error if empty. |
+| `s.size` | `int` | No | Number of elements. |
 
 ## Loops
 
