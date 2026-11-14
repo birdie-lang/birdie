@@ -1,0 +1,101 @@
+{
+  "entry": "topKFrequent",
+  "check": "unordered",
+  "cases": [
+    {
+      "name": "standard",
+      "args": [
+        [
+          1,
+          1,
+          1,
+          2,
+          2,
+          3
+        ],
+        2
+      ],
+      "expected": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "single",
+      "args": [
+        [
+          1
+        ],
+        1
+      ],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "name": "all-distinct-values-requested",
+      "args": [
+        [
+          3,
+          1,
+          2
+        ],
+        3
+      ],
+      "expected": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "negative-values",
+      "args": [
+        [
+          -1,
+          -1,
+          2,
+          2,
+          2,
+          0
+        ],
+        2
+      ],
+      "expected": [
+        -1,
+        2
+      ]
+    },
+    {
+      "name": "tied-selected-frequencies",
+      "args": [
+        [
+          1,
+          1,
+          2,
+          2,
+          3
+        ],
+        2
+      ],
+      "expected": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "one-distinct-value",
+      "args": [
+        [
+          9,
+          9,
+          9
+        ],
+        1
+      ],
+      "expected": [
+        9
+      ]
+    }
+  ]
+}

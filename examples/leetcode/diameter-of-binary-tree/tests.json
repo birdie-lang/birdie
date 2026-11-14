@@ -1,0 +1,82 @@
+{
+  "entry": "diameterOfBinaryTree",
+  "argAdapters": [
+    "tree"
+  ],
+  "cases": [
+    {
+      "name": "standard",
+      "args": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
+      "expected": 3
+    },
+    {
+      "name": "empty",
+      "args": [
+        []
+      ],
+      "expected": 0
+    },
+    {
+      "name": "single",
+      "args": [
+        [
+          1
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "name": "two-nodes",
+      "args": [
+        [
+          1,
+          2
+        ]
+      ],
+      "expected": 1
+    },
+    {
+      "name": "chain",
+      "args": [
+        [
+          1,
+          2,
+          null,
+          3,
+          null,
+          4
+        ]
+      ],
+      "expected": 3
+    },
+    {
+      "name": "diameter-below-root",
+      "args": [
+        [
+          0,
+          1,
+          null,
+          2,
+          3,
+          4,
+          null,
+          null,
+          5,
+          6,
+          null,
+          null,
+          7
+        ]
+      ],
+      "expected": 6
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "entry": "invertTree",
+  "argAdapters": [
+    "tree"
+  ],
+  "resultAdapter": "tree",
+  "cases": [
+    {
+      "name": "balanced",
+      "args": [
+        [
+          4,
+          2,
+          7,
+          1,
+          3,
+          6,
+          9
+        ]
+      ],
+      "expected": [
+        4,
+        7,
+        2,
+        9,
+        6,
+        3,
+        1
+      ]
+    },
+    {
+      "name": "empty",
+      "args": [
+        []
+      ],
+      "expected": []
+    },
+    {
+      "name": "single",
+      "args": [
+        [
+          1
+        ]
+      ],
+      "expected": [
+        1
+      ]
+    },
+    {
+      "name": "left-chain",
+      "args": [
+        [
+          1,
+          2,
+          null,
+          3
+        ]
+      ],
+      "expected": [
+        1,
+        null,
+        2,
+        null,
+        3
+      ]
+    },
+    {
+      "name": "sparse",
+      "args": [
+        [
+          1,
+          2,
+          3,
+          null,
+          4,
+          5
+        ]
+      ],
+      "expected": [
+        1,
+        3,
+        2,
+        null,
+        5,
+        4
+      ]
+    }
+  ]
+}

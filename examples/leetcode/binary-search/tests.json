@@ -1,0 +1,87 @@
+{
+  "entry": "search",
+  "cases": [
+    {
+      "name": "found",
+      "args": [
+        [
+          -1,
+          0,
+          3,
+          5,
+          9,
+          12
+        ],
+        9
+      ],
+      "expected": 4
+    },
+    {
+      "name": "absent",
+      "args": [
+        [
+          -1,
+          0,
+          3,
+          5,
+          9,
+          12
+        ],
+        2
+      ],
+      "expected": -1
+    },
+    {
+      "name": "first",
+      "args": [
+        [
+          1,
+          3,
+          5
+        ],
+        1
+      ],
+      "expected": 0
+    },
+    {
+      "name": "last",
+      "args": [
+        [
+          1,
+          3,
+          5
+        ],
+        5
+      ],
+      "expected": 2
+    },
+    {
+      "name": "single-found",
+      "args": [
+        [
+          7
+        ],
+        7
+      ],
+      "expected": 0
+    },
+    {
+      "name": "single-absent",
+      "args": [
+        [
+          7
+        ],
+        8
+      ],
+      "expected": -1
+    },
+    {
+      "name": "empty",
+      "args": [
+        [],
+        1
+      ],
+      "expected": -1
+    }
+  ]
+}

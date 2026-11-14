@@ -1,0 +1,116 @@
+{
+  "entry": "groupAnagrams",
+  "check": "unordered-groups",
+  "cases": [
+    {
+      "name": "standard",
+      "args": [
+        [
+          "eat",
+          "tea",
+          "tan",
+          "ate",
+          "nat",
+          "bat"
+        ]
+      ],
+      "expected": [
+        [
+          "eat",
+          "tea",
+          "ate"
+        ],
+        [
+          "tan",
+          "nat"
+        ],
+        [
+          "bat"
+        ]
+      ]
+    },
+    {
+      "name": "empty",
+      "args": [
+        []
+      ],
+      "expected": []
+    },
+    {
+      "name": "empty-string",
+      "args": [
+        [
+          ""
+        ]
+      ],
+      "expected": [
+        [
+          ""
+        ]
+      ]
+    },
+    {
+      "name": "duplicate-words",
+      "args": [
+        [
+          "a",
+          "a",
+          "b"
+        ]
+      ],
+      "expected": [
+        [
+          "a",
+          "a"
+        ],
+        [
+          "b"
+        ]
+      ]
+    },
+    {
+      "name": "repeated-letters",
+      "args": [
+        [
+          "abb",
+          "bab",
+          "aab"
+        ]
+      ],
+      "expected": [
+        [
+          "abb",
+          "bab"
+        ],
+        [
+          "aab"
+        ]
+      ]
+    },
+    {
+      "name": "unicode",
+      "args": [
+        [
+          "é",
+          "e",
+          "🙂",
+          "🙂",
+          "e"
+        ]
+      ],
+      "expected": [
+        [
+          "é"
+        ],
+        [
+          "e",
+          "e"
+        ],
+        [
+          "🙂",
+          "🙂"
+        ]
+      ]
+    }
+  ]
+}

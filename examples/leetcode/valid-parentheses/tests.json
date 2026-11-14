@@ -1,0 +1,54 @@
+{
+  "entry": "isValid",
+  "cases": [
+    {
+      "name": "pairs",
+      "args": [
+        "()[]{}"
+      ],
+      "expected": true
+    },
+    {
+      "name": "nested",
+      "args": [
+        "{[()]}"
+      ],
+      "expected": true
+    },
+    {
+      "name": "crossed",
+      "args": [
+        "([)]"
+      ],
+      "expected": false
+    },
+    {
+      "name": "unclosed",
+      "args": [
+        "(("
+      ],
+      "expected": false
+    },
+    {
+      "name": "unexpected-closer",
+      "args": [
+        "]"
+      ],
+      "expected": false
+    },
+    {
+      "name": "empty",
+      "args": [
+        ""
+      ],
+      "expected": true
+    },
+    {
+      "name": "mismatched",
+      "args": [
+        "(]"
+      ],
+      "expected": false
+    }
+  ]
+}

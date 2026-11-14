@@ -1,0 +1,61 @@
+{
+  "entry": "isAnagram",
+  "cases": [
+    {
+      "name": "anagram",
+      "args": [
+        "anagram",
+        "nagaram"
+      ],
+      "expected": true
+    },
+    {
+      "name": "different-counts",
+      "args": [
+        "rat",
+        "car"
+      ],
+      "expected": false
+    },
+    {
+      "name": "different-lengths",
+      "args": [
+        "a",
+        "aa"
+      ],
+      "expected": false
+    },
+    {
+      "name": "repeated-letters",
+      "args": [
+        "aabb",
+        "baba"
+      ],
+      "expected": true
+    },
+    {
+      "name": "unequal-repeated-letters",
+      "args": [
+        "aabb",
+        "abbb"
+      ],
+      "expected": false
+    },
+    {
+      "name": "empty",
+      "args": [
+        "",
+        ""
+      ],
+      "expected": true
+    },
+    {
+      "name": "alphabet-ends",
+      "args": [
+        "az",
+        "za"
+      ],
+      "expected": true
+    }
+  ]
+}
