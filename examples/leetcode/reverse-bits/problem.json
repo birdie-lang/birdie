@@ -1,0 +1,13 @@
+{
+  "title": "Reverse Bits",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 190,
+    "url": "https://leetcode.com/problems/reverse-bits/description/"
+  },
+  "neetcode150": {
+    "position": 147,
+    "category": "Bit Manipulation"
+  },
+  "blind75": true
+}

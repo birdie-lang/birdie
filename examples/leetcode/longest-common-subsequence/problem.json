@@ -1,0 +1,13 @@
+{
+  "title": "Longest Common Subsequence",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 1143,
+    "url": "https://leetcode.com/problems/longest-common-subsequence/description/"
+  },
+  "neetcode150": {
+    "position": 112,
+    "category": "2-D Dynamic Programming"
+  },
+  "blind75": true
+}

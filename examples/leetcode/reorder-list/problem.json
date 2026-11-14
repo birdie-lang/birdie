@@ -1,0 +1,13 @@
+{
+  "title": "Reorder List",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 143,
+    "url": "https://leetcode.com/problems/reorder-list/description/"
+  },
+  "neetcode150": {
+    "position": 37,
+    "category": "Linked List"
+  },
+  "blind75": true
+}

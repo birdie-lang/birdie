@@ -1,0 +1,21 @@
+{
+  "title": "Two Sum",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 1,
+    "url": "https://leetcode.com/problems/two-sum/description/"
+  },
+  "neetcode150": {
+    "position": 3,
+    "category": "Arrays & Hashing"
+  },
+  "blind75": true,
+  "featuredOrder": 1,
+  "concept": "Find a pair with a map.",
+  "description": "For each number, look up its complement among earlier numbers. Return their indices when a pair is found.",
+  "note": "Parameter types are explicit. The map’s key and value types are inferred from how it is used.",
+  "notes": [
+    "Check the map before inserting the current value so the same element is not used twice.",
+    "The function returns the two indices when it finds a pair, or an empty list when no pair exists."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Non Overlapping Intervals",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 435,
+    "url": "https://leetcode.com/problems/non-overlapping-intervals/description/"
+  },
+  "neetcode150": {
+    "position": 132,
+    "category": "Intervals"
+  },
+  "blind75": true
+}

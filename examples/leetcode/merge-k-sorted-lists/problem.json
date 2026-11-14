@@ -1,0 +1,13 @@
+{
+  "title": "Merge K Sorted Lists",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 23,
+    "url": "https://leetcode.com/problems/merge-k-sorted-lists/description/"
+  },
+  "neetcode150": {
+    "position": 44,
+    "category": "Linked List"
+  },
+  "blind75": true
+}

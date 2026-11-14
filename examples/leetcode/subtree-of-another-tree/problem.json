@@ -1,0 +1,13 @@
+{
+  "title": "Subtree of Another Tree",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 572,
+    "url": "https://leetcode.com/problems/subtree-of-another-tree/description/"
+  },
+  "neetcode150": {
+    "position": 51,
+    "category": "Trees"
+  },
+  "blind75": true
+}

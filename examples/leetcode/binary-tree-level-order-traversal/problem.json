@@ -1,0 +1,13 @@
+{
+  "title": "Binary Tree Level Order Traversal",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 102,
+    "url": "https://leetcode.com/problems/binary-tree-level-order-traversal/description/"
+  },
+  "neetcode150": {
+    "position": 53,
+    "category": "Trees"
+  },
+  "blind75": true
+}

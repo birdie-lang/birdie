@@ -1,0 +1,13 @@
+{
+  "title": "Valid Parenthesis String",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 678,
+    "url": "https://leetcode.com/problems/valid-parenthesis-string/description/"
+  },
+  "neetcode150": {
+    "position": 129,
+    "category": "Greedy"
+  },
+  "blind75": false
+}

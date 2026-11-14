@@ -1,0 +1,13 @@
+{
+  "title": "Find Median From Data Stream",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 295,
+    "url": "https://leetcode.com/problems/find-median-from-data-stream/description/"
+  },
+  "neetcode150": {
+    "position": 70,
+    "category": "Heap / Priority Queue"
+  },
+  "blind75": true
+}

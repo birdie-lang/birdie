@@ -1,0 +1,13 @@
+{
+  "title": "Detect Squares",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 2013,
+    "url": "https://leetcode.com/problems/detect-squares/description/"
+  },
+  "neetcode150": {
+    "position": 143,
+    "category": "Math & Geometry"
+  },
+  "blind75": false
+}

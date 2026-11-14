@@ -1,0 +1,13 @@
+{
+  "title": "Reconstruct Itinerary",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 332,
+    "url": "https://leetcode.com/problems/reconstruct-itinerary/description/"
+  },
+  "neetcode150": {
+    "position": 93,
+    "category": "Advanced Graphs"
+  },
+  "blind75": false
+}

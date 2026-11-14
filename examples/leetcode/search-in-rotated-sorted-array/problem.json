@@ -1,0 +1,13 @@
+{
+  "title": "Search In Rotated Sorted Array",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 33,
+    "url": "https://leetcode.com/problems/search-in-rotated-sorted-array/description/"
+  },
+  "neetcode150": {
+    "position": 32,
+    "category": "Binary Search"
+  },
+  "blind75": true
+}

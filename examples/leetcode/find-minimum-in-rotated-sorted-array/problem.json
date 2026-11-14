@@ -1,0 +1,13 @@
+{
+  "title": "Find Minimum In Rotated Sorted Array",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 153,
+    "url": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/"
+  },
+  "neetcode150": {
+    "position": 31,
+    "category": "Binary Search"
+  },
+  "blind75": true
+}

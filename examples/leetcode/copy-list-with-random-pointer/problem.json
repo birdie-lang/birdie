@@ -1,0 +1,13 @@
+{
+  "title": "Copy List With Random Pointer",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 138,
+    "url": "https://leetcode.com/problems/copy-list-with-random-pointer/description/"
+  },
+  "neetcode150": {
+    "position": 39,
+    "category": "Linked List"
+  },
+  "blind75": false
+}

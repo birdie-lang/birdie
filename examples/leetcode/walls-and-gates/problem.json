@@ -1,0 +1,13 @@
+{
+  "title": "Walls And Gates",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 286,
+    "url": "https://leetcode.com/problems/walls-and-gates/description/"
+  },
+  "neetcode150": {
+    "position": 86,
+    "category": "Graphs"
+  },
+  "blind75": false
+}

@@ -1,0 +1,13 @@
+{
+  "title": "K Closest Points to Origin",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 973,
+    "url": "https://leetcode.com/problems/k-closest-points-to-origin/description/"
+  },
+  "neetcode150": {
+    "position": 66,
+    "category": "Heap / Priority Queue"
+  },
+  "blind75": false
+}

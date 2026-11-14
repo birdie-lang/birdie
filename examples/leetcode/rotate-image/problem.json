@@ -1,0 +1,13 @@
+{
+  "title": "Rotate Image",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 48,
+    "url": "https://leetcode.com/problems/rotate-image/description/"
+  },
+  "neetcode150": {
+    "position": 136,
+    "category": "Math & Geometry"
+  },
+  "blind75": true
+}

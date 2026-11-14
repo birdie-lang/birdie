@@ -1,0 +1,13 @@
+{
+  "title": "Longest Increasing Path In a Matrix",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 329,
+    "url": "https://leetcode.com/problems/longest-increasing-path-in-a-matrix/description/"
+  },
+  "neetcode150": {
+    "position": 117,
+    "category": "2-D Dynamic Programming"
+  },
+  "blind75": false
+}

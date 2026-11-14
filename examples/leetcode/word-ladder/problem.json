@@ -1,0 +1,13 @@
+{
+  "title": "Word Ladder",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 127,
+    "url": "https://leetcode.com/problems/word-ladder/description/"
+  },
+  "neetcode150": {
+    "position": 92,
+    "category": "Graphs"
+  },
+  "blind75": false
+}

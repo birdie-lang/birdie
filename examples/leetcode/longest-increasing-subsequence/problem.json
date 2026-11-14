@@ -1,0 +1,13 @@
+{
+  "title": "Longest Increasing Subsequence",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 300,
+    "url": "https://leetcode.com/problems/longest-increasing-subsequence/description/"
+  },
+  "neetcode150": {
+    "position": 109,
+    "category": "1-D Dynamic Programming"
+  },
+  "blind75": true
+}

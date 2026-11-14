@@ -1,0 +1,13 @@
+{
+  "title": "Maximum Subarray",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 53,
+    "url": "https://leetcode.com/problems/maximum-subarray/description/"
+  },
+  "neetcode150": {
+    "position": 122,
+    "category": "Greedy"
+  },
+  "blind75": true
+}

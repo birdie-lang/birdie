@@ -1,0 +1,13 @@
+{
+  "title": "Kth Smallest Element In a Bst",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 230,
+    "url": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/"
+  },
+  "neetcode150": {
+    "position": 57,
+    "category": "Trees"
+  },
+  "blind75": true
+}

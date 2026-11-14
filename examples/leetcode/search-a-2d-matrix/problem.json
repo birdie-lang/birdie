@@ -1,0 +1,13 @@
+{
+  "title": "Search a 2D Matrix",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 74,
+    "url": "https://leetcode.com/problems/search-a-2d-matrix/description/"
+  },
+  "neetcode150": {
+    "position": 29,
+    "category": "Binary Search"
+  },
+  "blind75": false
+}

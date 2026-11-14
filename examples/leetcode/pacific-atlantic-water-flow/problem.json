@@ -1,0 +1,13 @@
+{
+  "title": "Pacific Atlantic Water Flow",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 417,
+    "url": "https://leetcode.com/problems/pacific-atlantic-water-flow/description/"
+  },
+  "neetcode150": {
+    "position": 83,
+    "category": "Graphs"
+  },
+  "blind75": true
+}

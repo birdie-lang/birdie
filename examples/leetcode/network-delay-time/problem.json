@@ -1,0 +1,13 @@
+{
+  "title": "Network Delay Time",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 743,
+    "url": "https://leetcode.com/problems/network-delay-time/description/"
+  },
+  "neetcode150": {
+    "position": 95,
+    "category": "Advanced Graphs"
+  },
+  "blind75": false
+}

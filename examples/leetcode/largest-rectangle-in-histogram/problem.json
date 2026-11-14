@@ -1,0 +1,13 @@
+{
+  "title": "Largest Rectangle In Histogram",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 84,
+    "url": "https://leetcode.com/problems/largest-rectangle-in-histogram/description/"
+  },
+  "neetcode150": {
+    "position": 27,
+    "category": "Stack"
+  },
+  "blind75": false
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Validate Binary Search Tree",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 98,
+    "url": "https://leetcode.com/problems/validate-binary-search-tree/description/"
+  },
+  "neetcode150": {
+    "position": 56,
+    "category": "Trees"
+  },
+  "blind75": true
+}

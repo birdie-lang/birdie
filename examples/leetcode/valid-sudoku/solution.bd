@@ -1,0 +1,35 @@
+fn isValidSudoku(board: list[list[char]]) bool:
+    for i until 9:
+        if not validGroup(board[i]):
+            return false
+
+        column = [board[r][i] for r until 9]
+        if not validGroup(column):
+            return false
+
+    for sr until 9 step 3:
+        for sc until 9 step 3:
+            square = [
+                board[r][c]
+                for r in sr until sr + 3
+                for c in sc until sc + 3
+            ]
+
+            if not validGroup(square):
+                return false
+
+    return true
+
+fn validGroup(cells: list[char]) bool:
+    seen = set()
+
+    for cell in cells:
+        if cell == '.':
+            continue
+
+        if cell in seen:
+            return false
+
+        seen.add(cell)
+
+    return true

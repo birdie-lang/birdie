@@ -1,0 +1,13 @@
+{
+  "title": "Set Matrix Zeroes",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 73,
+    "url": "https://leetcode.com/problems/set-matrix-zeroes/description/"
+  },
+  "neetcode150": {
+    "position": 138,
+    "category": "Math & Geometry"
+  },
+  "blind75": true
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Missing Number",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 268,
+    "url": "https://leetcode.com/problems/missing-number/description/"
+  },
+  "neetcode150": {
+    "position": 148,
+    "category": "Bit Manipulation"
+  },
+  "blind75": true
+}

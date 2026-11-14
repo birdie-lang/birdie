@@ -1,0 +1,13 @@
+{
+  "title": "Car Fleet",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 853,
+    "url": "https://leetcode.com/problems/car-fleet/description/"
+  },
+  "neetcode150": {
+    "position": 26,
+    "category": "Stack"
+  },
+  "blind75": false
+}

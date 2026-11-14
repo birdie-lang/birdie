@@ -1,0 +1,13 @@
+{
+  "title": "Course Schedule II",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 210,
+    "url": "https://leetcode.com/problems/course-schedule-ii/description/"
+  },
+  "neetcode150": {
+    "position": 88,
+    "category": "Graphs"
+  },
+  "blind75": false
+}

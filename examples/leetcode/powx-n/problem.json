@@ -1,0 +1,13 @@
+{
+  "title": "Pow(x, n)",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 50,
+    "url": "https://leetcode.com/problems/powx-n/description/"
+  },
+  "neetcode150": {
+    "position": 141,
+    "category": "Math & Geometry"
+  },
+  "blind75": false
+}

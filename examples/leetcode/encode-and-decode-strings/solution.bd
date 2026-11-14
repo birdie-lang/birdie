@@ -1,0 +1,21 @@
+fn encode(words: list[str]) str:
+    parts = []
+    for word in words:
+        parts.extend([str(word.size), "#", word])
+    return parts.join("")
+
+fn decode(data: str) list[str]:
+    words = []
+    cursor = 0
+
+    while cursor < data.size:
+        separator = cursor
+        while data[separator] != '#':
+            separator++
+
+        size = int(data[cursor:separator])
+        start = separator + 1
+        cursor = start + size
+        words.push(data[start:cursor])
+
+    return words

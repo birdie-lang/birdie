@@ -1,0 +1,4 @@
+type TreeNode:
+    val: int
+    left: TreeNode? = none
+    right: TreeNode? = none

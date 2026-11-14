@@ -1,0 +1,22 @@
+{
+  "title": "Group Anagrams",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 49,
+    "url": "https://leetcode.com/problems/group-anagrams/description/"
+  },
+  "neetcode150": {
+    "position": 4,
+    "category": "Arrays & Hashing"
+  },
+  "blind75": true,
+  "featuredOrder": 4,
+  "concept": "Group by a sorted key.",
+  "description": "Sort each word into a key. Words with the same key go into the same list.",
+  "note": "map(list) creates a fresh list for each missing key. word.sorted() returns a new string.",
+  "notes": [
+    "map(list) creates a fresh list when a key is first looked up. Pushing a word adds it to that stored list; later lookups reuse it. Python expresses the same approach with defaultdict(list).",
+    "word.sorted() returns a new string ordered by Unicode scalar value, leaving the original string unchanged. String equality and hashing use the scalar sequence as stored.",
+    "groups.values() returns a new outer list whose nested lists remain shared with the map. The order of the groups is unspecified while map iteration order is still undecided."
+  ]
+}

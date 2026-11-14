@@ -1,0 +1,13 @@
+{
+  "title": "Partition Labels",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 763,
+    "url": "https://leetcode.com/problems/partition-labels/description/"
+  },
+  "neetcode150": {
+    "position": 128,
+    "category": "Greedy"
+  },
+  "blind75": false
+}

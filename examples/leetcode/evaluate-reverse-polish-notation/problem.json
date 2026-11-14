@@ -1,0 +1,13 @@
+{
+  "title": "Evaluate Reverse Polish Notation",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 150,
+    "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/description/"
+  },
+  "neetcode150": {
+    "position": 23,
+    "category": "Stack"
+  },
+  "blind75": false
+}

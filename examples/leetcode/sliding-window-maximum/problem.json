@@ -1,0 +1,13 @@
+{
+  "title": "Sliding Window Maximum",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 239,
+    "url": "https://leetcode.com/problems/sliding-window-maximum/description/"
+  },
+  "neetcode150": {
+    "position": 20,
+    "category": "Sliding Window"
+  },
+  "blind75": false
+}

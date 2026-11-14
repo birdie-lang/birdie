@@ -1,0 +1,23 @@
+{
+  "title": "Invert Binary Tree",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 226,
+    "url": "https://leetcode.com/problems/invert-binary-tree/description/"
+  },
+  "neetcode150": {
+    "position": 46,
+    "category": "Trees"
+  },
+  "blind75": true,
+  "featuredOrder": 5,
+  "concept": "Mirror a tree with recursion.",
+  "description": "Swap each node’s left and right children, then recursively invert both subtrees. Return the original root.",
+  "note": "TreeNode? permits a node or none. The explicit absence check makes field access safe; swap! exchanges the child references.",
+  "notes": [
+    "LeetCode supplies TreeNode. The record declaration shows how the same type would be defined in a standalone Birdie program.",
+    "Returning early after root is none narrows root to TreeNode in the remaining body. Its children remain optional, so recursive calls accept TreeNode?.",
+    "Records are shared references. swap!(root.left, root.right) exchanges the writable child fields, mutates the original tree, and allocates no replacement nodes. Tuple assignment can also express the exchange: (root.left, root.right) = (root.right, root.left).",
+    "An empty tree returns none. A leaf is unchanged. The traversal takes O(n) time and O(h) recursion space, where h is the tree height."
+  ]
+}

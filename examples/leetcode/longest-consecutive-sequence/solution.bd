@@ -1,0 +1,15 @@
+fn longestConsecutive(nums: list[int]) int:
+    longestSeq = 0
+    numsSet = set(nums)
+
+    for num in numsSet:
+        if num - 1 in numsSet:
+            continue
+
+        currSeq = 1
+        while num + currSeq in numsSet:
+            currSeq++
+
+        max!(longestSeq, currSeq)
+
+    return longestSeq

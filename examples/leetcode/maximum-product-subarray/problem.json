@@ -1,0 +1,13 @@
+{
+  "title": "Maximum Product Subarray",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 152,
+    "url": "https://leetcode.com/problems/maximum-product-subarray/description/"
+  },
+  "neetcode150": {
+    "position": 107,
+    "category": "1-D Dynamic Programming"
+  },
+  "blind75": true
+}

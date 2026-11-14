@@ -1,0 +1,13 @@
+{
+  "title": "Number of Connected Components In An Undirected Graph",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 323,
+    "url": "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/description/"
+  },
+  "neetcode150": {
+    "position": 90,
+    "category": "Graphs"
+  },
+  "blind75": true
+}

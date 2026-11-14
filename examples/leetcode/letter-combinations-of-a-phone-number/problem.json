@@ -1,0 +1,13 @@
+{
+  "title": "Letter Combinations of a Phone Number",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 17,
+    "url": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/"
+  },
+  "neetcode150": {
+    "position": 78,
+    "category": "Backtracking"
+  },
+  "blind75": false
+}

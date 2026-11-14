@@ -1,0 +1,13 @@
+{
+  "title": "Distinct Subsequences",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 115,
+    "url": "https://leetcode.com/problems/distinct-subsequences/description/"
+  },
+  "neetcode150": {
+    "position": 118,
+    "category": "2-D Dynamic Programming"
+  },
+  "blind75": false
+}

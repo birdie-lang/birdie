@@ -1,0 +1,13 @@
+{
+  "title": "Design Add And Search Words Data Structure",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 211,
+    "url": "https://leetcode.com/problems/design-add-and-search-words-data-structure/description/"
+  },
+  "neetcode150": {
+    "position": 62,
+    "category": "Tries"
+  },
+  "blind75": true
+}

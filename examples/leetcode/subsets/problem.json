@@ -1,0 +1,13 @@
+{
+  "title": "Subsets",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 78,
+    "url": "https://leetcode.com/problems/subsets/description/"
+  },
+  "neetcode150": {
+    "position": 71,
+    "category": "Backtracking"
+  },
+  "blind75": false
+}

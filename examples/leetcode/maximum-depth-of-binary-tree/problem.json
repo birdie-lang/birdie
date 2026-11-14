@@ -1,0 +1,21 @@
+{
+  "title": "Maximum Depth of Binary Tree",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 104,
+    "url": "https://leetcode.com/problems/maximum-depth-of-binary-tree/description/"
+  },
+  "neetcode150": {
+    "position": 47,
+    "category": "Trees"
+  },
+  "blind75": true,
+  "description": "Return the number of nodes on the longest path from the root to a leaf.",
+  "note": "An empty tree has depth zero. A leaf has depth one.",
+  "notes": [
+    "The early return after root is none narrows root to TreeNode in the remaining body. Its optional children can be passed directly to maxDepth.",
+    "Compute the depth of each subtree, take the larger result with max, and add one for the current node. The proposed max built-in needs no imports.",
+    "LeetCode supplies TreeNode. The record declaration shows how the same type would be defined in a standalone Birdie program.",
+    "The traversal takes O(n) time and O(h) recursion space, where h is the tree height. It does not modify the tree."
+  ]
+}

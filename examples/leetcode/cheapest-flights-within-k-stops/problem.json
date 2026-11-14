@@ -1,0 +1,13 @@
+{
+  "title": "Cheapest Flights Within K Stops",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 787,
+    "url": "https://leetcode.com/problems/cheapest-flights-within-k-stops/description/"
+  },
+  "neetcode150": {
+    "position": 98,
+    "category": "Advanced Graphs"
+  },
+  "blind75": false
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Last Stone Weight",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 1046,
+    "url": "https://leetcode.com/problems/last-stone-weight/description/"
+  },
+  "neetcode150": {
+    "position": 65,
+    "category": "Heap / Priority Queue"
+  },
+  "blind75": false
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Kth Largest Element In An Array",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 215,
+    "url": "https://leetcode.com/problems/kth-largest-element-in-an-array/description/"
+  },
+  "neetcode150": {
+    "position": 67,
+    "category": "Heap / Priority Queue"
+  },
+  "blind75": false
+}

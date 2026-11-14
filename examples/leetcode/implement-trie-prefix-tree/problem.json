@@ -1,0 +1,13 @@
+{
+  "title": "Implement Trie Prefix Tree",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 208,
+    "url": "https://leetcode.com/problems/implement-trie-prefix-tree/description/"
+  },
+  "neetcode150": {
+    "position": 61,
+    "category": "Tries"
+  },
+  "blind75": true
+}

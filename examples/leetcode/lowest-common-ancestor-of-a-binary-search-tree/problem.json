@@ -1,0 +1,13 @@
+{
+  "title": "Lowest Common Ancestor of a Binary Search Tree",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 235,
+    "url": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/"
+  },
+  "neetcode150": {
+    "position": 52,
+    "category": "Trees"
+  },
+  "blind75": true
+}

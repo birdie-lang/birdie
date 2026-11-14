@@ -1,0 +1,13 @@
+{
+  "title": "Merge Intervals",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 56,
+    "url": "https://leetcode.com/problems/merge-intervals/description/"
+  },
+  "neetcode150": {
+    "position": 131,
+    "category": "Intervals"
+  },
+  "blind75": true
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Jump Game",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 55,
+    "url": "https://leetcode.com/problems/jump-game/description/"
+  },
+  "neetcode150": {
+    "position": 123,
+    "category": "Greedy"
+  },
+  "blind75": true
+}

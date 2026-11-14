@@ -1,0 +1,13 @@
+{
+  "title": "Edit Distance",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 72,
+    "url": "https://leetcode.com/problems/edit-distance/description/"
+  },
+  "neetcode150": {
+    "position": 119,
+    "category": "2-D Dynamic Programming"
+  },
+  "blind75": false
+}

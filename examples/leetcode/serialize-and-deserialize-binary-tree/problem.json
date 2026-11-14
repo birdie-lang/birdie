@@ -1,0 +1,13 @@
+{
+  "title": "Serialize And Deserialize Binary Tree",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 297,
+    "url": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/"
+  },
+  "neetcode150": {
+    "position": 60,
+    "category": "Trees"
+  },
+  "blind75": true
+}

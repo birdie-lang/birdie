@@ -1,0 +1,10 @@
+fn containsDuplicate(nums: list[int]) bool:
+    seen = set()
+
+    for num in nums:
+        if num in seen:
+            return true
+
+        seen.add(num)
+
+    return false

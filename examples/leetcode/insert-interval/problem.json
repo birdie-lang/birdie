@@ -1,0 +1,13 @@
+{
+  "title": "Insert Interval",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 57,
+    "url": "https://leetcode.com/problems/insert-interval/description/"
+  },
+  "neetcode150": {
+    "position": 130,
+    "category": "Intervals"
+  },
+  "blind75": true
+}

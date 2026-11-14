@@ -1,0 +1,13 @@
+{
+  "title": "Reverse Integer",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 7,
+    "url": "https://leetcode.com/problems/reverse-integer/description/"
+  },
+  "neetcode150": {
+    "position": 150,
+    "category": "Bit Manipulation"
+  },
+  "blind75": false
+}

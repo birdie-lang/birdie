@@ -1,0 +1,13 @@
+{
+  "title": "Happy Number",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 202,
+    "url": "https://leetcode.com/problems/happy-number/description/"
+  },
+  "neetcode150": {
+    "position": 139,
+    "category": "Math & Geometry"
+  },
+  "blind75": false
+}

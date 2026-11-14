@@ -1,0 +1,13 @@
+{
+  "title": "Gas Station",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 134,
+    "url": "https://leetcode.com/problems/gas-station/description/"
+  },
+  "neetcode150": {
+    "position": 125,
+    "category": "Greedy"
+  },
+  "blind75": false
+}

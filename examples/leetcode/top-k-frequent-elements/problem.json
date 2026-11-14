@@ -1,0 +1,23 @@
+{
+  "title": "Top K Frequent Elements",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 347,
+    "url": "https://leetcode.com/problems/top-k-frequent-elements/description/"
+  },
+  "neetcode150": {
+    "position": 5,
+    "category": "Arrays & Hashing"
+  },
+  "blind75": true,
+  "description": "Count each value, group values into frequency buckets, then collect the k most frequent values from the highest buckets.",
+  "note": "Assume 1 <= k <= the number of distinct input values. The frequency of any value is at most nums.size, so nums.size + 1 buckets cover every possible frequency.",
+  "notes": [
+    "list(nums.size + 1, list) calls the list factory separately for each bucket. The type list[list[int]] is inferred from the values pushed into those buckets.",
+    "counter(nums) produces counter[int]. The key/count loop visits distinct numbers in first-appearance order; values with the same frequency enter their bucket in that order.",
+    "reverse buckets visits frequencies from highest to lowest without creating a reversed list. extend appends every value from the current bucket in its existing order.",
+    "res[:k] allocates a shallow copy of the first k elements. The size check ensures the prefix is in bounds and limits the result to exactly k values.",
+    "With the stated k constraint, the loop returns before the final fallback. The final return keeps a list result explicit on every path.",
+    "Under the usual constant-cost hashing, equality, and integer-operation assumptions, the bucket algorithm takes expected O(n) time and O(n) auxiliary space. It does not sort the input or mutate it."
+  ]
+}

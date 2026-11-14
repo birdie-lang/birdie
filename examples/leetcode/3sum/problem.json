@@ -1,0 +1,13 @@
+{
+  "title": "3Sum",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 15,
+    "url": "https://leetcode.com/problems/3sum/description/"
+  },
+  "neetcode150": {
+    "position": 12,
+    "category": "Two Pointers"
+  },
+  "blind75": true
+}

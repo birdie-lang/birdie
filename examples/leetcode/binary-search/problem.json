@@ -1,0 +1,21 @@
+{
+  "title": "Binary Search",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 704,
+    "url": "https://leetcode.com/problems/binary-search/description/"
+  },
+  "neetcode150": {
+    "position": 28,
+    "category": "Binary Search"
+  },
+  "blind75": false,
+  "featuredOrder": 3,
+  "concept": "Halve the search interval.",
+  "description": "Search a sorted list by comparing the target with the middle value, then continuing in one half.",
+  "note": "// rounds down; .size gives the number of elements.",
+  "notes": [
+    "The input list must already be sorted in ascending order. Return the matching index, or -1 when the interval becomes empty.",
+    "Both versions use floor division and zero-based indexing. Birdie uses .size for the list length; Python uses len(nums)."
+  ]
+}

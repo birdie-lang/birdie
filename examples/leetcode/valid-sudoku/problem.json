@@ -1,0 +1,23 @@
+{
+  "title": "Valid Sudoku",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 36,
+    "url": "https://leetcode.com/problems/valid-sudoku/description/"
+  },
+  "neetcode150": {
+    "position": 7,
+    "category": "Arrays & Hashing"
+  },
+  "blind75": false,
+  "description": "Check each row, column, and 3×3 square for repeated digits, ignoring empty cells.",
+  "note": "Assume a 9×9 board containing digits 1–9 or '.'. Validity concerns the filled cells; it does not require a completed or solvable board.",
+  "notes": [
+    "Birdie represents each cell as char. Python represents the same cells as one-character strings. Both examples use the same helper, extracted variables, and check order, with the main algorithm first and validGroup below it.",
+    "validGroup captures no enclosing variables, so it is a separate function. Birdie registers function declarations before ordinary execution, allowing the main function to call a helper written later. The Python helper is also top-level and is defined before the judge invokes the main method.",
+    "for i until 9 starts at zero and excludes nine. Adding step 3 visits square origins 0, 3, and 6. Nonzero starts remain explicit in the square comprehension.",
+    "List comprehensions eagerly collect a column or square. Multiple for clauses run like nested loops and produce a flat list. Their bindings do not leak into the enclosing function.",
+    "Each call to validGroup creates a fresh set[char]. continue skips empty cells, and the first repeated digit makes the group invalid. None of the checks modifies the input board.",
+    "Each of the 81 cells is examined in its row, column, and square unless validation returns early. Work and auxiliary storage are bounded for the fixed 9×9 board."
+  ]
+}

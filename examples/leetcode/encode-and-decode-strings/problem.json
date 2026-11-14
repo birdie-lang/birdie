@@ -1,0 +1,23 @@
+{
+  "title": "Encode and Decode Strings",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 271,
+    "url": "https://leetcode.com/problems/encode-and-decode-strings/description/"
+  },
+  "neetcode150": {
+    "position": 8,
+    "category": "Arrays & Hashing"
+  },
+  "blind75": true,
+  "description": "Encode each string as its decimal length, a # separator, and its contents. Decode by reading each length and consuming exactly that many characters.",
+  "note": "A separator inside a string is ordinary content. Length prefixes preserve empty strings and avoid escaping or splitting the payload.",
+  "notes": [
+    "The encoding of [\"bird\", \"\", \"a#b\"] is \"4#bird0#3#a#b\". An empty list encodes as \"\", while one empty string encodes as \"0#\".",
+    "str(word.size) formats the length as decimal text. parts.extend collects string fragments, and parts.join(\"\") combines them once without changing the list or repeatedly copying a growing result.",
+    "The decoder scans to the header separator, parses its decimal length with int, then extracts data[start:cursor]. The slice excludes cursor and returns a str, while data[separator] returns a char compared with '#'.",
+    "String sizes, indices, and slice boundaries all count Unicode scalar values. The encoder and decoder therefore agree for non-ASCII text too, without normalization or a byte-length convention.",
+    "Both functions are stateless and can be top-level helpers. The Python judge wrapper only groups them. The decoder assumes data was produced by encode; validating arbitrary malformed input is outside this example.",
+    "For n input strings containing T total Unicode scalar values, each function takes O(T + n) time and O(T + n) space including its output, under ordinary integer/index cost assumptions. This includes length headers, empty strings, and any one-time linear preparation for scalar indexing; repeated indexing must not rescan the string prefix."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Hand of Straights",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 846,
+    "url": "https://leetcode.com/problems/hand-of-straights/description/"
+  },
+  "neetcode150": {
+    "position": 126,
+    "category": "Greedy"
+  },
+  "blind75": false
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Koko Eating Bananas",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 875,
+    "url": "https://leetcode.com/problems/koko-eating-bananas/description/"
+  },
+  "neetcode150": {
+    "position": 30,
+    "category": "Binary Search"
+  },
+  "blind75": false
+}

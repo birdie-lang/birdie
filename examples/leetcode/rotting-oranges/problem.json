@@ -1,0 +1,13 @@
+{
+  "title": "Rotting Oranges",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 994,
+    "url": "https://leetcode.com/problems/rotting-oranges/description/"
+  },
+  "neetcode150": {
+    "position": 85,
+    "category": "Graphs"
+  },
+  "blind75": false
+}

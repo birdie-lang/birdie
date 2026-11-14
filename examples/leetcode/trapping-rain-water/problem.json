@@ -1,0 +1,13 @@
+{
+  "title": "Trapping Rain Water",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 42,
+    "url": "https://leetcode.com/problems/trapping-rain-water/description/"
+  },
+  "neetcode150": {
+    "position": 14,
+    "category": "Two Pointers"
+  },
+  "blind75": false
+}

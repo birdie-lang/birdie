@@ -1,0 +1,13 @@
+{
+  "title": "Time Based Key Value Store",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 981,
+    "url": "https://leetcode.com/problems/time-based-key-value-store/description/"
+  },
+  "neetcode150": {
+    "position": 33,
+    "category": "Binary Search"
+  },
+  "blind75": false
+}

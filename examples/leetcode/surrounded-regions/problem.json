@@ -1,0 +1,13 @@
+{
+  "title": "Surrounded Regions",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 130,
+    "url": "https://leetcode.com/problems/surrounded-regions/description/"
+  },
+  "neetcode150": {
+    "position": 84,
+    "category": "Graphs"
+  },
+  "blind75": false
+}

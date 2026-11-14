@@ -1,0 +1,13 @@
+{
+  "title": "Best Time to Buy And Sell Stock",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 121,
+    "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/"
+  },
+  "neetcode150": {
+    "position": 15,
+    "category": "Sliding Window"
+  },
+  "blind75": true
+}

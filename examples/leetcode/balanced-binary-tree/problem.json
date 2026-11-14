@@ -1,0 +1,13 @@
+{
+  "title": "Balanced Binary Tree",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 110,
+    "url": "https://leetcode.com/problems/balanced-binary-tree/description/"
+  },
+  "neetcode150": {
+    "position": 49,
+    "category": "Trees"
+  },
+  "blind75": false
+}

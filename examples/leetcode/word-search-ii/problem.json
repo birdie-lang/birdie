@@ -1,0 +1,13 @@
+{
+  "title": "Word Search II",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 212,
+    "url": "https://leetcode.com/problems/word-search-ii/description/"
+  },
+  "neetcode150": {
+    "position": 63,
+    "category": "Tries"
+  },
+  "blind75": true
+}

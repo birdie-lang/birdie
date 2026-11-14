@@ -1,0 +1,13 @@
+{
+  "title": "Min Cost Climbing Stairs",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 746,
+    "url": "https://leetcode.com/problems/min-cost-climbing-stairs/description/"
+  },
+  "neetcode150": {
+    "position": 100,
+    "category": "1-D Dynamic Programming"
+  },
+  "blind75": false
+}

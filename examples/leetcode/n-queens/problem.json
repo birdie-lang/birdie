@@ -1,0 +1,13 @@
+{
+  "title": "N Queens",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 51,
+    "url": "https://leetcode.com/problems/n-queens/description/"
+  },
+  "neetcode150": {
+    "position": 79,
+    "category": "Backtracking"
+  },
+  "blind75": false
+}

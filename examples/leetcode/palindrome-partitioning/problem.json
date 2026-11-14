@@ -1,0 +1,13 @@
+{
+  "title": "Palindrome Partitioning",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 131,
+    "url": "https://leetcode.com/problems/palindrome-partitioning/description/"
+  },
+  "neetcode150": {
+    "position": 77,
+    "category": "Backtracking"
+  },
+  "blind75": false
+}

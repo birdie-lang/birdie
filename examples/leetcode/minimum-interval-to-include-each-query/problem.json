@@ -1,0 +1,13 @@
+{
+  "title": "Minimum Interval to Include Each Query",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 1851,
+    "url": "https://leetcode.com/problems/minimum-interval-to-include-each-query/description/"
+  },
+  "neetcode150": {
+    "position": 135,
+    "category": "Intervals"
+  },
+  "blind75": false
+}

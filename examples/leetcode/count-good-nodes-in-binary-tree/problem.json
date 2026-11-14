@@ -1,0 +1,13 @@
+{
+  "title": "Count Good Nodes In Binary Tree",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 1448,
+    "url": "https://leetcode.com/problems/count-good-nodes-in-binary-tree/description/"
+  },
+  "neetcode150": {
+    "position": 55,
+    "category": "Trees"
+  },
+  "blind75": false
+}

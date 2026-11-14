@@ -1,0 +1,13 @@
+{
+  "title": "Coin Change",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 322,
+    "url": "https://leetcode.com/problems/coin-change/description/"
+  },
+  "neetcode150": {
+    "position": 106,
+    "category": "1-D Dynamic Programming"
+  },
+  "blind75": true
+}

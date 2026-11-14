@@ -1,0 +1,13 @@
+{
+  "title": "Generate Parentheses",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 22,
+    "url": "https://leetcode.com/problems/generate-parentheses/description/"
+  },
+  "neetcode150": {
+    "position": 24,
+    "category": "Stack"
+  },
+  "blind75": false
+}

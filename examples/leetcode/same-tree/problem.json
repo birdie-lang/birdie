@@ -1,0 +1,13 @@
+{
+  "title": "Same Tree",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 100,
+    "url": "https://leetcode.com/problems/same-tree/description/"
+  },
+  "neetcode150": {
+    "position": 50,
+    "category": "Trees"
+  },
+  "blind75": true
+}

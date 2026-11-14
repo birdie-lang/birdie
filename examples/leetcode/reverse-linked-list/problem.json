@@ -1,0 +1,13 @@
+{
+  "title": "Reverse Linked List",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 206,
+    "url": "https://leetcode.com/problems/reverse-linked-list/description/"
+  },
+  "neetcode150": {
+    "position": 35,
+    "category": "Linked List"
+  },
+  "blind75": true
+}

@@ -1,0 +1,11 @@
+fn isAnagram(s: str, t: str) bool:
+    if s.size != t.size:
+        return false
+
+    freqs = list(26, 0)
+
+    for (c1, c2) in zip(s, t):
+        freqs[c1 - 'a']++
+        freqs[c2 - 'a']--
+
+    return all(v == 0 for v in freqs)

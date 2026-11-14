@@ -1,0 +1,23 @@
+{
+  "title": "Product of Array Except Self",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 238,
+    "url": "https://leetcode.com/problems/product-of-array-except-self/description/"
+  },
+  "neetcode150": {
+    "position": 6,
+    "category": "Arrays & Hashing"
+  },
+  "blind75": true,
+  "description": "Store prefix products, then multiply by suffix products to find the product of every other element at each position.",
+  "note": "Both passes reuse prod, resetting it to one before traversing backwards. The algorithm uses no division and leaves the input unchanged.",
+  "notes": [
+    "list(nums.size, 1) creates the result list with one integer slot per input value. Its type is inferred as list[int].",
+    "The forward pass stores the product of values before the current index, then multiplies prod by the current value. The reverse pass multiplies each stored prefix by the product of values after that index, then updates prod.",
+    "Indexed reverse iteration preserves original indices while visiting the input backwards. Birdie can bind both i and num directly; the Python version uses reversed indices and looks up nums[i].",
+    "Compound assignments such as prod *= num and res[i] *= prod update an initialized integer location. The target location is evaluated once.",
+    "Zeros and negative values work through the same multiplication steps. An empty list returns an empty list; a single-element list returns [1], the product of no other values.",
+    "In the usual unit-cost model, the algorithm takes O(n) time and O(1) auxiliary space excluding the returned list. Birdie’s arbitrary-precision arithmetic and value storage costs depend on intermediate product sizes."
+  ]
+}

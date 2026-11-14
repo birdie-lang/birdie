@@ -1,0 +1,13 @@
+{
+  "title": "Longest Repeating Character Replacement",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 424,
+    "url": "https://leetcode.com/problems/longest-repeating-character-replacement/description/"
+  },
+  "neetcode150": {
+    "position": 17,
+    "category": "Sliding Window"
+  },
+  "blind75": true
+}

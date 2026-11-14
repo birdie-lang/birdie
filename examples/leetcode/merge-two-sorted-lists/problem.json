@@ -1,0 +1,13 @@
+{
+  "title": "Merge Two Sorted Lists",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 21,
+    "url": "https://leetcode.com/problems/merge-two-sorted-lists/description/"
+  },
+  "neetcode150": {
+    "position": 36,
+    "category": "Linked List"
+  },
+  "blind75": true
+}

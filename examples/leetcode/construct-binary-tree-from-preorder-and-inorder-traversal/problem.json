@@ -1,0 +1,13 @@
+{
+  "title": "Construct Binary Tree From Preorder And Inorder Traversal",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 105,
+    "url": "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/"
+  },
+  "neetcode150": {
+    "position": 58,
+    "category": "Trees"
+  },
+  "blind75": true
+}

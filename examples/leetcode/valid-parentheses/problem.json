@@ -1,0 +1,21 @@
+{
+  "title": "Valid Parentheses",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 20,
+    "url": "https://leetcode.com/problems/valid-parentheses/description/"
+  },
+  "neetcode150": {
+    "position": 21,
+    "category": "Stack"
+  },
+  "blind75": true,
+  "featuredOrder": 2,
+  "concept": "Match brackets with a stack.",
+  "description": "Push opening brackets. For each closing bracket, pop and check the matching opener.",
+  "note": "The stack stores char values. Its element type is inferred from the values pushed onto it.",
+  "notes": [
+    "Reject a closing bracket if the stack is empty or the brackets disagree.",
+    "The input is assumed to contain only ()[]{} characters. At the end, an empty stack means all brackets were matched. Birdie uses a dedicated stack type; Python uses a list with append and pop."
+  ]
+}

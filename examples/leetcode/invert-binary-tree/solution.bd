@@ -1,0 +1,9 @@
+fn invertTree(root: TreeNode?) TreeNode?:
+    if root is none:
+        return none
+
+    swap!(root.left, root.right)
+    invertTree(root.left)
+    invertTree(root.right)
+
+    return root

@@ -1,0 +1,13 @@
+{
+  "title": "Decode Ways",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 91,
+    "url": "https://leetcode.com/problems/decode-ways/description/"
+  },
+  "neetcode150": {
+    "position": 105,
+    "category": "1-D Dynamic Programming"
+  },
+  "blind75": true
+}

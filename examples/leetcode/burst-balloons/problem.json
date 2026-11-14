@@ -1,0 +1,13 @@
+{
+  "title": "Burst Balloons",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 312,
+    "url": "https://leetcode.com/problems/burst-balloons/description/"
+  },
+  "neetcode150": {
+    "position": 120,
+    "category": "2-D Dynamic Programming"
+  },
+  "blind75": false
+}

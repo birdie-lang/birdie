@@ -1,0 +1,13 @@
+{
+  "title": "Counting Bits",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 338,
+    "url": "https://leetcode.com/problems/counting-bits/description/"
+  },
+  "neetcode150": {
+    "position": 146,
+    "category": "Bit Manipulation"
+  },
+  "blind75": true
+}

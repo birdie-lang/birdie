@@ -1,0 +1,13 @@
+{
+  "title": "Multiply Strings",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 43,
+    "url": "https://leetcode.com/problems/multiply-strings/description/"
+  },
+  "neetcode150": {
+    "position": 142,
+    "category": "Math & Geometry"
+  },
+  "blind75": false
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Remove Nth Node From End of List",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 19,
+    "url": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/"
+  },
+  "neetcode150": {
+    "position": 38,
+    "category": "Linked List"
+  },
+  "blind75": true
+}

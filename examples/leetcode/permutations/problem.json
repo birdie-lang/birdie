@@ -1,0 +1,13 @@
+{
+  "title": "Permutations",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 46,
+    "url": "https://leetcode.com/problems/permutations/description/"
+  },
+  "neetcode150": {
+    "position": 73,
+    "category": "Backtracking"
+  },
+  "blind75": false
+}

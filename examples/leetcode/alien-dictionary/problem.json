@@ -1,0 +1,13 @@
+{
+  "title": "Alien Dictionary",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 269,
+    "url": "https://leetcode.com/problems/alien-dictionary/description/"
+  },
+  "neetcode150": {
+    "position": 97,
+    "category": "Advanced Graphs"
+  },
+  "blind75": true
+}

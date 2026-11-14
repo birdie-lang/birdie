@@ -1,0 +1,13 @@
+{
+  "title": "Unique Paths",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 62,
+    "url": "https://leetcode.com/problems/unique-paths/description/"
+  },
+  "neetcode150": {
+    "position": 111,
+    "category": "2-D Dynamic Programming"
+  },
+  "blind75": true
+}

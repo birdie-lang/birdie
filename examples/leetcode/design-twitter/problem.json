@@ -1,0 +1,13 @@
+{
+  "title": "Design Twitter",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 355,
+    "url": "https://leetcode.com/problems/design-twitter/description/"
+  },
+  "neetcode150": {
+    "position": 69,
+    "category": "Heap / Priority Queue"
+  },
+  "blind75": false
+}

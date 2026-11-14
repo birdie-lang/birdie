@@ -1,0 +1,20 @@
+{
+  "title": "Contains Duplicate",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 217,
+    "url": "https://leetcode.com/problems/contains-duplicate/description/"
+  },
+  "neetcode150": {
+    "position": 1,
+    "category": "Arrays & Hashing"
+  },
+  "blind75": true,
+  "description": "Track previously seen values in a set. Return true as soon as a value appears again.",
+  "note": "The element type of seen is inferred as int from the values checked and added. A set stores each distinct value once.",
+  "notes": [
+    "Check membership before inserting the current value. If it is already present, an earlier list element had the same value.",
+    "Return false after visiting every value without finding a duplicate. Empty lists and single-element lists also return false.",
+    "The function does not modify the input list. Under the usual constant-cost hashing and equality assumption, it takes expected O(n) time and O(n) additional space. Actual integer hashing and comparison costs depend on value size."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Graph Valid Tree",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 261,
+    "url": "https://leetcode.com/problems/graph-valid-tree/description/"
+  },
+  "neetcode150": {
+    "position": 91,
+    "category": "Graphs"
+  },
+  "blind75": true
+}

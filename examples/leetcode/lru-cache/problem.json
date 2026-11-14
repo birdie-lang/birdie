@@ -1,0 +1,13 @@
+{
+  "title": "LRU Cache",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 146,
+    "url": "https://leetcode.com/problems/lru-cache/description/"
+  },
+  "neetcode150": {
+    "position": 43,
+    "category": "Linked List"
+  },
+  "blind75": false
+}

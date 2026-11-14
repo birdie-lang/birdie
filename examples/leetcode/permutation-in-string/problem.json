@@ -1,0 +1,13 @@
+{
+  "title": "Permutation In String",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 567,
+    "url": "https://leetcode.com/problems/permutation-in-string/description/"
+  },
+  "neetcode150": {
+    "position": 18,
+    "category": "Sliding Window"
+  },
+  "blind75": false
+}

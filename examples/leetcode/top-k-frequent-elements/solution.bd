@@ -1,0 +1,15 @@
+fn topKFrequent(nums: list[int], k: int) list[int]:
+    buckets = list(nums.size + 1, list)
+    freqs = counter(nums)
+
+    for num, freq in freqs:
+        buckets[freq].push(num)
+
+    res = []
+    for bucket in reverse buckets:
+        res.extend(bucket)
+
+        if res.size >= k:
+            return res[:k]
+
+    return res

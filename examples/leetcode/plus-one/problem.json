@@ -1,0 +1,13 @@
+{
+  "title": "Plus One",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 66,
+    "url": "https://leetcode.com/problems/plus-one/description/"
+  },
+  "neetcode150": {
+    "position": 140,
+    "category": "Math & Geometry"
+  },
+  "blind75": false
+}

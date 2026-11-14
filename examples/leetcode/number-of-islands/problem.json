@@ -1,0 +1,13 @@
+{
+  "title": "Number of Islands",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 200,
+    "url": "https://leetcode.com/problems/number-of-islands/description/"
+  },
+  "neetcode150": {
+    "position": 80,
+    "category": "Graphs"
+  },
+  "blind75": true
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Spiral Matrix",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 54,
+    "url": "https://leetcode.com/problems/spiral-matrix/description/"
+  },
+  "neetcode150": {
+    "position": 137,
+    "category": "Math & Geometry"
+  },
+  "blind75": true
+}

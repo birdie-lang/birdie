@@ -1,0 +1,13 @@
+{
+  "title": "Word Search",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 79,
+    "url": "https://leetcode.com/problems/word-search/description/"
+  },
+  "neetcode150": {
+    "position": 76,
+    "category": "Backtracking"
+  },
+  "blind75": true
+}

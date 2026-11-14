@@ -1,0 +1,13 @@
+{
+  "title": "Longest Palindromic Substring",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 5,
+    "url": "https://leetcode.com/problems/longest-palindromic-substring/description/"
+  },
+  "neetcode150": {
+    "position": 103,
+    "category": "1-D Dynamic Programming"
+  },
+  "blind75": true
+}

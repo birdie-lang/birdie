@@ -1,0 +1,13 @@
+{
+  "title": "Swim In Rising Water",
+  "difficulty": "Hard",
+  "leetcode": {
+    "id": 778,
+    "url": "https://leetcode.com/problems/swim-in-rising-water/description/"
+  },
+  "neetcode150": {
+    "position": 96,
+    "category": "Advanced Graphs"
+  },
+  "blind75": false
+}

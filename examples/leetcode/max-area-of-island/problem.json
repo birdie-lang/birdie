@@ -1,0 +1,13 @@
+{
+  "title": "Max Area of Island",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 695,
+    "url": "https://leetcode.com/problems/max-area-of-island/description/"
+  },
+  "neetcode150": {
+    "position": 82,
+    "category": "Graphs"
+  },
+  "blind75": false
+}

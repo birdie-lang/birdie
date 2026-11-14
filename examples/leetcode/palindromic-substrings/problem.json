@@ -1,0 +1,13 @@
+{
+  "title": "Palindromic Substrings",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 647,
+    "url": "https://leetcode.com/problems/palindromic-substrings/description/"
+  },
+  "neetcode150": {
+    "position": 104,
+    "category": "1-D Dynamic Programming"
+  },
+  "blind75": true
+}

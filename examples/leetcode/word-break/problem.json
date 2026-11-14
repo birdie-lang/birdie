@@ -1,0 +1,13 @@
+{
+  "title": "Word Break",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 139,
+    "url": "https://leetcode.com/problems/word-break/description/"
+  },
+  "neetcode150": {
+    "position": 108,
+    "category": "1-D Dynamic Programming"
+  },
+  "blind75": true
+}

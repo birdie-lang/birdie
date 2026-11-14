@@ -1,0 +1,14 @@
+fn productExceptSelf(nums: list[int]) list[int]:
+    res = list(nums.size, 1)
+
+    prod = 1
+    for i, num in nums:
+        res[i] = prod
+        prod *= num
+
+    prod = 1
+    for i, num in reverse nums:
+        res[i] *= prod
+        prod *= num
+
+    return res

@@ -1,0 +1,22 @@
+{
+  "title": "Longest Consecutive Sequence",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 128,
+    "url": "https://leetcode.com/problems/longest-consecutive-sequence/description/"
+  },
+  "neetcode150": {
+    "position": 9,
+    "category": "Arrays & Hashing"
+  },
+  "blind75": true,
+  "description": "Build a set of distinct values, find the start of each consecutive run, and track the longest run.",
+  "note": "A value starts a run only when its predecessor is absent. Skipping other values prevents repeatedly scanning the same sequence.",
+  "notes": [
+    "set(nums) constructs a fresh set[int] without modifying the input. Duplicates appear once. Birdie visits distinct values in first-appearance order, making traversal reproducible; the returned length is independent of that order.",
+    "The predecessor check uses continue to skip values inside an existing run. Starting at its smallest value, the while loop counts the run by checking successive integers.",
+    "max!(longestSeq, currSeq) updates the initialized accumulator only when the candidate is larger. It is a built-in statement whose first argument is a writable location; max(longestSeq, currSeq) remains a value-returning function call.",
+    "Each distinct value is part of exactly one scanned run, so the nested loop does not repeatedly scan every suffix. Under constant-cost hashing and integer-operation assumptions, the algorithm takes expected O(n) time and O(n) auxiliary space.",
+    "An empty input returns zero. Negative values and duplicate values need no separate cases. Birdie’s arbitrary-precision integer arithmetic avoids fixed-width overflow when checking predecessor and successor values."
+  ]
+}

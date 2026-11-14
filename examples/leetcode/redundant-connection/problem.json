@@ -1,0 +1,13 @@
+{
+  "title": "Redundant Connection",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 684,
+    "url": "https://leetcode.com/problems/redundant-connection/description/"
+  },
+  "neetcode150": {
+    "position": 89,
+    "category": "Graphs"
+  },
+  "blind75": false
+}

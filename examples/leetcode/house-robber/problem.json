@@ -1,0 +1,13 @@
+{
+  "title": "House Robber",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 198,
+    "url": "https://leetcode.com/problems/house-robber/description/"
+  },
+  "neetcode150": {
+    "position": 101,
+    "category": "1-D Dynamic Programming"
+  },
+  "blind75": true
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Container With Most Water",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 11,
+    "url": "https://leetcode.com/problems/container-with-most-water/description/"
+  },
+  "neetcode150": {
+    "position": 13,
+    "category": "Two Pointers"
+  },
+  "blind75": true
+}

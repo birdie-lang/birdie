@@ -1,0 +1,13 @@
+{
+  "title": "Find The Duplicate Number",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 287,
+    "url": "https://leetcode.com/problems/find-the-duplicate-number/description/"
+  },
+  "neetcode150": {
+    "position": 42,
+    "category": "Linked List"
+  },
+  "blind75": false
+}

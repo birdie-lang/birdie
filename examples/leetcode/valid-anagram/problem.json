@@ -1,0 +1,23 @@
+{
+  "title": "Valid Anagram",
+  "difficulty": "Easy",
+  "leetcode": {
+    "id": 242,
+    "url": "https://leetcode.com/problems/valid-anagram/description/"
+  },
+  "neetcode150": {
+    "position": 2,
+    "category": "Arrays & Hashing"
+  },
+  "blind75": true,
+  "description": "Count character differences in a 26-slot list. Equal lengths and zero final counts mean the strings are anagrams.",
+  "note": "The input is assumed to contain only lowercase English letters a–z. Subtracting 'a' from a character maps it to an index from 0 through 25.",
+  "notes": [
+    "list(26, 0) creates 26 initialized integer slots. This keeps the fixed-alphabet representation from the Python solution and avoids hash-table operations.",
+    "Subtracting two characters returns the difference of their Unicode scalar values as an int. c1 - 'a' gives the slot for a lowercase English letter. The .code property remains available for raw scalar values; this indexing scheme is not a general Unicode anagram algorithm.",
+    "Each zipped pair increments the count for the first string and decrements the count for the second. Birdie’s zip requires equal lengths; the early size check returns false before a mismatch could raise an error.",
+    "all(v == 0 for v in freqs) checks counts lazily and stops at the first nonzero value. It does not allocate an intermediate list of booleans.",
+    "In the usual unit-cost model, the algorithm takes O(n) time and O(1) auxiliary space using 26 counter slots. Birdie’s arbitrary-precision integer operations still depend on operand size.",
+    "The draft counter API also permits counter(s) == counter(t), comparing character frequencies independently of insertion order. This example keeps the explicit array-based algorithm as its primary solution."
+  ]
+}

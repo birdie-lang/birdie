@@ -1,0 +1,13 @@
+{
+  "title": "Min Stack",
+  "difficulty": "Medium",
+  "leetcode": {
+    "id": 155,
+    "url": "https://leetcode.com/problems/min-stack/description/"
+  },
+  "neetcode150": {
+    "position": 22,
+    "category": "Stack"
+  },
+  "blind75": false
+}
