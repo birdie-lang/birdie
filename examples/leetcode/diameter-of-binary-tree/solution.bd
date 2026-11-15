@@ -4,7 +4,7 @@ fn diameterOfBinaryTree(root: TreeNode?) int:
     fn dfs(node: TreeNode?) int:
         outer diameter
 
-        if node is none:
+        if node == none:
             return 0
 
         left = dfs(node.left)

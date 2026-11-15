@@ -9,5 +9,15 @@
     "position": 51,
     "category": "Trees"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "At each node, compare the entire subtree with the candidate. If it does not match, search the left and right subtrees.",
+  "note": "A match requires identical values and shape, including every descendant. LeetCode supplies nonempty input trees; the recursive search can still reach an empty root.",
+  "notes": [
+    "The root == none guard ends the search at an empty subtree. It narrows root to TreeNode in the remaining body, so root.left and root.right are safe to read.",
+    "or tries the current position, then the left subtree, then the right subtree, stopping at the first successful match. A failed comparison at one position does not prevent finding a match deeper in that subtree.",
+    "sameTree captures no state, so it is a separate helper below isSubtree in both versions. Each problem is standalone: the helper is included here rather than depending on the separate Same Tree example.",
+    "The comparison helper uses the same guard order as Same Tree. It matches two absent nodes, rejects one absent node or different values, then checks corresponding children with short-circuit and.",
+    "An empty subRoot is outside LeetCode's input contract. The supplied algorithm returns false in that case; this translation preserves that behavior rather than treating an empty candidate as a match.",
+    "For m nodes in root and n nodes in subRoot, the worst-case time is O(m * n) under the usual unit-cost assumptions. The nested search and comparison follow paths inside root, using O(h) recursion space for root height h. Neither input tree is modified."
+  ]
 }

@@ -1,0 +1,14 @@
+fn isBalanced(root: TreeNode?) bool:
+    return height(root) != none
+
+fn height(node: TreeNode?) int?:
+    if node == none:
+        return 0
+
+    left = height(node.left)?
+    right = height(node.right)?
+
+    if abs(right - left) > 1:
+        return none
+
+    return 1 + max(left, right)

@@ -1,0 +1,177 @@
+{
+  "entry": "isSameTree",
+  "argAdapters": [
+    "tree",
+    "tree"
+  ],
+  "cases": [
+    {
+      "name": "equal-trees",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "both-empty",
+      "args": [
+        [],
+        []
+      ],
+      "expected": true
+    },
+    {
+      "name": "first-empty",
+      "args": [
+        [],
+        [
+          1
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "second-empty",
+      "args": [
+        [
+          1
+        ],
+        []
+      ],
+      "expected": false
+    },
+    {
+      "name": "equal-leaves",
+      "args": [
+        [
+          5
+        ],
+        [
+          5
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "different-root-values",
+      "args": [
+        [
+          1
+        ],
+        [
+          2
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "different-shapes",
+      "args": [
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          null,
+          2
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "left-value-mismatch",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          4,
+          3
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "right-value-mismatch",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          4
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "equal-values-different-shapes",
+      "args": [
+        [
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          null,
+          1
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "equal-sparse-trees",
+      "args": [
+        [
+          1,
+          null,
+          2,
+          3
+        ],
+        [
+          1,
+          null,
+          2,
+          3
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "zero-and-negative-values",
+      "args": [
+        [
+          0,
+          -1,
+          2
+        ],
+        [
+          0,
+          -1,
+          2
+        ]
+      ],
+      "expected": true
+    }
+  ]
+}

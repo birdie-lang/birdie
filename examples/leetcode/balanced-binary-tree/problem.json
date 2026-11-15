@@ -9,5 +9,15 @@
     "position": 49,
     "category": "Trees"
   },
-  "blind75": false
+  "blind75": false,
+  "description": "Compute subtree heights from the leaves upward. Return none from the helper when any subtree is unbalanced, then check whether the root has a valid height.",
+  "note": "An empty subtree has height zero. An absent height means an unbalanced subtree, so the empty-node guard must return 0 rather than propagate none.",
+  "notes": [
+    "The height helper captures no variables, so it is a separate function below isBalanced. Top-level function visibility allows the main algorithm to appear first. The Python version uses the same helper placement and traversal order.",
+    "height returns int?: an integer height or none. The ordinary integer returned by a balanced subtree is accepted as an optional result without an explicit wrapper.",
+    "height(node.left)? evaluates the recursive call once. A present height becomes an int; an absent height immediately returns none from the current height call. The right subtree is not visited when the left subtree already reported an imbalance. Python spells out the two early-return checks.",
+    "abs(right - left) computes the absolute integer difference. A difference of one is allowed; a larger difference returns none. The final height is one plus the larger child height.",
+    "isBalanced returns bool, so it checks height(root) != none instead of propagating an optional result. An empty tree and a single-node tree are balanced.",
+    "LeetCode supplies TreeNode. The record declaration shows its standalone Birdie form. The traversal does not modify the input tree and takes O(n) time and O(h) recursion space in the usual unit-cost model, with early exits for unbalanced subtrees."
+  ]
 }

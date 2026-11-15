@@ -1,0 +1,173 @@
+{
+  "entry": "isSubtree",
+  "argAdapters": [
+    "tree",
+    "tree"
+  ],
+  "cases": [
+    {
+      "name": "standard-match",
+      "args": [
+        [
+          3,
+          4,
+          5,
+          1,
+          2
+        ],
+        [
+          4,
+          1,
+          2
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "extra-descendant",
+      "args": [
+        [
+          3,
+          4,
+          5,
+          1,
+          2,
+          null,
+          null,
+          null,
+          null,
+          0
+        ],
+        [
+          4,
+          1,
+          2
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "whole-tree",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "right-subtree",
+      "args": [
+        [
+          1,
+          2,
+          3,
+          null,
+          null,
+          4,
+          5
+        ],
+        [
+          3,
+          4,
+          5
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "leaf-match",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          3
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "absent-value",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          4
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "different-shape",
+      "args": [
+        [
+          1,
+          2,
+          null,
+          3
+        ],
+        [
+          2,
+          null,
+          3
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "match-after-repeated-values",
+      "args": [
+        [
+          1,
+          1,
+          null,
+          1,
+          null,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "empty-search-root",
+      "args": [
+        [],
+        [
+          1
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "negative-leaf",
+      "args": [
+        [
+          0,
+          -1,
+          2
+        ],
+        [
+          -1
+        ]
+      ],
+      "expected": true
+    }
+  ]
+}

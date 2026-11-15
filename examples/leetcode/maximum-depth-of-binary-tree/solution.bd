@@ -1,5 +1,5 @@
 fn maxDepth(root: TreeNode?) int:
-    if root is none:
+    if root == none:
         return 0
 
     return 1 + max(

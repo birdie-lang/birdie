@@ -9,5 +9,15 @@
     "position": 50,
     "category": "Trees"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Match empty subtrees, reject missing nodes or different values, then recursively compare the corresponding left and right children.",
+  "note": "Two empty subtrees match. A missing node on only one side means the trees have different shapes, even when their remaining values are equal.",
+  "notes": [
+    "The guard order and recursive calls follow the Python solution. Python uses truthiness for the supplied TreeNode references; Birdie explicitly checks optional absence with == none.",
+    "Comparisons with none check presence without invoking record equality. General record equality remains undecided; this algorithm explicitly compares each value and the shape of both trees.",
+    "or evaluates from left to right and skips later operands once one is true. p.val != q.val is reached only after both absence checks are false, so p and q are known to be TreeNode values. After the guard is passed, the remaining body retains those presence facts.",
+    "and also short-circuits. A left-subtree mismatch returns false without visiting the right subtrees. The result is a bool rather than an operand value.",
+    "LeetCode supplies TreeNode. The record declaration shows its standalone Birdie form. The algorithm does not modify either tree, and an empty tree matches another empty tree.",
+    "For two matching trees with n nodes and height h, the traversal takes O(n) time and O(h) recursion space in the usual unit-cost model. A mismatch can stop the traversal earlier."
+  ]
 }

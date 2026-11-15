@@ -1,0 +1,140 @@
+{
+  "entry": "isBalanced",
+  "argAdapters": [
+    "tree"
+  ],
+  "cases": [
+    {
+      "name": "balanced",
+      "args": [
+        [
+          3,
+          9,
+          20,
+          null,
+          null,
+          15,
+          7
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "unbalanced",
+      "args": [
+        [
+          1,
+          2,
+          2,
+          3,
+          3,
+          null,
+          null,
+          4,
+          4
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "empty",
+      "args": [
+        []
+      ],
+      "expected": true
+    },
+    {
+      "name": "single",
+      "args": [
+        [
+          1
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "one-child",
+      "args": [
+        [
+          1,
+          2
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "left-chain",
+      "args": [
+        [
+          1,
+          2,
+          null,
+          3
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "right-chain",
+      "args": [
+        [
+          1,
+          null,
+          2,
+          null,
+          3
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "unequal-balanced-heights",
+      "args": [
+        [
+          1,
+          2,
+          3,
+          4
+        ]
+      ],
+      "expected": true
+    },
+    {
+      "name": "imbalance-in-left-subtree",
+      "args": [
+        [
+          1,
+          2,
+          3,
+          4,
+          null,
+          5,
+          7,
+          6
+        ]
+      ],
+      "expected": false
+    },
+    {
+      "name": "imbalance-in-right-subtree",
+      "args": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          null,
+          6,
+          null,
+          null,
+          null,
+          null,
+          null,
+          7
+        ]
+      ],
+      "expected": false
+    }
+  ]
+}

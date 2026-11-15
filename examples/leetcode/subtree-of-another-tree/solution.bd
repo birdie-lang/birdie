@@ -1,0 +1,18 @@
+fn isSubtree(root: TreeNode?, subRoot: TreeNode?) bool:
+    if root == none:
+        return false
+
+    return (
+        sameTree(root, subRoot) or
+        isSubtree(root.left, subRoot) or
+        isSubtree(root.right, subRoot)
+    )
+
+fn sameTree(p: TreeNode?, q: TreeNode?) bool:
+    if p == none and q == none:
+        return true
+
+    if p == none or q == none or p.val != q.val:
+        return false
+
+    return sameTree(p.left, q.left) and sameTree(p.right, q.right)
