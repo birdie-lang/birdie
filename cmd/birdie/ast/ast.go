@@ -58,16 +58,12 @@ func (ls *AssignStatement) statementNode()       {}
 func (ls *AssignStatement) TokenLiteral() string { return ls.Token.Literal }
 func (ls *AssignStatement) String() string {
 	var out strings.Builder
-	out.WriteString(ls.TokenLiteral())
-	out.WriteString(" ")
 	out.WriteString(ls.Name.String())
 	out.WriteString(" = ")
 
 	if ls.Value != nil {
 		out.WriteString(ls.Value.String())
 	}
-
-	out.WriteString(";")
 
 	return out.String()
 }
@@ -154,6 +150,10 @@ type Boolean struct {
 	Token token.Token
 	Value bool
 }
+
+func (b *Boolean) expressionNode()      {}
+func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
+func (b *Boolean) String() string       { return b.Token.Literal }
 
 type InfixExpression struct {
 	Token    token.Token
