@@ -1,0 +1,66 @@
+package token
+
+type TokenType string
+
+type Token struct {
+	Type    TokenType
+	Literal string
+}
+
+var keywords = map[string]TokenType{
+	"fun":    FUN,
+	"true":   TRUE,
+	"false":  FALSE,
+	"if":     IF,
+	"else":   ELSE,
+	"return": RETURN,
+}
+
+func LookupIdent(ident string) TokenType {
+	if tok, ok := keywords[ident]; ok {
+		return tok
+	}
+	return IDENT
+}
+
+const (
+	ILLEGAL = "ILLEGAL"
+	EOL     = "EOL"
+	EOF     = "EOF"
+
+	// Identifiers + Literal
+	IDENT  = "IDENT"
+	INT    = "INT"
+	STRING = "STRING"
+
+	// Operators
+	ASSIGN = "="
+	PLUS   = "+"
+	MINUS  = "-"
+	NOT    = "!"
+	MUL    = "*"
+	DIV    = "/"
+	GT     = ">"
+	LT     = "<"
+	EQ     = "=="
+	NEQ    = "!="
+
+	// Delimeters
+	COMMA = ","
+	COLON = ":"
+
+	LPAREN   = "("
+	RPAREN   = ")"
+	LBRACE   = "{"
+	RBRACE   = "}"
+	LBRACKET = "]"
+	RBRACKET = "["
+
+	// Keywords
+	FUN    = "FUN"
+	TRUE   = "TRUE"
+	FALSE  = "FALSE"
+	IF     = "IF"
+	ELSE   = "ELSE"
+	RETURN = "RETURN"
+)
