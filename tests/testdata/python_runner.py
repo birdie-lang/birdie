@@ -54,15 +54,43 @@ def encode_tree(root):
     return values
 
 
+def index_tree(root):
+    """Node selectors name existing nodes by their unique integer values."""
+    nodes = {}
+    pending = [root]
+    while pending:
+        node = pending.pop()
+        if node is None:
+            continue
+        if type(node.val) is not int or node.val in nodes:
+            raise ValueError("node adapters require unique integer values")
+        nodes[node.val] = node
+        pending.extend((node.left, node.right))
+    return nodes
+
+
 def main():
     if sys.version_info < (3, 10):
         raise RuntimeError("reference examples require Python 3.10 or newer")
 
     request = json.load(sys.stdin)
     args = request["args"]
-    for index, adapter in enumerate(request.get("argAdapters", [])):
+    adapters = request.get("argAdapters", [])
+    for index, adapter in enumerate(adapters):
         if adapter == "tree":
             args[index] = decode_tree(args[index])
+
+    nodes = {}
+    if "node" in adapters or request.get("resultAdapter") == "node":
+        if not adapters or adapters[0] != "tree":
+            raise ValueError("node adapters require a tree as the first argument")
+        nodes = index_tree(args[0])
+    for index, adapter in enumerate(adapters):
+        if adapter == "node":
+            value = args[index]
+            if type(value) is not int or value not in nodes:
+                raise ValueError(f"node selector not found: {value!r}")
+            args[index] = nodes[value]
 
     # Solution output cannot corrupt the JSON response protocol.
     with contextlib.redirect_stdout(sys.stderr):
@@ -70,6 +98,10 @@ def main():
         result = getattr(namespace["Solution"](), request["entry"])(*args)
         if request.get("resultAdapter") == "tree":
             result = encode_tree(result)
+        elif request.get("resultAdapter") == "node":
+            if not isinstance(result, TreeNode) or nodes.get(result.val) is not result:
+                raise ValueError("node result must refer to an original input node")
+            result = result.val
 
     json.dump(result, sys.stdout, ensure_ascii=True, allow_nan=False)
     sys.stdout.write("\n")

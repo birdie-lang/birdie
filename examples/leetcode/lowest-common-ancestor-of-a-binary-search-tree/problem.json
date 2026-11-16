@@ -9,5 +9,15 @@
     "position": 52,
     "category": "Trees"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Descend left when both targets are smaller, descend right when both are larger, and return the first node where the paths split or a target is reached.",
+  "note": "Assume a valid BST with unique values and two distinct target nodes already in the tree. These guarantees ensure that each chosen child exists and that an ancestor is found.",
+  "notes": [
+    "The guard order, recursive calls, and return value follow the Python solution. and short-circuits each pair of comparisons.",
+    "root.left and root.right have type TreeNode?, while the root parameter requires TreeNode. Passing a chosen child checks presence at runtime when it is not otherwise known, preserving the nonoptional function signature without explicit assertion or unwrapping syntax.",
+    "The type checker still validates the node types and their fields. It does not have to prove BST ordering or target membership from the comparisons. If an input violates those guarantees and a recursive call receives none, that checked argument use fails at runtime.",
+    "When the target values lie on different sides, the current node is their lowest common ancestor. Equality with either target also returns the current node, since a node can be its own descendant in the problem definition.",
+    "Shared fixtures encode root as a level-order tree and p and q as values selecting existing nodes from that tree. The returned value is checked to identify an original node rather than a newly allocated copy.",
+    "For tree height h, the algorithm takes O(h) time and O(h) recursion space in the usual unit-cost model. This is O(log n) for a balanced BST and O(n) for a chain. The inputs are not modified."
+  ]
 }

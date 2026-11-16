@@ -107,7 +107,7 @@ func loadExamples(t *testing.T) []example {
 			t.Fatalf("%s requires an entry and at least one case", directory)
 		}
 		for _, adapter := range append(slices.Clone(suite.ArgAdapters), suite.ResultAdapter) {
-			if adapter != "" && adapter != "json" && adapter != "tree" {
+			if adapter != "" && adapter != "json" && adapter != "tree" && adapter != "node" {
 				t.Fatalf("%s: unknown adapter %q", directory, adapter)
 			}
 		}

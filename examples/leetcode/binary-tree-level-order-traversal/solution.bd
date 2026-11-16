@@ -1,0 +1,23 @@
+fn levelOrder(root: TreeNode?) list[list[int]]:
+    if root == none:
+        return []
+
+    res = []
+    pending = queue([root])
+
+    while pending:
+        level_res = []
+
+        repeat pending.size:
+            node = pending.pop()
+            level_res.push(node.val)
+
+            if node.left != none:
+                pending.push(node.left)
+
+            if node.right != none:
+                pending.push(node.right)
+
+        res.push(level_res)
+
+    return res
