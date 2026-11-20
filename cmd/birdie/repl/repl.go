@@ -2,12 +2,16 @@ package repl
 
 import (
 	"bufio"
+	"cmp"
 	"fmt"
 	"io"
+	"slices"
 
 	"github.com/birdie-lang/birdie/cmd/birdie/ast"
+	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
 	"github.com/birdie-lang/birdie/cmd/birdie/lexer"
 	"github.com/birdie-lang/birdie/cmd/birdie/parser"
+	"github.com/birdie-lang/birdie/cmd/birdie/source"
 	"github.com/birdie-lang/birdie/cmd/birdie/token"
 	// "minilang/compiler"
 	// "minilang/evaluator"
@@ -117,12 +121,9 @@ func parseLine(line string, out io.Writer) (*ast.Program, bool) {
 	p := parser.New(l)
 	program := p.ParseProgram()
 
-	errors := p.Errors()
-	if len(errors) != 0 {
-		fmt.Fprintf(out, "parser has %d errors\n", len(errors))
-		for _, msg := range errors {
-			fmt.Fprintf(out, "parser error: %s\n", msg)
-		}
+	diagnostics := slices.Concat(l.Diagnostics(), p.Diagnostics())
+	if len(diagnostics) != 0 {
+		printDiagnostics(line, diagnostics, out)
 		return nil, false
 	}
 
@@ -133,6 +134,20 @@ func printTokens(line string, out io.Writer) {
 	l := lexer.New(line)
 	for tok := l.NextToken(); tok.Type != token.EOF; tok = l.NextToken() {
 		fmt.Fprintf(out, "%+v\n", tok)
+	}
+	printDiagnostics(line, l.Diagnostics(), out)
+}
+
+func printDiagnostics(text string, diagnostics []diagnostic.Diagnostic, out io.Writer) {
+	if len(diagnostics) == 0 {
+		return
+	}
+	slices.SortStableFunc(diagnostics, func(a, b diagnostic.Diagnostic) int {
+		return cmp.Compare(a.Span.Start, b.Span.Start)
+	})
+	file := source.NewFile("<repl>", text)
+	for _, d := range diagnostics {
+		fmt.Fprintln(out, diagnostic.Format(file, d))
 	}
 }
 

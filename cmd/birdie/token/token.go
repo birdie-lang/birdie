@@ -1,10 +1,13 @@
 package token
 
+import "github.com/birdie-lang/birdie/cmd/birdie/source"
+
 type TokenType string
 
 type Token struct {
 	Type    TokenType
 	Literal string
+	Span    source.Span
 }
 
 // Text returns a payload or the token kind's fixed spelling. Empty string

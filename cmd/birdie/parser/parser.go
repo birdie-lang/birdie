@@ -5,7 +5,9 @@ import (
 	"math/big"
 
 	"github.com/birdie-lang/birdie/cmd/birdie/ast"
+	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
 	"github.com/birdie-lang/birdie/cmd/birdie/lexer"
+	"github.com/birdie-lang/birdie/cmd/birdie/source"
 	"github.com/birdie-lang/birdie/cmd/birdie/token"
 )
 
@@ -40,8 +42,8 @@ type (
 )
 
 type Parser struct {
-	l      *lexer.Lexer
-	errors []string
+	l           *lexer.Lexer
+	diagnostics []diagnostic.Diagnostic
 
 	curToken  token.Token
 	peekToken token.Token
@@ -51,7 +53,7 @@ type Parser struct {
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p := &Parser{l: l, errors: []string{}}
+	p := &Parser{l: l}
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	p.registerPrefix(token.IDENT, p.parseIdentifier)
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
@@ -90,9 +92,15 @@ func (p *Parser) ParseProgram() *ast.Program {
 	program.Statements = []ast.Statement{}
 
 	for !p.curTokenIs(token.EOF) {
+		if p.curTokenIs(token.EOL) {
+			p.nextToken()
+			continue
+		}
 		stmt := p.parseStatement()
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
+		} else {
+			p.synchronize()
 		}
 		p.nextToken()
 	}
@@ -107,12 +115,22 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	precedence := p.curPrecedence()
 	p.nextToken()
 	exp.Right = p.parseExpression(precedence)
+	if exp.Right == nil {
+		return nil
+	}
 
 	return exp
 }
 
-func (p *Parser) Errors() []string {
-	return p.errors
+func (p *Parser) Diagnostics() []diagnostic.Diagnostic {
+	return p.diagnostics
+}
+
+// Recover at a statement or block boundary so the next statement can be parsed.
+func (p *Parser) synchronize() {
+	for !p.curTokenIs(token.EOL) && !p.curTokenIs(token.DEDENT) && !p.curTokenIs(token.EOF) {
+		p.nextToken()
+	}
 }
 
 func (p *Parser) nextToken() {
@@ -124,15 +142,39 @@ func (p *Parser) parseIdentifier() ast.Expression {
 	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }
 
-// Append peek error to errors
 func (p *Parser) peekError(t token.TokenType) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
-	p.errors = append(p.errors, msg)
+	expected := fmt.Sprintf("%q", t.Spelling())
+	switch t {
+	case token.IDENT:
+		expected = "an identifier"
+	case token.INT:
+		expected = "an integer"
+	case token.STRING:
+		expected = "a string"
+	case token.EOL:
+		expected = "end of line"
+	case token.EOF:
+		expected = "end of input"
+	}
+	p.diagnostics = append(p.diagnostics, diagnostic.Diagnostic{
+		Code: diagnostic.UnexpectedToken, Message: fmt.Sprintf("expected %s, found %s", expected, describeToken(p.peekToken)),
+		Span: p.peekToken.Span,
+	})
 }
 
-func (p *Parser) noPrefixParseFnError(t token.TokenType) {
-	msg := fmt.Sprintf("no prefix parse function for %s found", t)
-	p.errors = append(p.errors, msg)
+func describeToken(t token.Token) string {
+	switch t.Type {
+	case token.EOF:
+		return "end of input"
+	case token.EOL:
+		return "end of line"
+	case token.INDENT:
+		return "an indentation increase"
+	case token.DEDENT:
+		return "an indentation decrease"
+	default:
+		return fmt.Sprintf("%q", t.Text())
+	}
 }
 
 func (p *Parser) parseStatement() ast.Statement {
@@ -162,7 +204,10 @@ func (p *Parser) parseExpressionStatement() ast.Statement {
 	// Initially, support assigning to identifiers only.
 	name, ok := left.(*ast.Identifier)
 	if !ok {
-		p.errors = append(p.errors, "invalid assignment target")
+		p.diagnostics = append(p.diagnostics, diagnostic.Diagnostic{
+			Code: diagnostic.InvalidAssignmentTarget, Message: "cannot assign to this expression; expected a variable name",
+			Span: source.Span{Start: start.Span.Start, End: p.curToken.Span.End},
+		})
 		return nil
 	}
 
@@ -186,10 +231,19 @@ func (p *Parser) parseExpression(precedance int) ast.Expression {
 
 	prefix := p.prefixParseFns[p.curToken.Type]
 	if prefix == nil {
-		p.noPrefixParseFnError(p.curToken.Type)
+		// The lexer already diagnosed ILLEGAL tokens.
+		if !p.curTokenIs(token.ILLEGAL) {
+			p.diagnostics = append(p.diagnostics, diagnostic.Diagnostic{
+				Code: diagnostic.ExpectedExpression, Message: fmt.Sprintf("expected an expression, found %s", describeToken(p.curToken)),
+				Span: p.curToken.Span,
+			})
+		}
 		return nil
 	}
 	leftExp := prefix()
+	if leftExp == nil {
+		return nil
+	}
 
 	for !p.peekTokenIs(token.EOL) && precedance < p.peekPrecedence() {
 		infix := p.infixParseFns[p.peekToken.Type]
@@ -200,6 +254,9 @@ func (p *Parser) parseExpression(precedance int) ast.Expression {
 		p.nextToken()
 
 		leftExp = infix(leftExp)
+		if leftExp == nil {
+			return nil
+		}
 	}
 	return leftExp
 }
@@ -210,8 +267,10 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	lit := &ast.IntegerLiteral{Token: p.curToken}
 	value, ok := new(big.Int).SetString(p.curToken.Literal, 0)
 	if !ok {
-		msg := fmt.Sprintf("could not parse %q as integer", p.curToken.Literal)
-		p.errors = append(p.errors, msg)
+		p.diagnostics = append(p.diagnostics, diagnostic.Diagnostic{
+			Code: diagnostic.InvalidInteger, Message: fmt.Sprintf("invalid integer literal %q", p.curToken.Literal),
+			Span: p.curToken.Span,
+		})
 		return nil
 	}
 	lit.Value = *value

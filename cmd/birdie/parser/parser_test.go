@@ -229,20 +229,11 @@ func parseAndCheckProgram(t *testing.T, input string) *ast.Program {
 	l := lexer.New(input)
 	p := New(l)
 	program := p.ParseProgram()
-	checkParserErrors(t, p)
+	if diagnostics := l.Diagnostics(); len(diagnostics) != 0 {
+		t.Fatalf("unexpected lexer diagnostics: %+v", diagnostics)
+	}
+	if diagnostics := p.Diagnostics(); len(diagnostics) != 0 {
+		t.Fatalf("unexpected parser diagnostics: %+v", diagnostics)
+	}
 	return program
-}
-
-func checkParserErrors(t *testing.T, p *Parser) {
-	t.Helper()
-	errors := p.Errors()
-	if len(errors) == 0 {
-		return
-	}
-
-	t.Errorf("parser has %d errors", len(errors))
-	for _, msg := range errors {
-		t.Errorf("parser error: %q", msg)
-	}
-	t.FailNow()
 }

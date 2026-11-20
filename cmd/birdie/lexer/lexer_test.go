@@ -3,6 +3,8 @@ package lexer
 import (
 	"testing"
 
+	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
+	"github.com/birdie-lang/birdie/cmd/birdie/source"
 	"github.com/birdie-lang/birdie/cmd/birdie/token"
 )
 
@@ -306,8 +308,8 @@ next = 3
 			if got := l.NextToken(); got.Type != token.EOF {
 				t.Fatalf("after EOF: got %s(%q), want EOF", got.Type, got.Literal)
 			}
-			if errors := l.Errors(); len(errors) != 0 {
-				t.Fatalf("unexpected lexer errors: %v", errors)
+			if diagnostics := l.Diagnostics(); len(diagnostics) != 0 {
+				t.Fatalf("unexpected lexer diagnostics: %+v", diagnostics)
 			}
 		})
 	}
@@ -315,12 +317,15 @@ next = 3
 
 func TestIndentationErrors(t *testing.T) {
 	tests := []struct {
-		name  string
-		input string
+		name     string
+		input    string
+		wantCode diagnostic.Code
+		wantSpan source.Span
 	}{
-		{"partial-level", "if ready:\n  x = 1\nafter = 2\n"},
-		{"skipped-level", "if ready:\n        x = 1\nafter = 2\n"},
-		{"tab-indentation", "if ready:\n\tx = 1\nafter = 2\n"},
+		{"partial-level", "if ready:\n  x = 1\nafter = 2\n", diagnostic.InvalidIndentation, source.Span{Start: 10, End: 12}},
+		{"skipped-level", "if ready:\n        x = 1\nafter = 2\n", diagnostic.InvalidIndentation, source.Span{Start: 10, End: 18}},
+		{"tab-indentation", "if ready:\n\tx = 1\nafter = 2\n", diagnostic.TabsInIndentation, source.Span{Start: 10, End: 11}},
+		{"mixed-indentation", "if ready:\n \t  x = 1\nafter = 2\n", diagnostic.TabsInIndentation, source.Span{Start: 11, End: 12}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -332,8 +337,12 @@ func TestIndentationErrors(t *testing.T) {
 					sawAfter = true
 				}
 				if got.Type == token.EOF {
-					if len(l.Errors()) == 0 {
-						t.Fatal("expected an indentation error")
+					diagnostics := l.Diagnostics()
+					if len(diagnostics) != 1 {
+						t.Fatalf("expected one indentation diagnostic, got %+v", diagnostics)
+					}
+					if d := diagnostics[0]; d.Code != tt.wantCode || d.Span != tt.wantSpan || d.Message == "" {
+						t.Fatalf("got %+v, want code %s and span %+v with a message", d, tt.wantCode, tt.wantSpan)
 					}
 					if !sawAfter {
 						t.Fatal("lexer did not continue to the statement after the invalid indentation")
@@ -343,5 +352,54 @@ func TestIndentationErrors(t *testing.T) {
 			}
 			t.Fatal("lexer did not reach EOF")
 		})
+	}
+}
+
+func TestTokenSpans(t *testing.T) {
+	l := New("if x:\n    y = \"é\"\nz = 12")
+	want := []token.Token{
+		{Type: token.IF, Span: source.Span{Start: 0, End: 2}},
+		{Type: token.IDENT, Literal: "x", Span: source.Span{Start: 3, End: 4}},
+		{Type: token.COLON, Span: source.Span{Start: 4, End: 5}},
+		{Type: token.EOL, Span: source.Span{Start: 5, End: 6}},
+		{Type: token.INDENT, Span: source.Span{Start: 10, End: 10}},
+		{Type: token.IDENT, Literal: "y", Span: source.Span{Start: 10, End: 11}},
+		{Type: token.ASSIGN, Span: source.Span{Start: 12, End: 13}},
+		{Type: token.STRING, Literal: "é", Span: source.Span{Start: 14, End: 18}},
+		{Type: token.EOL, Span: source.Span{Start: 18, End: 19}},
+		{Type: token.DEDENT, Span: source.Span{Start: 19, End: 19}},
+		{Type: token.IDENT, Literal: "z", Span: source.Span{Start: 19, End: 20}},
+		{Type: token.ASSIGN, Span: source.Span{Start: 21, End: 22}},
+		{Type: token.INT, Literal: "12", Span: source.Span{Start: 23, End: 25}},
+		{Type: token.EOF, Span: source.Span{Start: 25, End: 25}},
+		{Type: token.EOF, Span: source.Span{Start: 25, End: 25}},
+	}
+	for i, expected := range want {
+		if got := l.NextToken(); got != expected {
+			t.Fatalf("token %d: got %+v, want %+v", i, got, expected)
+		}
+	}
+}
+
+func TestUnexpectedCharacters(t *testing.T) {
+	l := New("@ é\nx = 1")
+	wantTokens := []token.Token{
+		tok(token.ILLEGAL, "@"), tok(token.ILLEGAL, "é"), tok(token.EOL),
+		tok(token.IDENT, "x"), tok(token.ASSIGN), tok(token.INT, "1"), tok(token.EOF),
+	}
+	for i, expected := range wantTokens {
+		if got := l.NextToken(); got.Type != expected.Type || got.Literal != expected.Literal {
+			t.Fatalf("token %d: got %+v, want %+v", i, got, expected)
+		}
+	}
+	wantSpans := []source.Span{{Start: 0, End: 1}, {Start: 2, End: 4}}
+	diagnostics := l.Diagnostics()
+	if len(diagnostics) != len(wantSpans) {
+		t.Fatalf("expected two diagnostics, got %+v", diagnostics)
+	}
+	for i, d := range diagnostics {
+		if d.Code != diagnostic.UnexpectedCharacter || d.Span != wantSpans[i] || d.Message == "" {
+			t.Errorf("diagnostic %d: got %+v, want unexpected character at %+v", i, d, wantSpans[i])
+		}
 	}
 }

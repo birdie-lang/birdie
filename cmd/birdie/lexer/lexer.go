@@ -1,8 +1,15 @@
 package lexer
 
 import (
+	"fmt"
+	"unicode/utf8"
+
+	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
+	"github.com/birdie-lang/birdie/cmd/birdie/source"
 	"github.com/birdie-lang/birdie/cmd/birdie/token"
 )
+
+const indentWidth = 4
 
 type Lexer struct {
 	input        string
@@ -15,7 +22,7 @@ type Lexer struct {
 	pendingDedents int
 	delimiterDepth int
 
-	errors []string
+	diagnostics []diagnostic.Diagnostic
 }
 
 // Creates a new lexer with the given input
@@ -29,9 +36,10 @@ func New(input string) *Lexer {
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
-	} else {
-		l.ch = l.input[l.readPosition]
+		l.position = len(l.input)
+		return
 	}
+	l.ch = l.input[l.readPosition]
 	l.position = l.readPosition
 	l.readPosition += 1
 }
@@ -44,6 +52,7 @@ func (l *Lexer) NextToken() token.Token {
 		return tok
 	}
 	l.skipWhitespace()
+	start := l.position
 
 	switch l.ch {
 	case '=':
@@ -79,7 +88,7 @@ func (l *Lexer) NextToken() token.Token {
 		l.delimiterDepth++
 	case ')':
 		tok.Type = token.RPAREN
-		l.delimiterDepth--
+		l.delimiterDepth = max(0, l.delimiterDepth-1)
 	case ',':
 		tok.Type = token.COMMA
 	case '+':
@@ -89,7 +98,7 @@ func (l *Lexer) NextToken() token.Token {
 		l.delimiterDepth++
 	case '}':
 		tok.Type = token.RBRACE
-		l.delimiterDepth--
+		l.delimiterDepth = max(0, l.delimiterDepth-1)
 	case '"':
 		tok.Type = token.STRING
 		tok.Literal = l.readString()
@@ -98,16 +107,19 @@ func (l *Lexer) NextToken() token.Token {
 		l.delimiterDepth++
 	case ']':
 		tok.Type = token.RBRACKET
-		l.delimiterDepth--
+		l.delimiterDepth = max(0, l.delimiterDepth-1)
 	case '\n':
 		l.atLineStart = true
 		tok.Type = token.EOL
 	case 0:
+		tok.Span = source.Span{Start: start, End: start}
 		if l.indentLevel > 0 {
 			l.indentLevel--
-			return token.Token{Type: token.DEDENT}
+			tok.Type = token.DEDENT
+		} else {
+			tok.Type = token.EOF
 		}
-		return token.Token{Type: token.EOF}
+		return tok
 	default:
 		if isIdentifierStart(l.ch) {
 			literal := l.readIdentifier()
@@ -115,48 +127,61 @@ func (l *Lexer) NextToken() token.Token {
 			if tok.Type == token.IDENT {
 				tok.Literal = literal
 			}
+			tok.Span = source.Span{Start: start, End: l.position}
 			return tok
 		} else if isDigit(l.ch) {
 			tok.Literal = l.readNumber()
 			tok.Type = token.INT
+			tok.Span = source.Span{Start: start, End: l.position}
 			return tok
 		} else {
-			tok = token.Token{Type: token.ILLEGAL, Literal: string(l.ch)}
+			_, width := utf8.DecodeRuneInString(l.input[start:])
+			literal := l.input[start : start+width]
+			for range width {
+				l.readChar()
+			}
+			tok = token.Token{Type: token.ILLEGAL, Literal: literal, Span: source.Span{Start: start, End: l.position}}
+			l.diagnostics = append(l.diagnostics, diagnostic.Diagnostic{
+				Code: diagnostic.UnexpectedCharacter, Message: fmt.Sprintf("unexpected character %q", literal), Span: tok.Span,
+			})
+			return tok
 		}
 	}
 
 	l.readChar()
+	tok.Span = source.Span{Start: start, End: l.position}
 	return tok
 }
 
 func (l *Lexer) handleIndentation() (token.Token, bool) {
 	if l.pendingDedents > 0 {
 		l.pendingDedents--
-		return token.Token{Type: token.DEDENT}, true
+		return token.Token{Type: token.DEDENT, Span: source.Span{Start: l.position, End: l.position}}, true
 	}
 
-	if !l.atLineStart {
+	if !l.atLineStart || l.delimiterDepth > 0 {
 		return token.Token{}, false
 	}
 
-	if l.delimiterDepth > 0 {
-		for l.ch == ' ' || l.ch == '\n' {
-			l.readChar()
-		}
-		return token.Token{}, false
-	}
-
-	spaces := 0
+	var start, spaces, tabPosition int
 	for {
-		spaces = 0
-		for l.ch == ' ' {
-			spaces++
+		start, spaces, tabPosition = l.position, 0, -1
+		for l.ch == ' ' || l.ch == '\t' {
+			if l.ch == '\t' {
+				if tabPosition == -1 {
+					tabPosition = l.position
+				}
+			} else {
+				spaces++
+			}
 			l.readChar()
 		}
 
-		if l.ch == '\t' {
-			l.errors = append(l.errors, "tabs are not allowed in indentation")
-			return token.Token{}, false
+		if tabPosition != -1 {
+			l.diagnostics = append(l.diagnostics, diagnostic.Diagnostic{
+				Code: diagnostic.TabsInIndentation, Message: "tabs are not allowed in indentation",
+				Span: source.Span{Start: tabPosition, End: tabPosition + 1},
+			})
 		}
 
 		if l.ch != '\n' {
@@ -169,28 +194,35 @@ func (l *Lexer) handleIndentation() (token.Token, bool) {
 
 	l.atLineStart = false
 
-	if l.ch == 0 {
+	if l.ch == 0 || tabPosition != -1 {
 		return token.Token{}, false
 	}
 
-	if spaces%4 != 0 {
-		l.errors = append(l.errors, "Wrong indentation")
-		return token.Token{Type: token.ILLEGAL}, false
+	if spaces%indentWidth != 0 {
+		l.diagnostics = append(l.diagnostics, diagnostic.Diagnostic{
+			Code: diagnostic.InvalidIndentation, Message: "indentation must use multiples of four spaces",
+			Span: source.Span{Start: start, End: l.position},
+		})
+		return token.Token{}, false
 	}
 
-	level := spaces / 4
+	level := spaces / indentWidth
+	span := source.Span{Start: l.position, End: l.position}
 	if level == l.indentLevel {
 		return token.Token{}, false
 	} else if level < l.indentLevel {
 		l.pendingDedents = l.indentLevel - level - 1
 		l.indentLevel = level
-		return token.Token{Type: token.DEDENT}, true
+		return token.Token{Type: token.DEDENT, Span: span}, true
 	} else if level == l.indentLevel+1 {
 		l.indentLevel = level
-		return token.Token{Type: token.INDENT}, true
+		return token.Token{Type: token.INDENT, Span: span}, true
 	} else {
-		l.errors = append(l.errors, "Wrong indentation")
-		return token.Token{Type: token.ILLEGAL}, false
+		l.diagnostics = append(l.diagnostics, diagnostic.Diagnostic{
+			Code: diagnostic.InvalidIndentation, Message: "indentation can only increase by four spaces at a time",
+			Span: source.Span{Start: start, End: l.position},
+		})
+		return token.Token{}, false
 	}
 }
 
@@ -251,6 +283,6 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
-func (l *Lexer) Errors() []string {
-	return l.errors
+func (l *Lexer) Diagnostics() []diagnostic.Diagnostic {
+	return l.diagnostics
 }
