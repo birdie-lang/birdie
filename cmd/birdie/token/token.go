@@ -7,13 +7,48 @@ type Token struct {
 	Literal string
 }
 
+// Text returns a payload or the token kind's fixed spelling. Empty string
+// payloads are valid, so the choice depends on the kind, not the literal's length.
+func (t Token) Text() string {
+	switch t.Type {
+	case IDENT, INT, STRING, ILLEGAL:
+		return t.Literal
+	default:
+		return t.Type.Spelling()
+	}
+}
+
 var keywords = map[string]TokenType{
-	"fun":    FUN,
+	"fn":     FUN,
 	"true":   TRUE,
 	"false":  FALSE,
 	"if":     IF,
 	"else":   ELSE,
 	"return": RETURN,
+	"for":    FOR,
+	"in":     IN,
+}
+
+var keywordSpellings = func() map[TokenType]string {
+	spellings := make(map[TokenType]string, len(keywords))
+	for spelling, kind := range keywords {
+		spellings[kind] = spelling
+	}
+	return spellings
+}()
+
+// Spelling is defined once per fixed token kind; payload and structural kinds
+// without source text return an empty string.
+func (kind TokenType) Spelling() string {
+	switch kind {
+	case ASSIGN, PLUS, MINUS, NOT, MUL, DIV, GT, LT, EQ, NEQ,
+		COMMA, COLON, DOT, LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET:
+		return string(kind)
+	case EOL:
+		return "\n"
+	default:
+		return keywordSpellings[kind]
+	}
 }
 
 func LookupIdent(ident string) TokenType {
@@ -24,43 +59,52 @@ func LookupIdent(ident string) TokenType {
 }
 
 const (
-	ILLEGAL = "ILLEGAL"
-	EOL     = "EOL"
-	EOF     = "EOF"
+	ILLEGAL TokenType = "ILLEGAL"
+	EOL     TokenType = "EOL"
+	EOF     TokenType = "EOF"
 
 	// Identifiers + Literal
-	IDENT  = "IDENT"
-	INT    = "INT"
-	STRING = "STRING"
+	IDENT  TokenType = "IDENT"
+	INT    TokenType = "INT"
+	STRING TokenType = "STRING"
 
 	// Operators
-	ASSIGN = "="
-	PLUS   = "+"
-	MINUS  = "-"
-	NOT    = "!"
-	MUL    = "*"
-	DIV    = "/"
-	GT     = ">"
-	LT     = "<"
-	EQ     = "=="
-	NEQ    = "!="
+	ASSIGN TokenType = "="
+	PLUS   TokenType = "+"
+	MINUS  TokenType = "-"
+	NOT    TokenType = "!"
+	MUL    TokenType = "*"
+	DIV    TokenType = "/"
+	GT     TokenType = ">"
+	LT     TokenType = "<"
+	EQ     TokenType = "=="
+	NEQ    TokenType = "!="
 
-	// Delimeters
-	COMMA = ","
-	COLON = ":"
+	// Delimiters
+	COMMA TokenType = ","
+	COLON TokenType = ":"
+	DOT   TokenType = "."
 
-	LPAREN   = "("
-	RPAREN   = ")"
-	LBRACE   = "{"
-	RBRACE   = "}"
-	LBRACKET = "]"
-	RBRACKET = "["
+	LPAREN   TokenType = "("
+	RPAREN   TokenType = ")"
+	LBRACE   TokenType = "{"
+	RBRACE   TokenType = "}"
+	LBRACKET TokenType = "["
+	RBRACKET TokenType = "]"
 
 	// Keywords
-	FUN    = "FUN"
-	TRUE   = "TRUE"
-	FALSE  = "FALSE"
-	IF     = "IF"
-	ELSE   = "ELSE"
-	RETURN = "RETURN"
+	FUN    TokenType = "FUN"
+	TRUE   TokenType = "TRUE"
+	FALSE  TokenType = "FALSE"
+	IF     TokenType = "IF"
+	ELSE   TokenType = "ELSE"
+	RETURN TokenType = "RETURN"
+
+	// Indentation
+	INDENT TokenType = "INDENT"
+	DEDENT TokenType = "DEDENT"
+
+	// Loops
+	FOR TokenType = "FOR"
+	IN  TokenType = "IN"
 )

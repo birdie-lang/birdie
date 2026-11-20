@@ -43,6 +43,25 @@ func TestBooleanExpression(t *testing.T) {
 	}
 }
 
+func TestInfixExpressionString(t *testing.T) {
+	tests := []struct {
+		input string
+		want  string
+	}{
+		{"1 + 2 * 3", "(1 + (2 * 3))"},
+		{"1 == 2", "(1 == 2)"},
+		{"1 != 2", "(1 != 2)"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			program := parseAndCheckProgram(t, tt.input)
+			if got := program.String(); got != tt.want {
+				t.Fatalf("program.String() = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestAssignStatements(t *testing.T) {
 	largeValue, ok := new(big.Int).SetString("1234567890123456789012345678901234567890", 10)
 	if !ok {

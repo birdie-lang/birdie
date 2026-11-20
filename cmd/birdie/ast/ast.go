@@ -55,7 +55,7 @@ type AssignStatement struct {
 }
 
 func (ls *AssignStatement) statementNode()       {}
-func (ls *AssignStatement) TokenLiteral() string { return ls.Token.Literal }
+func (ls *AssignStatement) TokenLiteral() string { return ls.Token.Text() }
 func (ls *AssignStatement) String() string {
 	var out strings.Builder
 	out.WriteString(ls.Name.String())
@@ -74,7 +74,7 @@ type ReturnStatement struct {
 }
 
 func (rs *ReturnStatement) statementNode()       {}
-func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
+func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Text() }
 func (rs *ReturnStatement) String() string {
 	var out strings.Builder
 
@@ -96,7 +96,7 @@ type ExpressionStatement struct {
 }
 
 func (es *ExpressionStatement) statementNode()       {}
-func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
+func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Text() }
 func (es *ExpressionStatement) String() string {
 	var out strings.Builder
 
@@ -113,7 +113,7 @@ type BlockStatement struct {
 }
 
 func (bs *BlockStatement) statementNode()       {}
-func (bs *BlockStatement) TokenLiteral() string { return bs.Token.Literal }
+func (bs *BlockStatement) TokenLiteral() string { return bs.Token.Text() }
 func (bs *BlockStatement) String() string {
 	var out strings.Builder
 
@@ -134,7 +134,7 @@ type Identifier struct {
 }
 
 func (i *Identifier) expressionNode()      {}
-func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
+func (i *Identifier) TokenLiteral() string { return i.Token.Text() }
 func (i *Identifier) String() string       { return i.Value }
 
 type IntegerLiteral struct {
@@ -143,8 +143,8 @@ type IntegerLiteral struct {
 }
 
 func (il *IntegerLiteral) expressionNode()      {}
-func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
-func (il *IntegerLiteral) String() string       { return il.Token.Literal }
+func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Text() }
+func (il *IntegerLiteral) String() string       { return il.Token.Text() }
 
 type Boolean struct {
 	Token token.Token
@@ -152,8 +152,8 @@ type Boolean struct {
 }
 
 func (b *Boolean) expressionNode()      {}
-func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
-func (b *Boolean) String() string       { return b.Token.Literal }
+func (b *Boolean) TokenLiteral() string { return b.Token.Text() }
+func (b *Boolean) String() string       { return b.Token.Text() }
 
 type InfixExpression struct {
 	Token    token.Token
@@ -163,13 +163,15 @@ type InfixExpression struct {
 }
 
 func (ie *InfixExpression) expressionNode()      {}
-func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Literal }
+func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Text() }
 func (ie *InfixExpression) String() string {
 	var out strings.Builder
 
 	out.WriteString("(")
 	out.WriteString(ie.Left.String())
-	out.WriteString(" " + ie.Operator + " ")
+	out.WriteString(" ")
+	out.WriteString(ie.Operator)
+	out.WriteString(" ")
 	out.WriteString(ie.Right.String())
 	out.WriteString(")")
 

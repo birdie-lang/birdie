@@ -102,7 +102,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	// defer untrace(trace("parseInfixExpression"))
 
-	exp := &ast.InfixExpression{Token: p.curToken, Operator: p.curToken.Literal, Left: left}
+	exp := &ast.InfixExpression{Token: p.curToken, Operator: p.curToken.Text(), Left: left}
 
 	precedence := p.curPrecedence()
 	p.nextToken()
