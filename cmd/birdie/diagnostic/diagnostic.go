@@ -11,6 +11,7 @@ const (
 	UnexpectedCharacter     Code = "unexpected-character"
 	ExpectedExpression      Code = "expected-expression"
 	UnexpectedToken         Code = "unexpected-token"
+	UnexpectedEOF           Code = "unexpected-eof"
 	InvalidAssignmentTarget Code = "invalid-assignment-target"
 	InvalidInteger          Code = "invalid-integer"
 	DivisionByZero          Code = "division-by-zero"

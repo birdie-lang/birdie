@@ -1,21 +1,24 @@
 package repl
 
 import (
-	"bufio"
 	"cmp"
+	"errors"
 	"fmt"
 	"io"
+	"os"
 	"slices"
+	"strings"
+
+	"github.com/reeflective/readline"
 
 	"github.com/birdie-lang/birdie/cmd/birdie/ast"
 	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
+	"github.com/birdie-lang/birdie/cmd/birdie/evaluator"
 	"github.com/birdie-lang/birdie/cmd/birdie/lexer"
+	"github.com/birdie-lang/birdie/cmd/birdie/object"
 	"github.com/birdie-lang/birdie/cmd/birdie/parser"
 	"github.com/birdie-lang/birdie/cmd/birdie/source"
 	"github.com/birdie-lang/birdie/cmd/birdie/token"
-	// "minilang/compiler"
-	// "minilang/evaluator"
-	// "minilang/vm"
 )
 
 const prompt = "> "
@@ -23,94 +26,130 @@ const prompt = "> "
 type mode string
 
 const (
-	modeTokens  mode = "tokens"
-	modeParse   mode = "parse"
-	modeEval    mode = "eval"
-	modeCompile mode = "compile"
-	modeRun     mode = "run"
+	modeTokens mode = "tokens"
+	modeParse  mode = "parse"
+	modeEval   mode = "eval"
 )
 
-var commandHelp = map[string]string{
-	"/tokens": "Show tokens produced by the lexer",
-	"/parse":  "Show AST produced by the parser",
-	// "/eval":    "Evaluate input using the tree-walking evaluator",
-	// "/compile": "Show bytecode produced by the compiler",
-	// "/run":     "Compile and run input on the VM",
-	"/help": "Show this help message",
-	"/exit": "Exit the REPL",
+func (m mode) prompt() string {
+	if m == modeEval {
+		return prompt
+	}
+	return string(m) + "> "
+}
+
+const welcome = "Birdie\n/help for commands. Ctrl+D to exit.\nEmpty line finishes a block.\n\n"
+
+var commandHelp = []struct{ name, description string }{
+	{"/eval", "Evaluate input (default)"},
+	{"/tokens", "Show lexer tokens"},
+	{"/parse", "Show the parsed AST"},
+	{"/help", "Show commands and editing shortcuts"},
+	{"/exit, /quit", "Exit the REPL"},
+}
+
+var editingHelp = []struct{ name, description string }{
+	{"Enter", "Submit input or continue an unfinished entry"},
+	{"Empty line", "Submit an indented block"},
+	{"Tab", "Insert spaces to the next four-space boundary"},
+	{"Shift+Tab", "Remove one indentation level"},
+	{"Up / Down", "Navigate multiline input and session history"},
+	{"Ctrl+C", "Cancel the current entry"},
+	{"Ctrl+D", "Exit when input is empty"},
 }
 
 func Start(in io.Reader, out io.Writer) {
-	scanner := bufio.NewScanner(in)
-	// env := object.NewEnvironment()
+	readInput := streamInput(in, out)
+	// Readline uses the process standard streams. Other streams retain the
+	// plain reader, including redirected input/output and tests.
+	if in == os.Stdin && out == os.Stdout && isTerminal(os.Stdin) && isTerminal(os.Stdout) {
+		fmt.Fprint(out, welcome)
+		if os.Getenv("TERM") != "dumb" {
+			readInput = terminalInput()
+		}
+	}
+	run(readInput, out)
+}
+
+func run(readInput func(string) (string, error), out io.Writer) {
+	env := object.NewEnvironment()
 	m := modeEval
 
-	// constants := []object.Object{}
-	// globals := make([]object.Object, vm.GlobalsSize)
-	// symbolTable := compiler.NewSymbolTable()
-	// for i, v := range object.Builtins {
-	// 	symbolTable.DefineBuiltin(i, v.Name)
-	// }
-
 	for {
-		fmt.Fprint(out, prompt)
-		if !scanner.Scan() {
-			break
+		text, err := readInput(m.prompt())
+		atEOF := errors.Is(err, io.EOF)
+		if errors.Is(err, readline.ErrInterrupt) {
+			continue
+		}
+		if atEOF {
+			if text == "" {
+				return
+			}
+			// EOF can finish a block, just like its final empty line. Open
+			// delimiters still require a closing token and must not execute.
+			if !inputComplete(text + "\n") {
+				printDiagnostics(text, []diagnostic.Diagnostic{{
+					Code: diagnostic.UnexpectedEOF, Message: "unexpected end of input in a multiline entry",
+					Span: source.Span{Start: len(text), End: len(text)},
+				}}, out)
+				return
+			}
+		} else if err != nil {
+			fmt.Fprintf(out, "input error: %s\n", err)
+			return
 		}
 
-		line := scanner.Text()
+		command := strings.TrimSpace(text)
+		if command == "/exit" || command == "/quit" {
+			fmt.Fprintln(out, "Goodbye!")
+			return
+		}
 
 		// Handle commands
-		if handled, newMode := handleCommand(line, m, out); handled {
+		if handled, newMode := handleCommand(command, m, out); handled {
 			m = newMode
+			if atEOF {
+				return
+			}
 			continue
 		}
 
 		// Process based on mode
 		switch m {
 		case modeTokens:
-			printTokens(line, out)
+			printTokens(text, out)
 		case modeParse:
-			printAST(line, out)
-			// case modeEval:
-			// 	printEval(line, out, env)
-			// case modeCompile:
-			// 	printCompile(line, out, symbolTable, &constants)
-			// case modeRun:
-			// 	printRun(line, out, symbolTable, &constants, globals)
+			printAST(text, out)
+		case modeEval:
+			printEval(text, out, env)
 		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintf(out, "scanner error: %s\n", err)
+		if atEOF {
+			return
+		}
 	}
 }
 
 func handleCommand(line string, current mode, out io.Writer) (bool, mode) {
 	switch line {
 	case "/tokens":
-		fmt.Fprintln(out, "Mode: tokens")
 		return true, modeTokens
 	case "/parse":
-		fmt.Fprintln(out, "Mode: parse")
 		return true, modeParse
 	case "/eval":
-		fmt.Fprintln(out, "Mode: eval")
 		return true, modeEval
-	case "/compile":
-		fmt.Fprintln(out, "Mode: compile")
-		return true, modeCompile
-	case "/run":
-		fmt.Fprintln(out, "Mode: run")
-		return true, modeRun
 	case "/help":
-		fmt.Fprintln(out, "Available commands:")
-		for cmd, desc := range commandHelp {
-			fmt.Fprintf(out, "  %-10s %s\n", cmd, desc)
+		fmt.Fprintln(out, "Commands:")
+		for _, cmd := range commandHelp {
+			fmt.Fprintf(out, "  %-14s %s\n", cmd.name, cmd.description)
+		}
+		fmt.Fprintln(out, "\nEditing:")
+		for _, key := range editingHelp {
+			fmt.Fprintf(out, "  %-14s %s\n", key.name, key.description)
 		}
 		return true, current
-	case "/exit", "/quit":
-		fmt.Fprintln(out, "Goodbye!")
+	}
+	if strings.HasPrefix(line, "/") {
+		fmt.Fprintf(out, "Unknown command %q. Use /help for commands.\n", line)
 		return true, current
 	}
 	return false, current
@@ -146,9 +185,15 @@ func printDiagnostics(text string, diagnostics []diagnostic.Diagnostic, out io.W
 		return cmp.Compare(a.Span.Start, b.Span.Start)
 	})
 	file := source.NewFile("<repl>", text)
+	color := diagnosticColorEnabled(out)
 	for _, d := range diagnostics {
-		fmt.Fprintln(out, diagnostic.Format(file, d))
+		fmt.Fprintln(out, diagnostic.FormatWithColor(file, d, color))
 	}
+}
+
+func diagnosticColorEnabled(out io.Writer) bool {
+	file, ok := out.(*os.File)
+	return ok && os.Getenv("NO_COLOR") == "" && os.Getenv("TERM") != "dumb" && isTerminal(file)
 }
 
 func printAST(line string, out io.Writer) {
@@ -160,58 +205,18 @@ func printAST(line string, out io.Writer) {
 	fmt.Fprintln(out, program.String())
 }
 
-// func printEval(line string, out io.Writer, env *object.Environment) {
-// 	program, ok := parseLine(line, out)
-// 	if !ok {
-// 		return
-// 	}
-//
-// 	eval := evaluator.Eval(program, env)
-// 	if eval != nil {
-// 		fmt.Fprintln(out, eval.Inspect())
-// 	}
-// }
-//
-// func printCompile(line string, out io.Writer, symbolTable *compiler.SymbolTable, constants *[]object.Object) {
-// 	program, ok := parseLine(line, out)
-// 	if !ok {
-// 		return
-// 	}
-//
-// 	c := compiler.NewWithState(symbolTable, *constants)
-// 	err := c.Compile(program)
-// 	if err != nil {
-// 		fmt.Fprintln(out, err)
-// 		return
-// 	}
-//
-// 	*constants = c.Bytecode().Constants
-// 	fmt.Fprintln(out, c.Bytecode().Instructions)
-// }
-//
-// func printRun(line string, out io.Writer, symbolTable *compiler.SymbolTable, constants *[]object.Object, globals []object.Object) {
-// 	program, ok := parseLine(line, out)
-// 	if !ok {
-// 		return
-// 	}
-//
-// 	c := compiler.NewWithState(symbolTable, *constants)
-// 	err := c.Compile(program)
-// 	if err != nil {
-// 		fmt.Fprintf(out, "Woops! Compilation failed:\n %s\n", err)
-// 		return
-// 	}
-//
-// 	*constants = c.Bytecode().Constants
-// 	v := vm.NewWithGlobalsStore(c.Bytecode(), globals)
-// 	err = v.Run()
-// 	if err != nil {
-// 		fmt.Fprintf(out, "Woops! Executing bytecode failed:\n %s\n", err)
-// 		return
-// 	}
-//
-// 	result := v.LastPoppedStackElem()
-// 	if result != nil {
-// 		fmt.Fprintln(out, result.Inspect())
-// 	}
-// }
+func printEval(line string, out io.Writer, env *object.Environment) {
+	program, ok := parseLine(line, out)
+	if !ok {
+		return
+	}
+
+	value, d := evaluator.Eval(program, env)
+	if d != nil {
+		printDiagnostics(line, []diagnostic.Diagnostic{*d}, out)
+		return
+	}
+	if value != nil {
+		fmt.Fprintln(out, value.Inspect())
+	}
+}

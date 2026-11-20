@@ -12,6 +12,11 @@ import (
 // Format renders a diagnostic and underlines its first source line. Empty spans
 // still receive a caret, including errors pointing at the end of a file.
 func Format(file *source.File, d Diagnostic) string {
+	return FormatWithColor(file, d, false)
+}
+
+// FormatWithColor optionally highlights the error, location, and source marker.
+func FormatWithColor(file *source.File, d Diagnostic, color bool) string {
 	position := file.Position(d.Span.Start)
 	endPosition := file.Position(d.Span.End)
 	line := []rune(file.Line(position.Line))
@@ -23,10 +28,22 @@ func Format(file *source.File, d Diagnostic) string {
 	column := utf8.RuneCountInString(expandTabs(string(line[:start])))
 	endColumn := utf8.RuneCountInString(expandTabs(string(line[:end])))
 	number := strconv.Itoa(position.Line)
-	return fmt.Sprintf("%s:%d:%d: error[%s]: %s\n%s | %s\n%s | %s%s",
-		file.Name, position.Line, position.Column, d.Code, d.Message,
-		number, expandTabs(string(line)), strings.Repeat(" ", len(number)),
-		strings.Repeat(" ", column), strings.Repeat("^", max(1, endColumn-column)))
+	indent := strings.Repeat(" ", len(number))
+	headline := fmt.Sprintf("error[%s]", d.Code)
+	location := fmt.Sprintf("--> %s:%d:%d", file.Name, position.Line, position.Column)
+	gutter := indent + " |"
+	numberedGutter := number + " |"
+	carets := strings.Repeat("^", max(1, endColumn-column))
+	if color {
+		headline = "\x1b[1;31m" + headline + "\x1b[0m"
+		carets = "\x1b[1;31m" + carets + "\x1b[0m"
+		location = "\x1b[2m" + location + "\x1b[0m"
+		gutter = "\x1b[2m" + gutter + "\x1b[0m"
+		numberedGutter = "\x1b[2m" + numberedGutter + "\x1b[0m"
+	}
+	return fmt.Sprintf("%s: %s\n%s%s\n%s\n%s %s\n%s %s%s",
+		headline, d.Message, indent, location, gutter, numberedGutter,
+		expandTabs(string(line)), gutter, strings.Repeat(" ", column), carets)
 }
 
 func expandTabs(text string) string {
