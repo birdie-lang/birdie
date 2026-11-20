@@ -144,7 +144,7 @@ type IntegerLiteral struct {
 
 func (il *IntegerLiteral) expressionNode()      {}
 func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Text() }
-func (il *IntegerLiteral) String() string       { return il.Token.Text() }
+func (il *IntegerLiteral) String() string       { return il.Value.String() }
 
 type Boolean struct {
 	Token token.Token
@@ -154,6 +154,25 @@ type Boolean struct {
 func (b *Boolean) expressionNode()      {}
 func (b *Boolean) TokenLiteral() string { return b.Token.Text() }
 func (b *Boolean) String() string       { return b.Token.Text() }
+
+type PrefixExpression struct {
+	Token    token.Token
+	Operator string
+	Right    Expression
+}
+
+func (pe *PrefixExpression) expressionNode()      {}
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Text() }
+func (pe *PrefixExpression) String() string {
+	var out strings.Builder
+
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}
 
 type InfixExpression struct {
 	Token    token.Token

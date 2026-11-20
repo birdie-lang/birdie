@@ -13,6 +13,9 @@ const (
 	UnexpectedToken         Code = "unexpected-token"
 	InvalidAssignmentTarget Code = "invalid-assignment-target"
 	InvalidInteger          Code = "invalid-integer"
+	DivisionByZero          Code = "division-by-zero"
+	UnknownOperator         Code = "unknown-operator"
+	UnboundVariable         Code = "unbound-variable"
 )
 
 // Diagnostic describes a source error. Spans refer to the source being analyzed;
