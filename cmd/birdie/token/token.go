@@ -44,7 +44,7 @@ var keywordSpellings = func() map[TokenType]string {
 // without source text return an empty string.
 func (kind TokenType) Spelling() string {
 	switch kind {
-	case ASSIGN, PLUS, MINUS, NOT, MUL, DIV, GT, LT, EQ, NEQ,
+	case ASSIGN, PLUS, MINUS, NOT, MUL, DIV, DDIV, GT, LT, EQ, NEQ,
 		COMMA, COLON, DOT, LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET:
 		return string(kind)
 	case EOL:
@@ -78,6 +78,7 @@ const (
 	NOT    TokenType = "!"
 	MUL    TokenType = "*"
 	DIV    TokenType = "/"
+	DDIV   TokenType = "//"
 	GT     TokenType = ">"
 	LT     TokenType = "<"
 	EQ     TokenType = "=="

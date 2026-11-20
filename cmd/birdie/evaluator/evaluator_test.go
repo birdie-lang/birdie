@@ -45,6 +45,32 @@ func TestEvalIntegerExpression(t *testing.T) {
 	}
 }
 
+func TestEvalFloorDivision(t *testing.T) {
+	tests := []struct {
+		input string
+		want  string
+	}{
+		{"7 // 2", "3"},
+		{"-7 // 2", "-4"},
+		{"7 // -2", "-4"},
+		{"-7 // -2", "3"},
+		{"1 // 2", "0"},
+		{"-1 // 2", "-1"},
+		{"50 // 2 * 2 + 10", "60"},
+		{"50 // 5 // 2", "5"},
+		{"27670116110564327424 // 3", "9223372036854775808"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			value, d := testEval(t, tt.input)
+			if d != nil {
+				t.Fatalf("unexpected runtime diagnostic: %+v", *d)
+			}
+			testIntegerObject(t, value, tt.want)
+		})
+	}
+}
+
 func TestEvalBooleanExpression(t *testing.T) {
 	tests := []struct {
 		input string
@@ -101,6 +127,26 @@ func TestRuntimeDiagnostics(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			testRuntimeDiagnostic(t, tt.input, tt.code, tt.span)
+		})
+	}
+}
+
+func TestDivisionByZeroDiagnostics(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		span  source.Span
+	}{
+		{"division-by-zero", "5 // 0", source.Span{Start: 2, End: 4}},
+		{"zero-divided-by-zero", "0 // 0", source.Span{Start: 2, End: 4}},
+		{"nested-right-error", "1 + 10 // 0", source.Span{Start: 7, End: 9}},
+		{"nested-left-error", "1 // 0 + 10", source.Span{Start: 2, End: 4}},
+		{"first-operand-error", "1 // 0 + 2 // 0", source.Span{Start: 2, End: 4}},
+		{"stop-before-next-statement", "1 // 0\ntrue + false", source.Span{Start: 2, End: 4}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testRuntimeDiagnostic(t, tt.input, diagnostic.DivisionByZero, tt.span)
 		})
 	}
 }

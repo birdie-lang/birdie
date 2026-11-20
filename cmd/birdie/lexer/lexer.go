@@ -67,7 +67,12 @@ func (l *Lexer) NextToken() token.Token {
 	case '*':
 		tok.Type = token.MUL
 	case '/':
-		tok.Type = token.DIV
+		if l.peekChar() == '/' {
+			l.readChar()
+			tok.Type = token.DDIV
+		} else {
+			tok.Type = token.DIV
+		}
 	case '!':
 		if l.peekChar() == '=' {
 			l.readChar()

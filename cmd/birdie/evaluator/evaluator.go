@@ -212,6 +212,18 @@ func evalIntegerInfixExpression(operator token.Token, left, right object.Object)
 		}
 		result.Value.Quo(leftVal, rightVal)
 		return result, nil
+	case token.DDIV:
+		if rightVal.Sign() == 0 {
+			return nil, newError(
+				diagnostic.DivisionByZero,
+				operator.Span,
+				"division by zero",
+			)
+		}
+
+		result := &object.Integer{}
+		result.Value.Divide(leftVal, rightVal, nil, big.Floor)
+		return result, nil
 	case token.LT:
 		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) < 0), nil
 	case token.GT:
