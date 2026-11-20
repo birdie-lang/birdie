@@ -46,12 +46,14 @@ func Eval(
 			return nil, err
 		}
 		return evalInfixExpression(node.Token, left, right)
-		// 	case *ast.LetStatement:
-		// 		val := Eval(node.Value, env)
-		// 		if isError(val) {
-		// 			return val
-		// 		}
-		// 		env.Set(node.Name.Value, val)
+	case *ast.AssignStatement:
+		val, err := Eval(node.Value, env)
+		if err != nil {
+			return nil, err
+		}
+		env.Set(node.Name.Value, val)
+	case *ast.Identifier:
+		return evalIdentifier(node, env)
 		// 	case *ast.BlockStatement:
 		// 		return evalBlockStatement(node.Statements, env)
 		// 	case *ast.IfExpression:
@@ -62,8 +64,6 @@ func Eval(
 		// 			return val
 		// 		}
 		// 		return &object.ReturnValue{Value: val}
-		// 	case *ast.Identifier:
-		// 		return evalIdentifier(node, env)
 		// 	case *ast.FunctionLiteral:
 		// 		params := node.Parameters
 		// 		body := node.Body

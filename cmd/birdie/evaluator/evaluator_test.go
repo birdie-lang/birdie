@@ -189,9 +189,14 @@ func testRuntimeDiagnostic(t *testing.T, input string, code diagnostic.Code, spa
 	}
 }
 
+func testEval(t *testing.T, input string) (object.Object, *diagnostic.Diagnostic) {
+	t.Helper()
+	return testEvalWithEnvironment(t, input, object.NewEnvironment())
+}
+
 // Front-end diagnostics are setup failures here; runtime diagnostics are returned
 // so individual cases can assert success or an expected evaluation failure.
-func testEval(t *testing.T, input string) (object.Object, *diagnostic.Diagnostic) {
+func testEvalWithEnvironment(t *testing.T, input string, env *object.Environment) (object.Object, *diagnostic.Diagnostic) {
 	t.Helper()
 	l := lexer.New(input)
 	p := parser.New(l)
@@ -202,7 +207,7 @@ func testEval(t *testing.T, input string) (object.Object, *diagnostic.Diagnostic
 	if diagnostics := p.Diagnostics(); len(diagnostics) != 0 {
 		t.Fatalf("unexpected parser diagnostics: %+v", diagnostics)
 	}
-	return Eval(program, object.NewEnvironment())
+	return Eval(program, env)
 }
 
 func testIntegerObject(t *testing.T, value object.Object, want string) {
