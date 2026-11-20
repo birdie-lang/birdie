@@ -1,0 +1,30 @@
+fn serialize(root: TreeNode?) str:
+    parts = []
+
+    fn write(node: TreeNode?):
+        if node == none:
+            parts.push("|")
+            return
+
+        parts.push(str(node.val))
+        write(node.left)
+        write(node.right)
+
+    write(root)
+    return parts.join(",")
+
+
+fn deserialize(data: str) TreeNode?:
+    return readTree(data.split(",").iter())
+
+
+fn readTree(tokens: iterator[str]) TreeNode?:
+    value = tokens.next()
+
+    if value == "|":
+        return none
+
+    node = TreeNode(int(value))
+    node.left = readTree(tokens)
+    node.right = readTree(tokens)
+    return node

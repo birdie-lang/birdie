@@ -9,5 +9,15 @@
     "position": 54,
     "category": "Trees"
   },
-  "blind75": false
+  "blind75": false,
+  "description": "Return the rightmost visible node value at each depth, from top to bottom.",
+  "note": "Visit each level from left to right and keep the value of its last node.",
+  "notes": [
+    "The queue starts with the present root. Each node's left child is enqueued before its right child, so the last node removed from a level is that level's rightmost node.",
+    "repeat pending.size evaluates the count once before processing the level. Children added during its body wait for the next outer iteration, matching Python's range(len(pending)).",
+    "node is a function-local TreeNode even though its first assignment is inside repeat. The nonempty queue ensures at least one assignment on each outer iteration before res.push(node.val). A read with no prior assignment would raise a runtime initialization error; uninitialized state is distinct from none and does not change the static type.",
+    "Explicit presence checks preserve nodes whose value is zero. A deeper level can be visible entirely from the left subtree when the right subtree ends earlier.",
+    "LeetCode supplies TreeNode. The record declaration shows how the same type would be defined in a standalone Birdie program.",
+    "The traversal takes O(n) time and O(w) auxiliary queue space, where w is the maximum level width, plus O(h) result space for h levels. It does not modify the tree."
+  ]
 }

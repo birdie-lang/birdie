@@ -1,0 +1,14 @@
+fn kthSmallest(root: TreeNode?, k: int) int:
+    fn dfs(node: TreeNode?, outer k) int?:
+        if node == none:
+            return none
+
+        return? dfs(node.left)
+
+        k--
+        if k == 0:
+            return node.val
+
+        return dfs(node.right)
+
+    return dfs(root)

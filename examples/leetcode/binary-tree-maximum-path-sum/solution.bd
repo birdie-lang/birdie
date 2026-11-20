@@ -1,0 +1,15 @@
+fn maxPathSum(root: TreeNode?) int:
+    res = root.val
+
+    fn dfs(node: TreeNode?, outer res) int:
+        if node == none:
+            return 0
+
+        left = max(0, dfs(node.left))
+        right = max(0, dfs(node.right))
+
+        max!(res, node.val + left + right)
+        return node.val + max(left, right)
+
+    dfs(root)
+    return res

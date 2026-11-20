@@ -1,0 +1,14 @@
+fn isValidBST(root: TreeNode?) bool:
+    return dfs(root, -inf, inf)
+
+fn dfs(node: TreeNode?, min_val: number, max_val: number) bool:
+    if node == none:
+        return true
+
+    if not min_val < node.val < max_val:
+        return false
+
+    return (
+        dfs(node.right, node.val, max_val)
+        and dfs(node.left, min_val, node.val)
+    )

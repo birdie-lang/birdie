@@ -32,6 +32,11 @@ type example struct {
 	fixture
 }
 
+var codecDecoders = map[string]string{
+	"encode":    "decode",
+	"serialize": "deserialize",
+}
+
 // Fixture checks do not claim Birdie parsing or execution coverage.
 func TestExampleFixtures(t *testing.T) {
 	examples := loadExamples(t)
@@ -55,13 +60,19 @@ func TestPythonExamples(t *testing.T) {
 		t.Run(filepath.Base(example.Directory), func(t *testing.T) {
 			for _, test := range example.Cases {
 				t.Run(test.Name, func(t *testing.T) {
-					actual := runPython(t, python, example.Directory, example.fixture, test.Args)
+					suite := example.fixture
+					if suite.Check == "codec-round-trip" {
+						// The result adapter belongs to the decoded value, not its wire string.
+						suite.ResultAdapter = ""
+					}
+					actual := runPython(t, python, example.Directory, suite, test.Args)
 					if example.Check == "codec-round-trip" {
 						var encoded *string
 						if err := json.Unmarshal(actual, &encoded); err != nil || encoded == nil {
-							t.Fatalf("encode must return a string, got %s", actual)
+							t.Fatalf("%s must return a string, got %s", example.Entry, actual)
 						}
-						actual = runPython(t, python, example.Directory, fixture{Entry: "decode"}, []json.RawMessage{actual})
+						decoder := fixture{Entry: codecDecoders[example.Entry], ResultAdapter: example.ResultAdapter}
+						actual = runPython(t, python, example.Directory, decoder, []json.RawMessage{actual})
 					}
 					if resultKey(t, actual, example.Check) != resultKey(t, test.Expected, example.Check) {
 						t.Fatalf("got %s; want %s", actual, test.Expected)
@@ -106,6 +117,9 @@ func loadExamples(t *testing.T) []example {
 		if suite.Entry == "" || len(suite.Cases) == 0 {
 			t.Fatalf("%s requires an entry and at least one case", directory)
 		}
+		if suite.Check == "codec-round-trip" && codecDecoders[suite.Entry] == "" {
+			t.Fatalf("%s: codec entry must be encode or serialize", directory)
+		}
 		for _, adapter := range append(slices.Clone(suite.ArgAdapters), suite.ResultAdapter) {
 			if adapter != "" && adapter != "json" && adapter != "tree" && adapter != "node" {
 				t.Fatalf("%s: unknown adapter %q", directory, adapter)
@@ -121,8 +135,8 @@ func loadExamples(t *testing.T) []example {
 				t.Fatalf("%s/%s: inconsistent argument or adapter count", directory, test.Name)
 			}
 			resultKey(t, test.Expected, suite.Check)
-			if suite.Check == "codec-round-trip" && (suite.Entry != "encode" || len(test.Args) != 1 || resultKey(t, test.Args[0], "exact") != resultKey(t, test.Expected, "exact")) {
-				t.Fatalf("%s/%s: codec expectation must match the words passed to encode", directory, test.Name)
+			if suite.Check == "codec-round-trip" && (len(test.Args) != 1 || resultKey(t, test.Args[0], "exact") != resultKey(t, test.Expected, "exact")) {
+				t.Fatalf("%s/%s: codec expectation must match its single input", directory, test.Name)
 			}
 		}
 		examples = append(examples, example{directory, suite})

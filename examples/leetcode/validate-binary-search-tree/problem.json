@@ -9,5 +9,16 @@
     "position": 56,
     "category": "Trees"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Validate every node against the strict lower and upper bounds inherited from its ancestors.",
+  "note": "Start with infinite bounds, then tighten the appropriate bound when descending into each subtree.",
+  "notes": [
+    "The helper's number bounds accept exact integers and the built-in -inf and inf values. Node values stay finite integers. Python imports inf from math and uses int | float annotations because its infinity values are floats; it does not convert integer node values to floats.",
+    "An absent node is a valid empty subtree, so the helper returns true immediately. An empty input tree is valid too.",
+    "The chained comparison min_val < node.val < max_val enforces strict ordering, rejects duplicates, and checks inherited ancestor bounds. Each operand is evaluated at most once, and a failed comparison skips the rest of the chain.",
+    "The recursive and visits the right subtree first and skips the left subtree when the right subtree is invalid. This preserves the original traversal order while avoiding the eager evaluation caused by separate right and left assignments.",
+    "dfs captures no state and is a separate helper below isValidBST in both versions. LeetCode supplies TreeNode; the record declaration shows its standalone Birdie form.",
+    "Shared cases include distinct integers above floating-point precision and beyond machine integer ranges to check exact ordering. The initial infinities do not impose a finite maximum or minimum integer value.",
+    "Worst-case time is O(n), with O(h) recursion space for tree height h. Invalid subtrees can end the traversal early. The tree is not modified."
+  ]
 }

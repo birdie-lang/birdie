@@ -9,5 +9,17 @@
     "position": 57,
     "category": "Trees"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Visit BST nodes in ascending order and return the value at the one-based rank k.",
+  "note": "Share a remaining-node countdown across the recursive traversal, returning as soon as a result is found.",
+  "notes": [
+    "The input is a BST and k is a valid one-based rank. The helper returns none for an absent subtree or an exhausted search, while a present integer is a found result.",
+    "return? dfs(node.left) evaluates the left search once and returns a present result, including zero. If it returns none, execution continues with the current node. Python expands this into a temporary and an explicit is not None guard.",
+    "outer k in the dfs header permits rebinding the enclosing function's parameter; it is a writable capture, not a call argument. Python uses nonlocal k in the helper body. All recursive helper calls share the same countdown, without storing state on Solution or modifying the caller's integer value.",
+    "k-- decrements the countdown after visiting the left subtree. When it reaches zero, the current node is the answer. The right recursive call is returned directly because there is no later work in that helper call.",
+    "The main function returns int while dfs returns int?. The valid-rank guarantee makes the final result present. Birdie's ordinary return applies a runtime presence check if needed, without an explicit unwrap. An invalid rank that produces none fails at that checked return.",
+    "Postfix expression? has different control flow: it returns none when the operand is absent. Using it on the left subtree would stop this search before visiting the current node.",
+    "LeetCode supplies TreeNode. The record declaration shows its standalone Birdie form. Fixtures include zero-valued results from each traversal position and an integer above floating-point precision.",
+    "Under unit-cost integer operations, the traversal takes O(h + k) time and O(h) recursion space, where h is tree height; worst-case time is O(n). The tree is not modified."
+  ]
 }

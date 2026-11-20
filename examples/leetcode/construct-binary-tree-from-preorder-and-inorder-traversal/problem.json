@@ -9,5 +9,15 @@
     "position": 58,
     "category": "Trees"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Reconstruct a binary tree by splitting each inorder traversal around the root found at the start of its preorder traversal.",
+  "note": "Use copying slices to pass the left and right traversal segments into recursive calls.",
+  "notes": [
+    "Assume valid matching traversals with distinct values. Empty traversals produce none. The algorithm preserves the traversal order; the reconstructed tree need not be a binary search tree.",
+    "List index(value) returns int? and identifies the first matching position, including zero. Valid traversals guarantee a match, so mid can be used directly in arithmetic and slice bounds through checked optional use. An absent match would fail when an integer position is required.",
+    "Slices include the start and exclude the end. inorder[:mid] excludes the root, and preorder[1:mid + 1] contains exactly mid nodes. An omitted start is zero and an omitted end is the source size. Empty subtrees naturally use equal-bound or empty suffix slices.",
+    "TreeNode(value, left, right) uses the generated record constructor in field order. This constructs the children directly instead of allocating a node and assigning its fields afterward. The Python reference uses the same structure.",
+    "Slices create fresh outer lists and index lookup does not mutate its receiver. Neither input traversal is modified. LeetCode supplies TreeNode; the record declaration shows its standalone Birdie form.",
+    "This keeps the simpler slicing algorithm. Under copying-slice semantics, worst-case time and auxiliary slice storage are O(n^2) on a skewed tree. The recursion uses O(h) stack space and the output has O(n) nodes."
+  ]
 }

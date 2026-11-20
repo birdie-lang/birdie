@@ -9,5 +9,15 @@
     "position": 55,
     "category": "Trees"
   },
-  "blind75": false
+  "blind75": false,
+  "description": "Count nodes whose value is at least every value on the path from the root to that node.",
+  "note": "Pass the maximum value seen on the current path down each recursive branch.",
+  "notes": [
+    "The problem guarantees a nonempty tree, so goodNodes takes TreeNode and starts with root.val as the path maximum. The helper takes TreeNode? because children can be absent; its none guard returns zero for an empty subtree.",
+    "Each recursive call has its own max_val parameter. Updating it for a node does not change the parent's parameter or the maximum used by a sibling branch. There is no captured accumulator or outer declaration.",
+    "Equality counts as good. Inside node.val >= max_val, assigning max_val = node.val already maintains the path maximum, so a separate max or max! operation is unnecessary.",
+    "dfs captures no state and is a separate function below goodNodes in both versions. Birdie registers function declarations before execution, so the main algorithm can call the helper written below it.",
+    "LeetCode supplies TreeNode. The record declaration shows how the same type would be defined in a standalone Birdie program.",
+    "The traversal takes O(n) time and O(h) recursion space, where h is the tree height. It does not modify the tree."
+  ]
 }

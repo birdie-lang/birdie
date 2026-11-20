@@ -95,7 +95,10 @@ def main():
     # Solution output cannot corrupt the JSON response protocol.
     with contextlib.redirect_stdout(sys.stderr):
         namespace = runpy.run_path(sys.argv[1], init_globals={"TreeNode": TreeNode})
-        result = getattr(namespace["Solution"](), request["entry"])(*args)
+        solution_type = namespace.get("Solution") or namespace.get("Codec")
+        if solution_type is None:
+            raise ValueError("reference requires a Solution or Codec class")
+        result = getattr(solution_type(), request["entry"])(*args)
         if request.get("resultAdapter") == "tree":
             result = encode_tree(result)
         elif request.get("resultAdapter") == "node":

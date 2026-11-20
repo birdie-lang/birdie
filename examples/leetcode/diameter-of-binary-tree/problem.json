@@ -14,7 +14,7 @@
   "note": "The longest path can lie entirely inside a subtree; it does not have to pass through the root.",
   "notes": [
     "The nested dfs helper returns subtree height in nodes. At each node, left + right gives the length in edges of the longest path through that node.",
-    "outer diameter lets max!(diameter, left + right) update the enclosing function’s accumulator when it finds a longer path. All recursive dfs calls share that binding, while left and right remain separate locals in each recursive call. Python expresses the scope declaration with nonlocal diameter and the update with an assignment using max.",
+    "outer diameter in the dfs header lets max!(diameter, left + right) update the enclosing function’s accumulator when it finds a longer path. It is a writable capture, not a call argument; calls still pass only the node. All recursive dfs calls share that binding, while left and right remain separate locals in each recursive call. Python expresses the capture with nonlocal diameter in the body and the update with an assignment using max.",
     "Each call to diameterOfBinaryTree starts with a fresh diameter of zero. An empty tree or a single node returns zero.",
     "LeetCode supplies TreeNode. The record declaration shows how the same type would be defined in a standalone Birdie program.",
     "The traversal takes O(n) time and O(h) recursion space, where h is the tree height. It does not modify the tree."

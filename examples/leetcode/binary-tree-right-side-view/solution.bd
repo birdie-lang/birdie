@@ -1,0 +1,19 @@
+fn rightSideView(root: TreeNode?) list[int]:
+    if root == none:
+        return []
+
+    res = []
+    pending = queue([root])
+
+    while pending:
+        repeat pending.size:
+            node = pending.pop()
+
+            if node.left != none:
+                pending.push(node.left)
+            if node.right != none:
+                pending.push(node.right)
+
+        res.push(node.val)
+
+    return res

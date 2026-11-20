@@ -1,0 +1,78 @@
+{
+  "entry": "serialize",
+  "check": "codec-round-trip",
+  "argAdapters": ["tree"],
+  "resultAdapter": "tree",
+  "cases": [
+    {
+      "name": "empty",
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "name": "single-zero",
+      "args": [[0]],
+      "expected": [0]
+    },
+    {
+      "name": "single-negative",
+      "args": [[-7]],
+      "expected": [-7]
+    },
+    {
+      "name": "standard",
+      "args": [[1, 2, 3, null, null, 4, 5]],
+      "expected": [1, 2, 3, null, null, 4, 5]
+    },
+    {
+      "name": "left-child-only",
+      "args": [[1, 2]],
+      "expected": [1, 2]
+    },
+    {
+      "name": "right-child-only",
+      "args": [[1, null, 2]],
+      "expected": [1, null, 2]
+    },
+    {
+      "name": "left-chain",
+      "args": [[4, 3, null, 2, null, 1]],
+      "expected": [4, 3, null, 2, null, 1]
+    },
+    {
+      "name": "right-chain",
+      "args": [[1, null, 2, null, 3, null, 4]],
+      "expected": [1, null, 2, null, 3, null, 4]
+    },
+    {
+      "name": "complete-tree",
+      "args": [[1, 2, 3, 4, 5, 6, 7]],
+      "expected": [1, 2, 3, 4, 5, 6, 7]
+    },
+    {
+      "name": "sparse-subtrees",
+      "args": [[1, 2, 3, null, 4, 5, null, 6, null, null, 7]],
+      "expected": [1, 2, 3, null, 4, 5, null, 6, null, null, 7]
+    },
+    {
+      "name": "duplicate-values",
+      "args": [[2, 2, 2, null, 2, 2]],
+      "expected": [2, 2, 2, null, 2, 2]
+    },
+    {
+      "name": "repeated-zero-values",
+      "args": [[0, 0, 0, null, 0]],
+      "expected": [0, 0, 0, null, 0]
+    },
+    {
+      "name": "negative-and-positive-values",
+      "args": [[0, -10, 20, -30, null, 15, 7]],
+      "expected": [0, -10, 20, -30, null, 15, 7]
+    },
+    {
+      "name": "exact-large-values",
+      "args": [[9007199254740993, -10000000000000000000000000000000000000001, 9007199254740994]],
+      "expected": [9007199254740993, -10000000000000000000000000000000000000001, 9007199254740994]
+    }
+  ]
+}

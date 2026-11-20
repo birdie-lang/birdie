@@ -9,5 +9,17 @@
     "position": 60,
     "category": "Trees"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Encode a binary tree as text and reconstruct its values and shape.",
+  "note": "Use preorder tokens with explicit missing-child markers, and share one cursor while reading them.",
+  "notes": [
+    "Preorder writes the current value, then the left subtree, then the right subtree. The | marker represents each absent child, so trees with the same values but different shapes have different encodings. An empty tree serializes to |.",
+    "The nested write procedure captures parts and pushes tokens into it. Mutating this list does not rebind its name, so no outer entry is needed. The procedure omits a result annotation; bare return exits without producing a value.",
+    "Collecting tokens and joining once avoids repeatedly copying subtree strings during recursive concatenation. Commas appear only between tokens, with no trailing comma. The Python reference uses the same token order and join strategy.",
+    "split(\",\") eagerly produces list[str]; iter() adds a forward cursor without copying that list. Every recursive readTree call receives the same iterator object, so next() advances one shared position. Reassigning an iterator variable would be different from advancing the cursor.",
+    "next() returns the next string and raises a runtime error on exhaustion. A | token means an absent child; exhausted input is not another spelling of an absent child. for loops over iterators handle normal exhaustion internally.",
+    "The decoder assumes a complete, valid encoding from this serializer. It does not validate that the input ends immediately after the tree. Truncated or malformed required tokens fail when read or converted; extra tokens are ignored. No generator functions, yield, string interpolation, or user-defined methods are needed.",
+    "Birdie uses separate serialize and deserialize functions, with readTree below them because it captures no variables. Python keeps LeetCode's Codec class and passes its iterator to a matching helper. LeetCode supplies TreeNode; the record declaration shows its standalone Birdie form.",
+    "Traversal, token splitting, and joining take O(n + L) work for n nodes and L encoded characters; integer parsing and formatting add their own cost. Token storage is O(n + L), recursion space is O(h), and reconstruction allocates O(n) tree nodes. Shared fixtures check round trips for empty, sparse, skewed, repeated-value, zero, negative, and exact large-integer trees."
+  ]
 }

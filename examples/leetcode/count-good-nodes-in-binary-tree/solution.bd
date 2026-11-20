@@ -1,0 +1,13 @@
+fn goodNodes(root: TreeNode) int:
+    return dfs(root, root.val)
+
+fn dfs(node: TreeNode?, max_val: int) int:
+    if node == none:
+        return 0
+
+    count = 0
+    if node.val >= max_val:
+        count = 1
+        max_val = node.val
+
+    return count + dfs(node.left, max_val) + dfs(node.right, max_val)

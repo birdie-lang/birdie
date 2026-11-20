@@ -1,0 +1,12 @@
+fn buildTree(preorder: list[int], inorder: list[int]) TreeNode?:
+    if not preorder or not inorder:
+        return none
+
+    value = preorder[0]
+    mid = inorder.index(value)
+
+    return TreeNode(
+        value,
+        buildTree(preorder[1:mid + 1], inorder[:mid]),
+        buildTree(preorder[mid + 1:], inorder[mid + 1:]),
+    )

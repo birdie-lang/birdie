@@ -9,5 +9,15 @@
     "position": 59,
     "category": "Trees"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Find the largest sum along any nonempty path between nodes in the tree.",
+  "note": "Track complete paths separately from the single-branch gain returned to each parent.",
+  "notes": [
+    "This solution assumes a nonempty input tree. Starting res from root.val ensures that an all-negative tree still returns a node value. The optional root signature is retained; its initial field access checks presence at runtime when needed.",
+    "outer res in the dfs header allows max! to update the enclosing accumulator, matching Python's nonlocal res in the helper body. It is a writable capture, not a call argument; dfs still takes only the node. Each recursive call has its own node, left, and right locals.",
+    "max(0, dfs(child)) discards a child path when its gain is negative. An absent child contributes zero, while every candidate complete path still includes the current node.",
+    "max!(res, node.val + left + right) considers a complete path joining both child branches through the node. The helper returns node.val + max(left, right), extending through only one child so its parent can attach without creating a branching path.",
+    "The Python reference keeps the same traversal and expression order. LeetCode supplies TreeNode; the record declaration shows its standalone Birdie form. The tree is not modified.",
+    "Under unit-cost integer operations, time is O(n) and recursion space is O(h), where h is tree height. Integer arithmetic remains exact; the cases include a path sum above floating-point precision."
+  ]
 }
