@@ -115,13 +115,11 @@ type BlockStatement struct {
 func (bs *BlockStatement) statementNode()       {}
 func (bs *BlockStatement) TokenLiteral() string { return bs.Token.Text() }
 func (bs *BlockStatement) String() string {
-	var out strings.Builder
-
-	for _, s := range bs.Statements {
-		out.WriteString(s.String())
+	lines := make([]string, len(bs.Statements))
+	for i, stmt := range bs.Statements {
+		lines[i] = "    " + strings.ReplaceAll(stmt.String(), "\n", "\n    ")
 	}
-
-	return out.String()
+	return strings.Join(lines, "\n")
 }
 
 // ----------------------------------------------------------------------------
@@ -195,4 +193,38 @@ func (ie *InfixExpression) String() string {
 	out.WriteString(")")
 
 	return out.String()
+}
+
+type IfExpression struct {
+	Token  token.Token
+	If     IfBranch
+	ElseIf []IfBranch
+	Else   *BlockStatement
+}
+
+func (ie *IfExpression) expressionNode()      {}
+func (ie *IfExpression) TokenLiteral() string { return ie.Token.Text() }
+func (ie *IfExpression) String() string {
+	var out strings.Builder
+	out.WriteString("if ")
+	out.WriteString(ie.If.String())
+	for _, elseIf := range ie.ElseIf {
+		out.WriteString("\nelse if ")
+		out.WriteString(elseIf.String())
+	}
+	if ie.Else != nil {
+		out.WriteString("\nelse:\n")
+		out.WriteString(ie.Else.String())
+	}
+
+	return out.String()
+}
+
+type IfBranch struct {
+	Condition   Expression
+	Consequence *BlockStatement
+}
+
+func (ib IfBranch) String() string {
+	return ib.Condition.String() + ":\n" + ib.Consequence.String()
 }

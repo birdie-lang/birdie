@@ -54,10 +54,10 @@ func Eval(
 		env.Set(node.Name.Value, val)
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
-		// 	case *ast.BlockStatement:
-		// 		return evalBlockStatement(node.Statements, env)
-		// 	case *ast.IfExpression:
-		// 		return evalIfExpression(node, env)
+	case *ast.BlockStatement:
+		return evalStatements(node.Statements, env)
+	case *ast.IfExpression:
+		return evalIfExpression(node, env)
 		// 	case *ast.ReturnStatement:
 		// 		val := Eval(node.ReturnValue, env)
 		// 		if isError(val) {
@@ -142,6 +142,31 @@ func isTruthy(obj object.Object) bool {
 	default:
 		return true
 	}
+}
+
+func evalIfExpression(ie *ast.IfExpression, env *object.Environment) (object.Object, *diagnostic.Diagnostic) {
+	condition, err := Eval(ie.If.Condition, env)
+	if err != nil {
+		return nil, err
+	}
+	if isTruthy(condition) {
+		return Eval(ie.If.Consequence, env)
+	}
+
+	for _, branch := range ie.ElseIf {
+		condition, err := Eval(branch.Condition, env)
+		if err != nil {
+			return nil, err
+		}
+		if isTruthy(condition) {
+			return Eval(branch.Consequence, env)
+		}
+	}
+
+	if ie.Else != nil {
+		return Eval(ie.Else, env)
+	}
+	return NONE, nil
 }
 
 func nativeBoolToBooleanObject(input bool) object.Object {
@@ -259,7 +284,7 @@ func evalMinusPrefixOperatorExpression(operator token.Token, right object.Object
 	return &object.Integer{Value: *new(big.Int).Neg(value)}, nil
 }
 
-func evalProgram(statements []ast.Statement, env *object.Environment) (object.Object, *diagnostic.Diagnostic) {
+func evalStatements(statements []ast.Statement, env *object.Environment) (object.Object, *diagnostic.Diagnostic) {
 	var result object.Object
 	var err *diagnostic.Diagnostic
 
@@ -270,13 +295,16 @@ func evalProgram(statements []ast.Statement, env *object.Environment) (object.Ob
 			return nil, err
 		}
 
-		switch result := result.(type) {
-		case *object.ReturnValue:
-			return result.Value, nil
+		if _, ok := result.(*object.ReturnValue); ok {
+			return result, nil
 		}
 	}
 
 	return result, nil
+}
+
+func evalProgram(statements []ast.Statement, env *object.Environment) (object.Object, *diagnostic.Diagnostic) {
+	return evalStatements(statements, env)
 }
 
 func newError(code diagnostic.Code, span source.Span, message string, a ...any) *diagnostic.Diagnostic {

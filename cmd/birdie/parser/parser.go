@@ -63,7 +63,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.TRUE, p.parseBoolean)
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	// p.registerPrefix(token.LPAREN, p.parseGroupExpression)
-	// p.registerPrefix(token.IF, p.parseIfExpression)
+	p.registerPrefix(token.IF, p.parseIfExpression)
 	// p.registerPrefix(token.FUN, p.parseFunctionLiteral)
 	// p.registerPrefix(token.STRING, p.parseStringLiteral)
 	// p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
@@ -298,14 +298,84 @@ func (p *Parser) parseBoolean() ast.Expression {
 	return &ast.Boolean{Token: p.curToken, Value: p.curTokenIs(token.TRUE)}
 }
 
-func (p *Parser) expectPeek(t token.TokenType) bool {
-	if p.peekTokenIs(t) {
-		p.nextToken()
-		return true
-	} else {
-		p.peekError(t)
-		return false
+func (p *Parser) expectPeek(tokens ...token.TokenType) bool {
+	for _, t := range tokens {
+		if p.peekTokenIs(t) {
+			p.nextToken()
+		} else {
+			p.peekError(t)
+			return false
+		}
 	}
+	return true
+}
+
+func (p *Parser) parseIfExpression() ast.Expression {
+	exp := &ast.IfExpression{Token: p.curToken}
+	first, ok := p.parseIfBranch()
+	if !ok {
+		return nil
+	}
+	exp.If = first
+
+	for p.peekTokenIs(token.ELSE) {
+		p.nextToken()
+		if !p.peekTokenIs(token.IF) {
+			exp.Else = p.parseBlockStatement()
+			if exp.Else == nil {
+				return nil
+			}
+			break
+		}
+
+		p.nextToken()
+		branch, ok := p.parseIfBranch()
+		if !ok {
+			return nil
+		}
+		exp.ElseIf = append(exp.ElseIf, branch)
+	}
+
+	return exp
+}
+
+// parseIfBranch starts with if in curToken.
+func (p *Parser) parseIfBranch() (ast.IfBranch, bool) {
+	p.nextToken()
+	condition := p.parseExpression(LOWEST)
+	if condition == nil {
+		return ast.IfBranch{}, false
+	}
+	body := p.parseBlockStatement()
+	if body == nil {
+		return ast.IfBranch{}, false
+	}
+	return ast.IfBranch{Condition: condition, Consequence: body}, true
+}
+
+// parseBlockStatement starts with the opening colon in peekToken.
+func (p *Parser) parseBlockStatement() *ast.BlockStatement {
+	if !p.expectPeek(token.COLON, token.EOL, token.INDENT) {
+		return nil
+	}
+
+	block := &ast.BlockStatement{Token: p.curToken}
+	block.Statements = []ast.Statement{}
+
+	p.nextToken()
+
+	for !p.curTokenIs(token.DEDENT) && !p.curTokenIs(token.EOF) {
+		if p.curTokenIs(token.EOL) {
+			p.nextToken()
+			continue
+		}
+		stmt := p.parseStatement()
+		if stmt != nil {
+			block.Statements = append(block.Statements, stmt)
+		}
+		p.nextToken()
+	}
+	return block
 }
 
 func (p *Parser) peekTokenIs(t token.TokenType) bool {
