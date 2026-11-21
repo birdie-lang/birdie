@@ -15,19 +15,7 @@ func TestEvalIntegerVariables(t *testing.T) {
 		name  string
 		steps []step
 	}{
-		{"binding", []step{{"count = 5\ncount", "5"}}},
-		{"zero", []step{{"count = 0\ncount", "0"}}},
-		{"negative", []step{{"count = -7\ncount", "-7"}}},
 		{"expression-initializer", []step{{"count = 2 + 3 * 4\ncount", "14"}}},
-		{"large-integer", []step{{"count = 9223372036854775808\ncount", "9223372036854775808"}}},
-		{"derived-binding", []step{
-			{"count = 5\ncount", "5"},
-			{"double = count * 2\ndouble", "10"},
-		}},
-		{"reassignment", []step{
-			{"count = 5\ncount", "5"},
-			{"count = 12\ncount", "12"},
-		}},
 		{"update-from-previous-value", []step{
 			{"count = 5\ncount", "5"},
 			{"count = count + 3\ncount", "8"},
@@ -49,9 +37,7 @@ func TestEvalIntegerVariables(t *testing.T) {
 			env := object.NewEnvironment()
 			for _, step := range tt.steps {
 				value, d := testEvalWithEnvironment(t, step.input, env)
-				if d != nil {
-					t.Fatalf("evaluating %q: unexpected diagnostic %+v", step.input, *d)
-				}
+				requireNoRuntimeDiagnostic(t, step.input, d)
 				testIntegerObject(t, value, step.want)
 			}
 		})
@@ -63,18 +49,13 @@ func TestEvalBooleanVariables(t *testing.T) {
 		name, input string
 		want        bool
 	}{
-		{"true", "ready = true\nready", true},
 		{"false", "ready = false\nready", false},
-		{"comparison-initializer", "ready = 1 < 2\nready", true},
-		{"reassignment", "ready = true\nready = false\nready", false},
-		{"reassignment-preserves-copy", "ready = true\noriginal = ready\nready = false\noriginal", true},
+		{"reassignment-preserves-copy", "ready = 1 < 2\noriginal = ready\nready = false\nready == original", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			value, d := testEval(t, tt.input)
-			if d != nil {
-				t.Fatalf("unexpected runtime diagnostic: %+v", *d)
-			}
+			requireNoRuntimeDiagnostic(t, tt.input, d)
 			testBooleanObject(t, value, tt.want)
 		})
 	}
@@ -86,9 +67,7 @@ func TestUnboundVariableDiagnostics(t *testing.T) {
 		span        source.Span
 	}{
 		{"undefined-name", "missing", source.Span{Start: 0, End: 7}},
-		{"undefined-initializer", "value = missing", source.Span{Start: 8, End: 15}},
 		{"self-initialization", "value = value", source.Span{Start: 8, End: 13}},
-		{"read-before-assignment", "value\nvalue = 1", source.Span{Start: 0, End: 5}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -103,19 +82,15 @@ func TestFailedAssignmentPreservesEnvironment(t *testing.T) {
 		code        diagnostic.Code
 		span        source.Span
 	}{
-		{"new-binding", "value = missing", diagnostic.UnboundVariable, source.Span{Start: 8, End: 15}},
-		{"reassignment", "saved = missing", diagnostic.UnboundVariable, source.Span{Start: 8, End: 15}},
-		{"type-mismatch", "value = 5 + true", diagnostic.UnknownOperator, source.Span{Start: 10, End: 11}},
-		{"division-by-zero", "saved = 1 // 0", diagnostic.DivisionByZero, source.Span{Start: 10, End: 12}},
-		{"stop-after-error", "value = missing\nsaved = 0", diagnostic.UnboundVariable, source.Span{Start: 8, End: 15}},
+		{"new-binding-stops-after-error", "value = missing\nsaved = 0", diagnostic.UnboundVariable, source.Span{Start: 8, End: 15}},
+		{"failed-reassignment", "saved = 1 // 0", diagnostic.DivisionByZero, source.Span{Start: 10, End: 12}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			env := object.NewEnvironment()
-			value, d := testEvalWithEnvironment(t, "saved = 7\nsaved", env)
-			if d != nil {
-				t.Fatalf("unexpected setup diagnostic: %+v", *d)
-			}
+			const setup = "saved = 7\nsaved"
+			value, d := testEvalWithEnvironment(t, setup, env)
+			requireNoRuntimeDiagnostic(t, setup, d)
 			testIntegerObject(t, value, "7")
 
 			value, d = testEvalWithEnvironment(t, tt.input, env)

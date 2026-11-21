@@ -6,6 +6,7 @@ import (
 	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
 	"github.com/birdie-lang/birdie/cmd/birdie/source"
 	"github.com/birdie-lang/birdie/cmd/birdie/token"
+	"github.com/birdie-lang/birdie/internal/testutil"
 )
 
 func tok(kind token.TokenType, literal ...string) token.Token {
@@ -301,15 +302,15 @@ next = 3
 			l := New(tt.input)
 			for i, expected := range tt.want {
 				got := l.NextToken()
+				testutil.RequireNoDiagnostics(t, "lexer", tt.input, l.Diagnostics()...)
 				if got.Type != expected.Type || got.Literal != expected.Literal {
 					t.Fatalf("token %d: got %s(%q), want %s(%q)", i, got.Type, got.Literal, expected.Type, expected.Literal)
 				}
 			}
-			if got := l.NextToken(); got.Type != token.EOF {
+			got := l.NextToken()
+			testutil.RequireNoDiagnostics(t, "lexer", tt.input, l.Diagnostics()...)
+			if got.Type != token.EOF {
 				t.Fatalf("after EOF: got %s(%q), want EOF", got.Type, got.Literal)
-			}
-			if diagnostics := l.Diagnostics(); len(diagnostics) != 0 {
-				t.Fatalf("unexpected lexer diagnostics: %+v", diagnostics)
 			}
 		})
 	}

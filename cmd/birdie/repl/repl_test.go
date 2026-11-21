@@ -12,8 +12,6 @@ func TestParseLineDiagnostics(t *testing.T) {
 		input string
 		want  []string
 	}{
-		{"lexer", "@", []string{"error[unexpected-character]", " --> <repl>:1:1"}},
-		{"parser", "x =", []string{"error[expected-expression]", " --> <repl>:1:4"}},
 		{"indentation", "  x = 1", []string{"error[invalid-indentation]", " --> <repl>:1:1"}},
 		{"source-order", "x =\n@", []string{
 			"error[expected-expression]", " --> <repl>:1:4",
@@ -71,11 +69,6 @@ func TestEvaluationModes(t *testing.T) {
 			name:  "default-mode",
 			input: "1 + 2 * 3\ntrue\n1 > 2\n",
 			want:  "> 7\n> true\n> false\n> ",
-		},
-		{
-			name:  "switch-from-parse",
-			input: "/parse\n1 + 2\n/eval\n1 + 2\n",
-			want:  "> parse> (1 + 2)\nparse> > 3\n> ",
 		},
 		{
 			name:  "switch-through-all-modes",

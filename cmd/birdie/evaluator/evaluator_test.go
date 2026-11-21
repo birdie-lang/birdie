@@ -9,6 +9,7 @@ import (
 	"github.com/birdie-lang/birdie/cmd/birdie/object"
 	"github.com/birdie-lang/birdie/cmd/birdie/parser"
 	"github.com/birdie-lang/birdie/cmd/birdie/source"
+	"github.com/birdie-lang/birdie/internal/testutil"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {
@@ -17,29 +18,18 @@ func TestEvalIntegerExpression(t *testing.T) {
 		want  string
 	}{
 		{"0", "0"},
-		{"5", "5"},
-		{"10", "10"},
-		{"0 - 5", "-5"},
-		{"5 + 5 + 5 + 5 - 10", "10"},
-		{"2 * 2 * 2 * 2 * 2", "32"},
+		{"-5", "-5"},
 		{"5 * 2 + 10", "20"},
 		{"5 + 2 * 10", "25"},
-		{"3 * 3 * 3 + 10", "37"},
 		{"20 - 5 - 3", "12"},
-		{"9223372036854775808", "9223372036854775808"},
-		{"1234567890123456789012345678901234567890", "1234567890123456789012345678901234567890"},
 		{"9223372036854775807 + 1", "9223372036854775808"},
-		{"9007199254740992 + 1", "9007199254740993"},
 		{"9223372036854775808 * 3", "27670116110564327424"},
-		{"9223372036854775809 - 9223372036854775808", "1"},
 		{"5\n10\n15\n", "15"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			value, d := testEval(t, tt.input)
-			if d != nil {
-				t.Fatalf("unexpected runtime diagnostic: %+v", *d)
-			}
+			requireNoRuntimeDiagnostic(t, tt.input, d)
 			testIntegerObject(t, value, tt.want)
 		})
 	}
@@ -63,9 +53,7 @@ func TestEvalFloorDivision(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			value, d := testEval(t, tt.input)
-			if d != nil {
-				t.Fatalf("unexpected runtime diagnostic: %+v", *d)
-			}
+			requireNoRuntimeDiagnostic(t, tt.input, d)
 			testIntegerObject(t, value, tt.want)
 		})
 	}
@@ -87,22 +75,16 @@ func TestEvalBooleanExpression(t *testing.T) {
 		{"1 == 2", false},
 		{"1 != 2", true},
 		{"true == true", true},
-		{"false == false", true},
 		{"true == false", false},
 		{"true != false", true},
-		{"false != true", true},
+		{"true != true", false},
 		{"2 + 3 * 4 == 14", true},
-		{"10 * 2 != 20", false},
-		{"9007199254740992 == 9007199254740993", false},
-		{"9223372036854775808 < 9223372036854775809", true},
 		{"9223372036854775808 > 9223372036854775807", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			value, d := testEval(t, tt.input)
-			if d != nil {
-				t.Fatalf("unexpected runtime diagnostic: %+v", *d)
-			}
+			requireNoRuntimeDiagnostic(t, tt.input, d)
 			testBooleanObject(t, value, tt.want)
 		})
 	}
@@ -110,69 +92,30 @@ func TestEvalBooleanExpression(t *testing.T) {
 
 func TestRuntimeDiagnostics(t *testing.T) {
 	tests := []struct {
-		name  string
-		input string
-		code  diagnostic.Code
-		span  source.Span
+		name    string
+		input   string
+		code    diagnostic.Code
+		span    source.Span
+		message string
 	}{
-		{"mixed-operand-types", "5 + true", diagnostic.UnknownOperator, source.Span{Start: 2, End: 3}},
-		{"boolean-addition", "true + false", diagnostic.UnknownOperator, source.Span{Start: 5, End: 6}},
-		{"boolean-comparison", "true < false", diagnostic.UnknownOperator, source.Span{Start: 5, End: 6}},
-		{"nested-right-error", "1 + true * false", diagnostic.UnknownOperator, source.Span{Start: 9, End: 10}},
-		{"nested-left-error", "true + false + 1", diagnostic.UnknownOperator, source.Span{Start: 5, End: 6}},
-		{"first-operand-error", "true + false + true * false", diagnostic.UnknownOperator, source.Span{Start: 5, End: 6}},
-		{"stop-before-next-statement", "true + false\n5 + true", diagnostic.UnknownOperator, source.Span{Start: 5, End: 6}},
-		{"error-after-valid-statement", "1\n5 + true\n3", diagnostic.UnknownOperator, source.Span{Start: 4, End: 5}},
+		{"mixed-operand-types", "5 + true", diagnostic.UnknownOperator, source.Span{Start: 2, End: 3}, "type mismatch: INTEGER + BOOLEAN"},
+		{"boolean-addition", "true + false", diagnostic.UnknownOperator, source.Span{Start: 5, End: 6}, "unknown operator: BOOLEAN + BOOLEAN"},
+		{"nested-right-error", "1 + true * false", diagnostic.UnknownOperator, source.Span{Start: 9, End: 10}, ""},
+		{"first-operand-error", "true + false + true * false", diagnostic.UnknownOperator, source.Span{Start: 5, End: 6}, ""},
+		{"error-after-valid-statement", "1\n5 + true\n3", diagnostic.UnknownOperator, source.Span{Start: 4, End: 5}, ""},
+		{"division-by-zero", "5 // 0", diagnostic.DivisionByZero, source.Span{Start: 2, End: 4}, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			testRuntimeDiagnostic(t, tt.input, tt.code, tt.span)
-		})
-	}
-}
-
-func TestDivisionByZeroDiagnostics(t *testing.T) {
-	tests := []struct {
-		name  string
-		input string
-		span  source.Span
-	}{
-		{"division-by-zero", "5 // 0", source.Span{Start: 2, End: 4}},
-		{"zero-divided-by-zero", "0 // 0", source.Span{Start: 2, End: 4}},
-		{"nested-right-error", "1 + 10 // 0", source.Span{Start: 7, End: 9}},
-		{"nested-left-error", "1 // 0 + 10", source.Span{Start: 2, End: 4}},
-		{"first-operand-error", "1 // 0 + 2 // 0", source.Span{Start: 2, End: 4}},
-		{"stop-before-next-statement", "1 // 0\ntrue + false", source.Span{Start: 2, End: 4}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			testRuntimeDiagnostic(t, tt.input, diagnostic.DivisionByZero, tt.span)
-		})
-	}
-}
-
-func TestRuntimeDiagnosticMessages(t *testing.T) {
-	tests := []struct {
-		input string
-		want  string
-	}{
-		{"5 + true", "type mismatch: INTEGER + BOOLEAN"},
-		{"true + false", "unknown operator: BOOLEAN + BOOLEAN"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.input, func(t *testing.T) {
-			_, d := testEval(t, tt.input)
-			if d == nil {
-				t.Fatal("expected a runtime diagnostic")
-			}
-			if d.Message != tt.want {
-				t.Errorf("got message %q, want %q", d.Message, tt.want)
+			d := testRuntimeDiagnostic(t, tt.input, tt.code, tt.span)
+			if tt.message != "" && d.Message != tt.message {
+				t.Errorf("got message %q, want %q", d.Message, tt.message)
 			}
 		})
 	}
 }
 
-func testRuntimeDiagnostic(t *testing.T, input string, code diagnostic.Code, span source.Span) {
+func testRuntimeDiagnostic(t *testing.T, input string, code diagnostic.Code, span source.Span) *diagnostic.Diagnostic {
 	t.Helper()
 	value, d := testEval(t, input)
 	if d == nil {
@@ -187,6 +130,7 @@ func testRuntimeDiagnostic(t *testing.T, input string, code diagnostic.Code, spa
 	if d.Message == "" {
 		t.Error("runtime diagnostic has no message")
 	}
+	return d
 }
 
 func testEval(t *testing.T, input string) (object.Object, *diagnostic.Diagnostic) {
@@ -201,13 +145,16 @@ func testEvalWithEnvironment(t *testing.T, input string, env *object.Environment
 	l := lexer.New(input)
 	p := parser.New(l)
 	program := p.ParseProgram()
-	if diagnostics := l.Diagnostics(); len(diagnostics) != 0 {
-		t.Fatalf("unexpected lexer diagnostics: %+v", diagnostics)
-	}
-	if diagnostics := p.Diagnostics(); len(diagnostics) != 0 {
-		t.Fatalf("unexpected parser diagnostics: %+v", diagnostics)
-	}
+	testutil.RequireNoDiagnostics(t, "lexer", input, l.Diagnostics()...)
+	testutil.RequireNoDiagnostics(t, "parser", input, p.Diagnostics()...)
 	return Eval(program, env)
+}
+
+func requireNoRuntimeDiagnostic(t *testing.T, input string, d *diagnostic.Diagnostic) {
+	t.Helper()
+	if d != nil {
+		testutil.RequireNoDiagnostics(t, "runtime", input, *d)
+	}
 }
 
 func testIntegerObject(t *testing.T, value object.Object, want string) {

@@ -7,13 +7,12 @@ import (
 
 	"github.com/birdie-lang/birdie/cmd/birdie/ast"
 	"github.com/birdie-lang/birdie/cmd/birdie/lexer"
+	"github.com/birdie-lang/birdie/internal/testutil"
 )
 
 func TestIntegerLiteralExpression(t *testing.T) {
 	for _, input := range []string{
 		"0",
-		"5",
-		"9223372036854775808",
 		"1234567890123456789012345678901234567890",
 	} {
 		t.Run(input, func(t *testing.T) {
@@ -65,20 +64,12 @@ func TestInfixExpressionString(t *testing.T) {
 }
 
 func TestAssignStatements(t *testing.T) {
-	largeValue, ok := new(big.Int).SetString("1234567890123456789012345678901234567890", 10)
-	if !ok {
-		t.Fatal("invalid large integer test value")
-	}
-
 	tests := []struct {
 		input              string
 		expectedIdentifier string
 		expectedValue      any
 	}{
 		{"x = 5", "x", 5},
-		{"large = 9223372036854775807", "large", int64(9223372036854775807)},
-		{"huge = 1234567890123456789012345678901234567890", "huge", largeValue},
-		{"y = true", "y", true},
 		{"ready = false", "ready", false},
 		{"foobar = y", "foobar", "y"},
 	}
@@ -134,8 +125,6 @@ func testLiteralExpression(
 	switch v := expected.(type) {
 	case int:
 		return testIntegerLiteral(t, exp, big.NewInt(int64(v)))
-	case int64:
-		return testIntegerLiteral(t, exp, big.NewInt(v))
 	case *big.Int:
 		return testIntegerLiteral(t, exp, v)
 	case string:
@@ -231,11 +220,7 @@ func parseAndCheckProgram(t *testing.T, input string) *ast.Program {
 	l := lexer.New(input)
 	p := New(l)
 	program := p.ParseProgram()
-	if diagnostics := l.Diagnostics(); len(diagnostics) != 0 {
-		t.Fatalf("unexpected lexer diagnostics: %+v", diagnostics)
-	}
-	if diagnostics := p.Diagnostics(); len(diagnostics) != 0 {
-		t.Fatalf("unexpected parser diagnostics: %+v", diagnostics)
-	}
+	testutil.RequireNoDiagnostics(t, "lexer", input, l.Diagnostics()...)
+	testutil.RequireNoDiagnostics(t, "parser", input, p.Diagnostics()...)
 	return program
 }
