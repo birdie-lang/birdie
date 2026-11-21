@@ -22,6 +22,11 @@ type Expression interface {
 	expressionNode()
 }
 
+type TypeExpression interface {
+	Node
+	typeExpressionNode()
+}
+
 type Program struct {
 	Statements []Statement
 }
@@ -84,8 +89,6 @@ func (rs *ReturnStatement) String() string {
 	if rs.ReturnValue != nil {
 		out.WriteString(rs.ReturnValue.String())
 	}
-
-	out.WriteString(";")
 
 	return out.String()
 }
@@ -227,4 +230,70 @@ type IfBranch struct {
 
 func (ib IfBranch) String() string {
 	return ib.Condition.String() + ":\n" + ib.Consequence.String()
+}
+
+type Parameter struct {
+	Name *Identifier
+	Type TypeExpression
+}
+
+func (p Parameter) String() string {
+	return p.Name.String() + ": " + p.Type.String()
+}
+
+type NamedType struct {
+	Token token.Token
+	Name  string
+}
+
+func (nt *NamedType) typeExpressionNode()  {}
+func (nt *NamedType) TokenLiteral() string { return nt.Token.Text() }
+func (nt *NamedType) String() string       { return nt.Name }
+
+type FunctionLiteral struct {
+	Token      token.Token
+	Name       Identifier
+	Parameters []Parameter
+	ReturnType NamedType
+	Body       *BlockStatement
+}
+
+func (fl *FunctionLiteral) expressionNode()      {}
+func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Text() }
+func (fl *FunctionLiteral) String() string {
+	var out strings.Builder
+
+	params := make([]string, len(fl.Parameters))
+	for i, p := range fl.Parameters {
+		params[i] = p.String()
+	}
+	out.WriteString("fn ")
+	out.WriteString(fl.Name.String())
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(")")
+	if fl.ReturnType.Name != "" {
+		out.WriteString(" ")
+		out.WriteString(fl.ReturnType.String())
+	}
+	out.WriteString(":\n")
+	out.WriteString(fl.Body.String())
+
+	return out.String()
+}
+
+type CallExpression struct {
+	Token     token.Token
+	Function  Expression
+	Arguments []Expression
+}
+
+func (ce *CallExpression) expressionNode()      {}
+func (ce *CallExpression) TokenLiteral() string { return ce.Token.Text() }
+func (ce *CallExpression) String() string {
+	args := make([]string, len(ce.Arguments))
+	for i, arg := range ce.Arguments {
+		args[i] = arg.String()
+	}
+	return ce.Function.String() + "(" + strings.Join(args, ", ") + ")"
 }

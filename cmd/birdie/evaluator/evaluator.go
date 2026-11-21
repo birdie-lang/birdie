@@ -58,27 +58,25 @@ func Eval(
 		return evalStatements(node.Statements, env)
 	case *ast.IfExpression:
 		return evalIfExpression(node, env)
-		// 	case *ast.ReturnStatement:
-		// 		val := Eval(node.ReturnValue, env)
-		// 		if isError(val) {
-		// 			return val
-		// 		}
-		// 		return &object.ReturnValue{Value: val}
-		// 	case *ast.FunctionLiteral:
-		// 		params := node.Parameters
-		// 		body := node.Body
-		// 		return &object.Function{Parameters: params, Body: body, Env: env}
-		// 	case *ast.CallExpression:
-		// 		function := Eval(node.Function, env)
-		// 		if isError(function) {
-		// 			return function
-		// 		}
-		// 		args := evalExpressions(node.Arguments, env)
-		// 		if len(args) == 1 && isError(args[0]) {
-		// 			return args[0]
-		// 		}
-		//
-		// 		return applyFunction(function, args)
+	case *ast.ReturnStatement:
+		val, err := Eval(node.ReturnValue, env)
+		if err != nil {
+			return nil, err
+		}
+		return &object.ReturnValue{Value: val}, nil
+	case *ast.FunctionLiteral:
+		env.Set(node.Name.Value, &object.Function{Decl: node, Env: env})
+	case *ast.CallExpression:
+		function, err := Eval(node.Function, env)
+		if err != nil {
+			return nil, err
+		}
+		args, err := evalExpressions(node.Arguments, env)
+		if err != nil {
+			return nil, err
+		}
+
+		return applyFunction(function, args, node.Token.Span)
 		// 	case *ast.StringLiteral:
 		// 		return &object.String{Value: node.Value}
 		// 	case *ast.ArrayLiteral:
@@ -104,18 +102,18 @@ func Eval(
 	return nil, nil
 }
 
-func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Object {
+func evalExpressions(exps []ast.Expression, env *object.Environment) ([]object.Object, *diagnostic.Diagnostic) {
 	var result []object.Object
 
 	for _, e := range exps {
 		evaluated, err := Eval(e, env)
 		if err != nil {
-			return []object.Object{evaluated}
+			return nil, err
 		}
 		result = append(result, evaluated)
 	}
 
-	return result
+	return result, nil
 }
 
 func evalIdentifier(node *ast.Identifier, env *object.Environment) (object.Object, *diagnostic.Diagnostic) {
@@ -303,8 +301,62 @@ func evalStatements(statements []ast.Statement, env *object.Environment) (object
 	return result, nil
 }
 
+func applyFunction(fn object.Object, args []object.Object, callSpan source.Span) (object.Object, *diagnostic.Diagnostic) {
+	switch fn := fn.(type) {
+	case *object.Function:
+		decl := fn.Decl
+		if len(decl.Parameters) != len(args) {
+			return nil, newError(diagnostic.ArgumentCountMismatch, callSpan,
+				"%s expects %d arguments, but got %d", decl.Name.Value, len(decl.Parameters), len(args))
+		}
+		extendedEnv := extendFunctionEnv(fn, args)
+		evaluated, err := Eval(fn.Decl.Body, extendedEnv)
+		if err != nil {
+			return nil, err
+		}
+		return unwrapReturnValue(evaluated), nil
+	// case *object.Builtin:
+	// 	if result := fn.Fn(args...); result != nil {
+	// 		return result
+	// 	}
+	// 	return NULL
+	default:
+		return nil, newError(diagnostic.NoFunction, callSpan, "not a function: %s", fn.Type())
+	}
+}
+
+func unwrapReturnValue(obj object.Object) object.Object {
+	if returnValue, ok := obj.(*object.ReturnValue); ok {
+		return returnValue.Value
+	}
+	return obj
+}
+
+func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Environment {
+	env := object.NewClosedEnvironment(fn.Env)
+
+	for paramIdx, param := range fn.Decl.Parameters {
+		env.Set(param.Name.Value, args[paramIdx])
+	}
+
+	return env
+}
+
 func evalProgram(statements []ast.Statement, env *object.Environment) (object.Object, *diagnostic.Diagnostic) {
+	registerFunctions(statements, env)
 	return evalStatements(statements, env)
+}
+
+func registerFunctions(statements []ast.Statement, env *object.Environment) {
+	for _, stmt := range statements {
+		expr, ok := stmt.(*ast.ExpressionStatement)
+		if !ok {
+			continue
+		}
+		if fn, ok := expr.Expression.(*ast.FunctionLiteral); ok {
+			env.Set(fn.Name.Value, &object.Function{Decl: fn, Env: env})
+		}
+	}
 }
 
 func newError(code diagnostic.Code, span source.Span, message string, a ...any) *diagnostic.Diagnostic {

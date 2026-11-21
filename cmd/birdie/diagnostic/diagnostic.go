@@ -17,6 +17,8 @@ const (
 	DivisionByZero          Code = "division-by-zero"
 	UnknownOperator         Code = "unknown-operator"
 	UnboundVariable         Code = "unbound-variable"
+	NoFunction              Code = "no-function"
+	ArgumentCountMismatch   Code = "argument-count-mismatch"
 )
 
 // Diagnostic describes a source error. Spans refer to the source being analyzed;

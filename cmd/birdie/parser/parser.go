@@ -64,7 +64,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	// p.registerPrefix(token.LPAREN, p.parseGroupExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
-	// p.registerPrefix(token.FUN, p.parseFunctionLiteral)
+	p.registerPrefix(token.FUN, p.parseFunctionLiteral)
 	// p.registerPrefix(token.STRING, p.parseStringLiteral)
 	// p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
 	// p.registerPrefix(token.LBRACE, p.parseHashLiteral)
@@ -79,7 +79,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.NEQ, p.parseInfixExpression)
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
-	// p.registerInfix(token.LPAREN, p.parseCallExpression)
+	p.registerInfix(token.LPAREN, p.parseCallExpression)
 	// p.registerInfix(token.LBRACKET, p.parseIndexExpression)
 
 	// Read two tokens, so curToken and peekToken are both set
@@ -193,8 +193,8 @@ func describeToken(t token.Token) string {
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
-	// case token.RETURN:
-	// 	return p.parseReturnStatement()
+	case token.RETURN:
+		return p.parseReturnStatement()
 	default:
 		return p.parseExpressionStatement()
 	}
@@ -273,6 +273,17 @@ func (p *Parser) parseExpression(precedance int) ast.Expression {
 		}
 	}
 	return leftExp
+}
+
+func (p *Parser) parseReturnStatement() ast.Statement {
+	stmt := &ast.ReturnStatement{Token: p.curToken}
+	p.nextToken()
+
+	stmt.ReturnValue = p.parseExpression(LOWEST)
+	if stmt.ReturnValue == nil {
+		return nil
+	}
+	return stmt
 }
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
@@ -376,6 +387,118 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 		p.nextToken()
 	}
 	return block
+}
+
+func (p *Parser) parseFunctionLiteral() ast.Expression {
+	lit := &ast.FunctionLiteral{Token: p.curToken}
+
+	if !p.expectPeek(token.IDENT) {
+		return nil
+	}
+
+	lit.Name = ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	lit.Parameters = p.parseFunctionParameters()
+	if lit.Parameters == nil {
+		return nil
+	}
+
+	if p.peekToken.Type == token.IDENT {
+		p.nextToken()
+		lit.ReturnType = ast.NamedType{Token: p.curToken, Name: p.curToken.Literal}
+	}
+
+	lit.Body = p.parseBlockStatement()
+	if lit.Body == nil {
+		return nil
+	}
+
+	return lit
+}
+
+func (p *Parser) parseFunctionParameters() []ast.Parameter {
+	params := []ast.Parameter{}
+
+	if p.peekTokenIs(token.RPAREN) {
+		p.nextToken()
+		return params
+	}
+
+	for {
+		param, ok := p.parseFunctionParameter()
+		if !ok {
+			return nil
+		}
+		params = append(params, param)
+		if !p.peekTokenIs(token.COMMA) {
+			break
+		}
+		p.nextToken()
+	}
+
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	return params
+}
+
+// Enter with curToken on '(' or ',' and peekToken on the parameter name.
+func (p *Parser) parseFunctionParameter() (ast.Parameter, bool) {
+	if !p.expectPeek(token.IDENT) {
+		return ast.Parameter{}, false
+	}
+	name := &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+
+	if !p.expectPeek(token.COLON) || !p.expectPeek(token.IDENT) {
+		return ast.Parameter{}, false
+	}
+
+	return ast.Parameter{
+		Name: name,
+		Type: &ast.NamedType{Token: p.curToken, Name: p.curToken.Literal},
+	}, true
+}
+
+func (p *Parser) parseCallExpression(left ast.Expression) ast.Expression {
+	ce := &ast.CallExpression{Token: p.curToken, Function: left}
+	ce.Arguments = p.parseExpressionList(token.RPAREN)
+	if ce.Arguments == nil {
+		return nil
+	}
+	return ce
+}
+
+func (p *Parser) parseExpressionList(end token.TokenType) []ast.Expression {
+	list := []ast.Expression{}
+
+	if p.peekTokenIs(end) {
+		p.nextToken()
+		return list
+	}
+
+	for {
+		p.nextToken()
+		expr := p.parseExpression(LOWEST)
+		if expr == nil {
+			return nil
+		}
+		list = append(list, expr)
+		if !p.peekTokenIs(token.COMMA) {
+			break
+		}
+		p.nextToken()
+	}
+
+	if !p.expectPeek(end) {
+		return nil
+	}
+
+	return list
 }
 
 func (p *Parser) peekTokenIs(t token.TokenType) bool {
