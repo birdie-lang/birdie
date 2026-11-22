@@ -5,9 +5,8 @@ import (
 	"syscall/js"
 
 	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
-	"github.com/birdie-lang/birdie/cmd/birdie/evaluator"
 	"github.com/birdie-lang/birdie/cmd/birdie/object"
-	"github.com/birdie-lang/birdie/cmd/birdie/parser"
+	"github.com/birdie-lang/birdie/internal/runner"
 )
 
 func main() {
@@ -23,17 +22,8 @@ func main() {
 }
 
 func runSource(input string) string {
-	program, diagnostics := parser.Parse(input)
-	if len(diagnostics) > 0 {
-		return encodeResult(nil, diagnostics)
-	}
-
-	value, d := evaluator.Eval(program, object.NewEnvironment())
-	if d != nil {
-		return encodeResult(nil, []diagnostic.Diagnostic{*d})
-	}
-
-	return encodeResult(value, nil)
+	value, diagnostics := runner.Run(input, object.NewEnvironment())
+	return encodeResult(value, diagnostics)
 }
 
 func encodeResult(value object.Object, diagnostics []diagnostic.Diagnostic) string {

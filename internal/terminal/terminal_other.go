@@ -1,9 +1,9 @@
 //go:build !darwin && !linux
 
-package repl
+package terminal
 
 import "os"
 
-func isTerminal(_ *os.File) bool {
+func IsTerminal(_ *os.File) bool {
 	return false
 }

@@ -109,9 +109,11 @@ func (s *String) HashKey() HashKey {
 	return HashKey{Type: s.Type(), Value: h.Sum64()}
 }
 
-type BuiltinFunction func(args ...Object) Object
+type BuiltinFunction func(args ...Object) (Object, error)
 type Builtin struct {
-	Fn BuiltinFunction
+	Name  string
+	Arity int
+	Fn    BuiltinFunction
 }
 
 func (b *Builtin) Type() ObjectType { return BUILTIN_OBJ }

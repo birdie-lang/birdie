@@ -19,6 +19,8 @@ const (
 	UnboundVariable         Code = "unbound-variable"
 	NoFunction              Code = "no-function"
 	ArgumentCountMismatch   Code = "argument-count-mismatch"
+	ExpectedValue           Code = "expected-value"
+	BuiltinError            Code = "builtin-error"
 )
 
 // Diagnostic describes a source error. Spans refer to the source being analyzed;

@@ -19,6 +19,8 @@ import (
 	"github.com/birdie-lang/birdie/cmd/birdie/parser"
 	"github.com/birdie-lang/birdie/cmd/birdie/source"
 	"github.com/birdie-lang/birdie/cmd/birdie/token"
+	"github.com/birdie-lang/birdie/internal/runner"
+	"github.com/birdie-lang/birdie/internal/terminal"
 )
 
 const prompt = "> "
@@ -62,7 +64,7 @@ func Start(in io.Reader, out io.Writer) {
 	readInput := streamInput(in, out)
 	// Readline uses the process standard streams. Other streams retain the
 	// plain reader, including redirected input/output and tests.
-	if in == os.Stdin && out == os.Stdout && isTerminal(os.Stdin) && isTerminal(os.Stdout) {
+	if in == os.Stdin && out == os.Stdout && terminal.IsTerminal(os.Stdin) && terminal.IsTerminal(os.Stdout) {
 		fmt.Fprint(out, welcome)
 		if os.Getenv("TERM") != "dumb" {
 			readInput = terminalInput()
@@ -72,7 +74,7 @@ func Start(in io.Reader, out io.Writer) {
 }
 
 func run(readInput func(string) (string, error), out io.Writer) {
-	env := object.NewEnvironment()
+	env := evaluator.NewEnvironment(out)
 	m := modeEval
 
 	for {
@@ -156,11 +158,7 @@ func handleCommand(line string, current mode, out io.Writer) (bool, mode) {
 }
 
 func parseLine(line string, out io.Writer) (*ast.Program, bool) {
-	l := lexer.New(line)
-	p := parser.New(l)
-	program := p.ParseProgram()
-
-	diagnostics := slices.Concat(l.Diagnostics(), p.Diagnostics())
+	program, diagnostics := parser.Parse(line)
 	if len(diagnostics) != 0 {
 		printDiagnostics(line, diagnostics, out)
 		return nil, false
@@ -185,15 +183,10 @@ func printDiagnostics(text string, diagnostics []diagnostic.Diagnostic, out io.W
 		return cmp.Compare(a.Span.Start, b.Span.Start)
 	})
 	file := source.NewFile("<repl>", text)
-	color := diagnosticColorEnabled(out)
+	color := terminal.ColorEnabled(out)
 	for _, d := range diagnostics {
 		fmt.Fprintln(out, diagnostic.FormatWithColor(file, d, color))
 	}
-}
-
-func diagnosticColorEnabled(out io.Writer) bool {
-	file, ok := out.(*os.File)
-	return ok && os.Getenv("NO_COLOR") == "" && os.Getenv("TERM") != "dumb" && isTerminal(file)
 }
 
 func printAST(line string, out io.Writer) {
@@ -206,14 +199,9 @@ func printAST(line string, out io.Writer) {
 }
 
 func printEval(line string, out io.Writer, env *object.Environment) {
-	program, ok := parseLine(line, out)
-	if !ok {
-		return
-	}
-
-	value, d := evaluator.Eval(program, env)
-	if d != nil {
-		printDiagnostics(line, []diagnostic.Diagnostic{*d}, out)
+	value, diagnostics := runner.Run(line, env)
+	if len(diagnostics) != 0 {
+		printDiagnostics(line, diagnostics, out)
 		return
 	}
 	if value != nil {

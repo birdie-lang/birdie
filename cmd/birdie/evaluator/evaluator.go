@@ -31,23 +31,23 @@ func Eval(
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value), nil
 	case *ast.PrefixExpression:
-		right, err := Eval(node.Right, env)
+		right, err := evalValue(node.Right, env, node.Token.Span)
 		if err != nil {
 			return nil, err
 		}
 		return evalPrefixExpression(node.Token, right)
 	case *ast.InfixExpression:
-		left, err := Eval(node.Left, env)
+		left, err := evalValue(node.Left, env, node.Token.Span)
 		if err != nil {
 			return nil, err
 		}
-		right, err := Eval(node.Right, env)
+		right, err := evalValue(node.Right, env, node.Token.Span)
 		if err != nil {
 			return nil, err
 		}
 		return evalInfixExpression(node.Token, left, right)
 	case *ast.AssignStatement:
-		val, err := Eval(node.Value, env)
+		val, err := evalValue(node.Value, env, node.Token.Span)
 		if err != nil {
 			return nil, err
 		}
@@ -59,7 +59,7 @@ func Eval(
 	case *ast.IfExpression:
 		return evalIfExpression(node, env)
 	case *ast.ReturnStatement:
-		val, err := Eval(node.ReturnValue, env)
+		val, err := evalValue(node.ReturnValue, env, node.Token.Span)
 		if err != nil {
 			return nil, err
 		}
@@ -67,11 +67,11 @@ func Eval(
 	case *ast.FunctionLiteral:
 		env.Set(node.Name.Value, &object.Function{Decl: node, Env: env})
 	case *ast.CallExpression:
-		function, err := Eval(node.Function, env)
+		function, err := evalValue(node.Function, env, node.Token.Span)
 		if err != nil {
 			return nil, err
 		}
-		args, err := evalExpressions(node.Arguments, env)
+		args, err := evalExpressions(node.Arguments, env, node.Token.Span)
 		if err != nil {
 			return nil, err
 		}
@@ -102,11 +102,19 @@ func Eval(
 	return nil, nil
 }
 
-func evalExpressions(exps []ast.Expression, env *object.Environment) ([]object.Object, *diagnostic.Diagnostic) {
+func evalValue(node ast.Expression, env *object.Environment, span source.Span) (object.Object, *diagnostic.Diagnostic) {
+	value, d := Eval(node, env)
+	if value == nil && d == nil {
+		return nil, newError(diagnostic.ExpectedValue, span, "expected a value")
+	}
+	return value, d
+}
+
+func evalExpressions(exps []ast.Expression, env *object.Environment, span source.Span) ([]object.Object, *diagnostic.Diagnostic) {
 	var result []object.Object
 
 	for _, e := range exps {
-		evaluated, err := Eval(e, env)
+		evaluated, err := evalValue(e, env, span)
 		if err != nil {
 			return nil, err
 		}
@@ -143,7 +151,7 @@ func isTruthy(obj object.Object) bool {
 }
 
 func evalIfExpression(ie *ast.IfExpression, env *object.Environment) (object.Object, *diagnostic.Diagnostic) {
-	condition, err := Eval(ie.If.Condition, env)
+	condition, err := evalValue(ie.If.Condition, env, ie.Token.Span)
 	if err != nil {
 		return nil, err
 	}
@@ -152,7 +160,7 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Environment) (object.Obj
 	}
 
 	for _, branch := range ie.ElseIf {
-		condition, err := Eval(branch.Condition, env)
+		condition, err := evalValue(branch.Condition, env, ie.Token.Span)
 		if err != nil {
 			return nil, err
 		}
@@ -315,11 +323,16 @@ func applyFunction(fn object.Object, args []object.Object, callSpan source.Span)
 			return nil, err
 		}
 		return unwrapReturnValue(evaluated), nil
-	// case *object.Builtin:
-	// 	if result := fn.Fn(args...); result != nil {
-	// 		return result
-	// 	}
-	// 	return NULL
+	case *object.Builtin:
+		if len(args) != fn.Arity {
+			return nil, newError(diagnostic.ArgumentCountMismatch, callSpan,
+				"%s expects %d arguments, but got %d", fn.Name, fn.Arity, len(args))
+		}
+		value, err := fn.Fn(args...)
+		if err != nil {
+			return nil, newError(diagnostic.BuiltinError, callSpan, "%s: %s", fn.Name, err)
+		}
+		return value, nil
 	default:
 		return nil, newError(diagnostic.NoFunction, callSpan, "not a function: %s", fn.Type())
 	}

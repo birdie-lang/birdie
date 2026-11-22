@@ -1,4 +1,4 @@
-package repl
+package terminal
 
 import "syscall"
 
