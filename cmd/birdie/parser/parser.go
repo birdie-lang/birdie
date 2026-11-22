@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"math/big"
+	"slices"
 
 	"github.com/birdie-lang/birdie/cmd/birdie/ast"
 	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
@@ -87,6 +88,13 @@ func New(l *lexer.Lexer) *Parser {
 	p.nextToken()
 
 	return p
+}
+
+func Parse(source string) (*ast.Program, []diagnostic.Diagnostic) {
+	l := lexer.New(source)
+	p := New(l)
+	program := p.ParseProgram()
+	return program, slices.Concat(l.Diagnostics(), p.Diagnostics())
 }
 
 func (p *Parser) ParseProgram() *ast.Program {

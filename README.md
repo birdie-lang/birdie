@@ -25,7 +25,7 @@ fn twoSum(nums: list[int], target: int) list[int]:
     return []
 ```
 
-Read the [philosophy](https://birdie.jakmaz.com/docs/philosophy/) for the design principles, the [guide](https://birdie.jakmaz.com/docs/) for an introduction, or the [draft language specification](https://birdie.jakmaz.com/docs/specification/) for syntax and behavior.
+Read the [philosophy](https://birdie.jakmaz.com/docs/philosophy) for the design principles, the [guide](https://birdie.jakmaz.com/docs) for an introduction, or the [draft language specification](https://birdie.jakmaz.com/docs/specification) for syntax and behavior.
 Documentation is maintained in the [website repository](https://github.com/birdie-lang/website).
 
 ### Design
@@ -40,6 +40,6 @@ Documentation is maintained in the [website repository](https://github.com/birdi
 
 ### Status
 
-Early development. Birdie is not yet ready for general use.
+The Go AST interpreter supports integer and boolean expressions, variable assignments, conditional branches, and functions with returns and recursion. Try it in the terminal REPL or the [browser playground](https://birdie.jakmaz.com/playground), which runs the interpreter via WebAssembly.
 
-The first implementation is an AST interpreter in Go, with a bytecode VM planned for later.
+The [roadmap](https://birdie.jakmaz.com/docs/roadmap) tracks planned work, including command-line file execution, static type checking, and a bytecode VM.
