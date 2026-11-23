@@ -63,6 +63,34 @@ func TestInfixExpressionString(t *testing.T) {
 	}
 }
 
+func TestParseListLiterals(t *testing.T) {
+	tests := []struct{ name, input, want string }{
+		{"empty", "[]", "[]"},
+		{"nested-expressions", "[[1 + 2, 3], [4]]", "[[(1 + 2), 3], [4]]"},
+		{"multiline-trailing-comma", "[\n    1,\n    2,\n]", "[1, 2]"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			expr := parseAndCheckExpression(t, tt.input)
+			list, ok := expr.(*ast.ArrayLiteral)
+			if !ok {
+				t.Fatalf("expected a list literal, got %T", expr)
+			}
+			if got := list.String(); got != tt.want {
+				t.Errorf("list AST = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestParseListIndexPrecedence(t *testing.T) {
+	expr := parseAndCheckExpression(t, "nums[1 + 2] * 3")
+	product, ok := expr.(*ast.InfixExpression)
+	if !ok || product.Operator != "*" {
+		t.Fatalf("expected multiplication at the root, got %s (%T)", expr, expr)
+	}
+}
+
 func TestAssignStatements(t *testing.T) {
 	tests := []struct {
 		input              string

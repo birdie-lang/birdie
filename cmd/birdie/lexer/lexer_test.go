@@ -228,12 +228,15 @@ seen.add(num)
 			name: "multiline-list",
 			input: `nums = [
     1,
-    2
+    2,
 ]
+first = nums[0]
 `,
 			want: []token.Token{
 				tok(token.IDENT, "nums"), tok(token.ASSIGN), tok(token.LBRACKET),
-				tok(token.INT, "1"), tok(token.COMMA), tok(token.INT, "2"), tok(token.RBRACKET),
+				tok(token.INT, "1"), tok(token.COMMA), tok(token.INT, "2"), tok(token.COMMA), tok(token.RBRACKET),
+				tok(token.EOL), tok(token.IDENT, "first"), tok(token.ASSIGN), tok(token.IDENT, "nums"),
+				tok(token.LBRACKET), tok(token.INT, "0"), tok(token.RBRACKET),
 				tok(token.EOL), tok(token.EOF),
 			},
 		},

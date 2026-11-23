@@ -79,25 +79,25 @@ func Eval(
 		return applyFunction(function, args, node.Token.Span)
 		// 	case *ast.StringLiteral:
 		// 		return &object.String{Value: node.Value}
-		// 	case *ast.ArrayLiteral:
-		// 		elements := evalExpressions(node.Elements, env)
-		// 		if len(elements) == 1 && isError(elements[0]) {
-		// 			return elements[0]
-		// 		}
-		// 		return &object.Array{Elements: elements}
-		// 	case *ast.IndexExpression:
-		// 		left := Eval(node.Left, env)
-		// 		if isError(left) {
-		// 			return left
-		// 		}
-		// 		index := Eval(node.Index, env)
-		// 		if isError(index) {
-		// 			return index
-		// 		}
-		// 		return evalIndexExpression(left, index)
-		// 	case *ast.HashLiteral:
-		// 		return evalHashLiteral(node, env)
-		//
+	case *ast.ArrayLiteral:
+		elements, err := evalExpressions(node.Elements, env, node.Token.Span)
+		if err != nil {
+			return nil, err
+		}
+		return &object.Array{Elements: elements}, nil
+	case *ast.IndexExpression:
+		left, err := evalValue(node.Left, env, node.Token.Span)
+		if err != nil {
+			return nil, err
+		}
+		index, err := evalValue(node.Index, env, node.Token.Span)
+		if err != nil {
+			return nil, err
+		}
+		return evalIndexExpression(left, index, node.Token.Span)
+		// case *ast.HashLiteral:
+		// 	return evalHashLiteral(node, env)
+
 	}
 	return nil, nil
 }
@@ -343,6 +343,25 @@ func unwrapReturnValue(obj object.Object) object.Object {
 		return returnValue.Value
 	}
 	return obj
+}
+
+func evalIndexExpression(left, index object.Object, span source.Span) (object.Object, *diagnostic.Diagnostic) {
+	array, ok := left.(*object.Array)
+	if !ok {
+		return nil, newError(diagnostic.UnknownOperator, span, "index operator not supported: %s", left.Type())
+	}
+
+	integer, ok := index.(*object.Integer)
+	if !ok {
+		return nil, newError(diagnostic.UnknownOperator, span, "list index must be an integer, got %s", index.Type())
+	}
+
+	idx := &integer.Value
+	length := len(array.Elements)
+	if idx.Sign() < 0 || idx.Cmp(big.NewInt(int64(length))) >= 0 {
+		return nil, newError(diagnostic.IndexOutOfBounds, span, "list index %s out of bounds for length %d", idx, length)
+	}
+	return array.Elements[idx.Int64()], nil
 }
 
 func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Environment {

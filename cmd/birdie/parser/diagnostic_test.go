@@ -23,6 +23,16 @@ func TestDiagnostics(t *testing.T) {
 			wantParser: []diagnostic.Diagnostic{{Code: diagnostic.ExpectedExpression, Span: source.Span{Start: 3, End: 3}}},
 		},
 		{
+			name:       "missing-list-bracket",
+			input:      "[1, 2",
+			wantParser: []diagnostic.Diagnostic{{Code: diagnostic.UnexpectedToken, Span: source.Span{Start: 5, End: 5}}},
+		},
+		{
+			name:       "missing-index-expression",
+			input:      "nums[]",
+			wantParser: []diagnostic.Diagnostic{{Code: diagnostic.ExpectedExpression, Span: source.Span{Start: 5, End: 6}}},
+		},
+		{
 			name:        "missing-operand-before-newline",
 			input:       "x = 1 +\ny = 2",
 			wantParser:  []diagnostic.Diagnostic{{Code: diagnostic.ExpectedExpression, Span: source.Span{Start: 7, End: 8}}},

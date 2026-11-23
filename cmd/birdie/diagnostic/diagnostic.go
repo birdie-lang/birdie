@@ -16,6 +16,7 @@ const (
 	InvalidInteger          Code = "invalid-integer"
 	DivisionByZero          Code = "division-by-zero"
 	UnknownOperator         Code = "unknown-operator"
+	IndexOutOfBounds        Code = "index-out-of-bounds"
 	UnboundVariable         Code = "unbound-variable"
 	NoFunction              Code = "no-function"
 	ArgumentCountMismatch   Code = "argument-count-mismatch"

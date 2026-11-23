@@ -106,6 +106,9 @@ func TestRuntimeDiagnostics(t *testing.T) {
 		{"first-operand-error", "true + false + true * false", diagnostic.UnknownOperator, source.Span{Start: 5, End: 6}, ""},
 		{"error-after-valid-statement", "1\n5 + true\n3", diagnostic.UnknownOperator, source.Span{Start: 4, End: 5}, ""},
 		{"division-by-zero", "5 // 0", diagnostic.DivisionByZero, source.Span{Start: 2, End: 4}, ""},
+		{"first-list-element-error", "[1, 2 // 0, missing]", diagnostic.DivisionByZero, source.Span{Start: 6, End: 8}, ""},
+		{"index-receiver-error", "missing[1 // 0]", diagnostic.UnboundVariable, source.Span{Start: 0, End: 7}, ""},
+		{"index-expression-error", "[10][1 // 0]", diagnostic.DivisionByZero, source.Span{Start: 7, End: 9}, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

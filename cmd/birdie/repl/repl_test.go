@@ -80,6 +80,11 @@ func TestEvaluationModes(t *testing.T) {
 			input: "\n1 + 2\n",
 			want:  "> > 3\n> ",
 		},
+		{
+			name:  "list-indexing",
+			input: "[10][0]\nx = [10]\nx\nx[0]\n",
+			want:  "> 10\n> > [10]\n> 10\n> ",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -101,6 +106,7 @@ func TestEvaluationDiagnostics(t *testing.T) {
 		{"lexer", "5 + true @\n2 + 3\n", "unexpected-character"},
 		{"parser", "x =\n2 + 3\n", "expected-expression"},
 		{"runtime", "5 + true\n2 + 3\n", "unknown-operator"},
+		{"out-of-bounds-list-index", "[10][40]\n2 + 3\n", "index-out-of-bounds"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
