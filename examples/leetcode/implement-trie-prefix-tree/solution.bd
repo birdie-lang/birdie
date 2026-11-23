@@ -1,0 +1,26 @@
+type TrieNode:
+    chars: map[char, TrieNode] = map(TrieNode)
+    isEnd: bool = false
+
+
+type Trie:
+    root: TrieNode = TrieNode()
+
+    fn insert(word: str):
+        node = self.root
+        for char in word:
+            node = node.chars[char]
+        node.isEnd = true
+
+    fn search(word: str) bool:
+        node = self.findNode(word)
+        return node != none and node.isEnd
+
+    fn startsWith(prefix: str) bool:
+        return self.findNode(prefix) != none
+
+    fn findNode(word: str) TrieNode?:
+        node = self.root
+        for char in word:
+            node = node.chars.get(char)?
+        return node

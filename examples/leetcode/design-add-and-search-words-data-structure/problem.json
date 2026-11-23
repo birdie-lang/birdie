@@ -9,5 +9,16 @@
     "position": 62,
     "category": "Tries"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Store words and search patterns where a dot matches any one character.",
+  "note": "Walk literal characters iteratively, branching recursively only at a wildcard.",
+  "notes": [
+    "TrieNode belongs to the solution rather than the problem's provided types. WordDictionary uses methods on a record with a fresh default root; addWord is a procedure, and search returns bool.",
+    "map(TrieNode) creates children only during insertion. Literal search uses get(char), which returns none without inserting or invoking that factory. The bool-returning matcher explicitly returns false on a miss rather than propagating none with ?.",
+    "matches is a separate function because its state arrives through parameters. It iterates literal characters from start, preserving the trie position, and recurses only when a dot chooses among child nodes. A dot consumes exactly one Unicode scalar value.",
+    "any evaluates boolean predicates lazily, stops at the first true result, and returns false for an empty source. node.chars.values() still constructs its complete snapshot first; short-circuiting avoids later recursive searches, not that snapshot allocation. Map value order remains unspecified, but the boolean answer is independent of that order.",
+    "After the pattern is exhausted, node.isEnd distinguishes a full word from an unfinished prefix. Duplicate insertion is harmless, while patterns that are too short or too long fail unless a word with that exact length exists.",
+    "Fixtures run ordered method calls against one fresh object per case, checking literal and wildcard queries before and after insertion, shared prefixes, failed searches, and repeated additions. JSON null represents a procedure call's completion in the fixture protocol.",
+    "Insertion takes expected O(L) work and at most O(L) new nodes for L characters. A search without wildcards takes expected O(L) work. Wildcards may explore every matching trie branch; with maximum branching B and w wildcards, O(L * B^w) is a coarse upper bound for B >= 1. Recursion depth is at most L, and live values snapshots add storage for the children examined at active wildcard levels."
+  ]
 }

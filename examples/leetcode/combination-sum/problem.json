@@ -9,5 +9,16 @@
     "position": 72,
     "category": "Backtracking"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Find every combination of distinct positive candidates that sums to the target, allowing repeated use of a candidate.",
+  "note": "Keep candidate indices nondecreasing to avoid permutations, and backtrack only the current combination.",
+  "notes": [
+    "Candidates are distinct positive integers. Each recursive call chooses its next value from start onward. Passing i, rather than i + 1, allows that candidate to be reused while ensuring each combination is generated only once.",
+    "The nested dfs is a procedure and captures candidates, target, res, and subset. push and pop mutate captured lists without rebinding their names, so no outer entries are needed. Each invocation has its own total and start parameters.",
+    "dfs(total + num, i) passes the next sum directly. It avoids updating total and then subtracting num to restore it. Only subset is shared mutable backtracking state. Python uses the same statement order and simplification.",
+    "subset.copy() saves an independent list when the sum matches. Its shallow copy is sufficient because the elements are immutable integers. Without that copy, later push and pop operations would change previously saved combinations.",
+    "An over-target choice is skipped with continue. The input is not sorted, so a later candidate can still fit; stopping that loop at the first oversized candidate would be incorrect. Positive candidates ensure that each recursive choice increases the sum and the search terminates.",
+    "Shared fixtures ignore combination order and element order but preserve duplicates for comparison. They check repeated use, missing solutions, multiple combinations, unsorted input, and exact large-integer sums. Additional empty-input and zero-target cases return no combinations and one empty combination respectively.",
+    "For nonempty input and a nonnegative target, recursion depth is at most floor(target / smallest candidate). Each DFS call scans at most the candidate count; the search can be exponential, with additional work and storage proportional to the total size of returned combinations. Auxiliary space is proportional to recursion depth, plus constant overhead. Neither candidates nor target is modified."
+  ]
 }

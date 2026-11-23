@@ -2,6 +2,7 @@ package tests
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -9,6 +10,49 @@ import (
 	"testing"
 	"time"
 )
+
+func TestPythonMethodSequences(t *testing.T) {
+	python := os.Getenv("BIRDIE_TEST_PYTHON")
+	if python == "" {
+		t.Skip("set BIRDIE_TEST_PYTHON to check Python method sequences")
+	}
+	directory := t.TempDir()
+	source := `class Accumulator:
+    def __init__(self, initial):
+        self.value = initial
+
+    def add(self, amount):
+        self.value += amount
+
+    def get(self):
+        return self.value
+`
+	if err := os.WriteFile(filepath.Join(directory, "solution.py"), []byte(source), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cases := []struct {
+		name  string
+		calls []methodCall
+		want  string
+	}{
+		{"shared-state-and-procedures", []methodCall{
+			{"add", []json.RawMessage{json.RawMessage(`3`)}},
+			{"get", []json.RawMessage{}},
+			{"add", []json.RawMessage{json.RawMessage(`-2`)}},
+			{"get", []json.RawMessage{}},
+		}, `[null,13,null,11]`},
+		{"fresh-sequence", []methodCall{{"get", []json.RawMessage{}}}, `[10]`},
+		{"no-calls", []methodCall{}, `[]`},
+	}
+	for _, test := range cases {
+		t.Run(test.name, func(t *testing.T) {
+			actual := runPython(t, python, directory, fixture{Entry: "Accumulator"}, []json.RawMessage{json.RawMessage(`10`)}, test.calls)
+			if resultKey(t, actual, "exact") != resultKey(t, json.RawMessage(test.want), "exact") {
+				t.Fatalf("got %s; want %s", actual, test.want)
+			}
+		})
+	}
+}
 
 func TestPythonNodeAdapter(t *testing.T) {
 	python := os.Getenv("BIRDIE_TEST_PYTHON")

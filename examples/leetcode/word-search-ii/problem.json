@@ -9,5 +9,16 @@
     "position": 63,
     "category": "Tries"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Find dictionary words formed by orthogonally adjacent board cells, without reusing a cell in a word.",
+  "note": "Build a trie, backtrack through matching paths, and prune branches after their remaining words are found.",
+  "notes": [
+    "TrieNode is part of this solution, not a supplied type. Its optional word field stores a complete word at terminal nodes. map(TrieNode) supplies fresh children during dictionary construction; all DFS child reads are guarded by membership checks and do not create paths.",
+    "The board is a nonempty rectangular list of character rows, matching the character representation in Valid Sudoku. Words are nonempty and the visited marker # is excluded from the board and dictionary alphabet. JSON fixtures transport each character as a one-scalar string.",
+    "The nested dfs procedure captures the board, result list, dimensions, and direction list. It mutates collections and record fields without rebinding captured names, so no outer entries are required. The four directions are allocated once, outside recursion, in both languages.",
+    "When a word is found, clearing node.word prevents duplicate output from another path or start cell. The optional field's presence check is explicit; map emptiness still uses not node.chars. The fixtures compare results as an unordered multiset, so duplicate output remains an error.",
+    "Each DFS call marks its cell, explores eligible neighbors, and restores the original character before pruning. A branch is removed only when it has neither child paths nor an unreported terminal word. remove(char) removes the map entry; other references to that node retain ordinary reference semantics. Python uses del for the known-present key.",
+    "Pruning does not remove from a collection being iterated: traversal uses the separate direction list. Finding a shorter prefix word must not remove a branch needed by a longer word. Failed branches must restore cells before another branch or starting position explores them.",
+    "For total dictionary length S, R rows, C columns, and maximum word length L, construction takes expected O(S) work. A loose search upper bound is O(R * C * 4^L); trie rejection and pruning often reduce it substantially. Trie storage is O(S), recursion depth is at most min(L, R * C), and the output list is additional. The input board is restored on normal completion."
+  ]
 }

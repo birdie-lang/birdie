@@ -1,0 +1,489 @@
+{
+  "entry": "Trie",
+  "cases": [
+    {
+      "name": "constructor-only",
+      "args": [],
+      "calls": [],
+      "expected": []
+    },
+    {
+      "name": "empty-trie",
+      "args": [],
+      "calls": [
+        {
+          "method": "search",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            ""
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ""
+          ]
+        }
+      ],
+      "expected": [
+        false,
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "standard",
+      "args": [],
+      "calls": [
+        {
+          "method": "insert",
+          "args": [
+            "apple"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "apple"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "app"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "app"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "app"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "app"
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        true,
+        false,
+        true,
+        null,
+        true
+      ]
+    },
+    {
+      "name": "failed-queries-do-not-create-prefixes",
+      "args": [],
+      "calls": [
+        {
+          "method": "search",
+          "args": [
+            "ghost"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "gh"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "g"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "go"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "gh"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "go"
+          ]
+        }
+      ],
+      "expected": [
+        false,
+        false,
+        false,
+        null,
+        false,
+        true
+      ]
+    },
+    {
+      "name": "shared-prefixes-and-siblings",
+      "args": [],
+      "calls": [
+        {
+          "method": "insert",
+          "args": [
+            "cat"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "car"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "cart"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "dog"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "ca"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "ca"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "cart"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "cat"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "car"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "dog"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "catr"
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        null,
+        null,
+        null,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "shorter-word-added-after-longer",
+      "args": [],
+      "calls": [
+        {
+          "method": "insert",
+          "args": [
+            "bats"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "bat"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "bat"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "bat"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "bat"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "bats"
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        false,
+        true,
+        null,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "duplicate-insertion",
+      "args": [],
+      "calls": [
+        {
+          "method": "insert",
+          "args": [
+            "bird"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "bird"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "bird"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "birds"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "bir"
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        null,
+        true,
+        false,
+        true
+      ]
+    },
+    {
+      "name": "empty-word",
+      "args": [],
+      "calls": [
+        {
+          "method": "insert",
+          "args": [
+            ""
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ""
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            ""
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ""
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        true,
+        true,
+        false,
+        null,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "unicode-scalar-prefixes",
+      "args": [],
+      "calls": [
+        {
+          "method": "insert",
+          "args": [
+            "猫咪"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "猫"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "猫"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "猫咪"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "🙂"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "🙂"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "é"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "é"
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        false,
+        true,
+        true,
+        null,
+        true,
+        null,
+        false
+      ]
+    },
+    {
+      "name": "fresh-object",
+      "args": [],
+      "calls": [
+        {
+          "method": "search",
+          "args": [
+            "apple"
+          ]
+        },
+        {
+          "method": "startsWith",
+          "args": [
+            "app"
+          ]
+        },
+        {
+          "method": "insert",
+          "args": [
+            "z"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "z"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "a"
+          ]
+        }
+      ],
+      "expected": [
+        false,
+        false,
+        null,
+        true,
+        false
+      ]
+    }
+  ]
+}

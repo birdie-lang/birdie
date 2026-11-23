@@ -9,5 +9,16 @@
     "position": 61,
     "category": "Tries"
   },
-  "blind75": true
+  "blind75": true,
+  "description": "Store words in a trie and answer exact-word and prefix queries.",
+  "note": "Share traversal between search and startsWith, while keeping insertion separate from non-inserting lookup.",
+  "notes": [
+    "TrieNode is defined by the solution; LeetCode does not supply it. Birdie's type declaration supports both data-only nodes and records with methods. Each Trie() gets a fresh root, and each TrieNode() gets a fresh child map.",
+    "Methods omit a receiver parameter and access their instance through self. Only fields contribute to the generated constructor. insert is a procedure, while search, startsWith, and findNode have explicit result types.",
+    "map(TrieNode) installs a zero-argument factory. Insertion obtains or creates each child through chars[char]. The constructor is called lazily for missing keys, so creating a node does not recursively create children upfront. Python uses defaultdict(TrieNode) for the same traversal.",
+    "get(char) is non-inserting, including on maps with defaults. findNode uses postfix ? to return none at the first missing child. Python spells out that early return. A failed query must not create paths that later prefix queries could observe.",
+    "search requires both a complete path and its terminal marker. startsWith only requires the path. The short-circuit and protects node.isEnd when findNode returns none. Prefix words, repeated insertion, and empty strings follow the same rules without extra cases.",
+    "The shared fixtures construct Trie once per case, then execute its calls in order on that same instance. Procedure results are represented as JSON null in the test protocol; this does not make Birdie procedures return none.",
+    "Insertion and either query take expected O(L) work for L Unicode scalar values, under constant-cost character hashing. Insertion allocates at most L new nodes; iterative queries use O(1) auxiliary space. Stored trie space is proportional to distinct prefixes."
+  ]
 }

@@ -1,4 +1,4 @@
-"""Invoke one reference method using JSON transport; assertions remain in Go."""
+"""Invoke a reference method or method sequence; assertions remain in Go."""
 
 import contextlib
 import json
@@ -95,10 +95,15 @@ def main():
     # Solution output cannot corrupt the JSON response protocol.
     with contextlib.redirect_stdout(sys.stderr):
         namespace = runpy.run_path(sys.argv[1], init_globals={"TreeNode": TreeNode})
-        solution_type = namespace.get("Solution") or namespace.get("Codec")
-        if solution_type is None:
-            raise ValueError("reference requires a Solution or Codec class")
-        result = getattr(solution_type(), request["entry"])(*args)
+        calls = request.get("calls")
+        if calls is not None:
+            instance = namespace[request["entry"]](*args)
+            result = [getattr(instance, call["method"])(*call["args"]) for call in calls]
+        else:
+            solution_type = namespace.get("Solution") or namespace.get("Codec")
+            if solution_type is None:
+                raise ValueError("reference requires a Solution or Codec class")
+            result = getattr(solution_type(), request["entry"])(*args)
         if request.get("resultAdapter") == "tree":
             result = encode_tree(result)
         elif request.get("resultAdapter") == "node":

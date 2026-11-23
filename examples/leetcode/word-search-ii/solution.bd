@@ -1,0 +1,48 @@
+type TrieNode:
+    chars: map[char, TrieNode] = map(TrieNode)
+    word: str? = none
+
+
+fn findWords(board: list[list[char]], words: list[str]) list[str]:
+    root = TrieNode()
+    res = []
+    (m, n) = (board.size, board[0].size)
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    for word in words:
+        node = root
+        for char in word:
+            node = node.chars[char]
+        node.word = word
+
+    fn dfs(r: int, c: int, parent: TrieNode):
+        char = board[r][c]
+        node = parent.chars[char]
+
+        if node.word != none:
+            res.push(node.word)
+            node.word = none
+
+        board[r][c] = '#'
+
+        for (dr, dc) in directions:
+            (nr, nc) = (r + dr, c + dc)
+
+            if (
+                0 <= nr < m
+                and 0 <= nc < n
+                and board[nr][nc] in node.chars
+            ):
+                dfs(nr, nc, node)
+
+        board[r][c] = char
+
+        if not node.chars and node.word == none:
+            parent.chars.remove(char)
+
+    for r until m:
+        for c until n:
+            if board[r][c] in root.chars:
+                dfs(r, c, root)
+
+    return res

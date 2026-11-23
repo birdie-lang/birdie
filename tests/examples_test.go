@@ -24,7 +24,13 @@ type fixture struct {
 type exampleCase struct {
 	Name     string            `json:"name"`
 	Args     []json.RawMessage `json:"args"`
+	Calls    []methodCall      `json:"calls,omitempty"`
 	Expected json.RawMessage   `json:"expected"`
+}
+
+type methodCall struct {
+	Method string            `json:"method"`
+	Args   []json.RawMessage `json:"args"`
 }
 
 type example struct {
@@ -65,14 +71,14 @@ func TestPythonExamples(t *testing.T) {
 						// The result adapter belongs to the decoded value, not its wire string.
 						suite.ResultAdapter = ""
 					}
-					actual := runPython(t, python, example.Directory, suite, test.Args)
+					actual := runPython(t, python, example.Directory, suite, test.Args, test.Calls)
 					if example.Check == "codec-round-trip" {
 						var encoded *string
 						if err := json.Unmarshal(actual, &encoded); err != nil || encoded == nil {
 							t.Fatalf("%s must return a string, got %s", example.Entry, actual)
 						}
 						decoder := fixture{Entry: codecDecoders[example.Entry], ResultAdapter: example.ResultAdapter}
-						actual = runPython(t, python, example.Directory, decoder, []json.RawMessage{actual})
+						actual = runPython(t, python, example.Directory, decoder, []json.RawMessage{actual}, nil)
 					}
 					if resultKey(t, actual, example.Check) != resultKey(t, test.Expected, example.Check) {
 						t.Fatalf("got %s; want %s", actual, test.Expected)
@@ -133,6 +139,23 @@ func loadExamples(t *testing.T) []example {
 			names[test.Name] = true
 			if len(test.Args) != len(suite.Cases[0].Args) || (len(suite.ArgAdapters) != 0 && len(suite.ArgAdapters) != len(test.Args)) {
 				t.Fatalf("%s/%s: inconsistent argument or adapter count", directory, test.Name)
+			}
+			if (test.Calls == nil) != (suite.Cases[0].Calls == nil) {
+				t.Fatalf("%s/%s: cannot mix method sequences and ordinary calls", directory, test.Name)
+			}
+			if test.Calls != nil {
+				if (suite.Check != "" && suite.Check != "exact") || len(suite.ArgAdapters) != 0 || suite.ResultAdapter != "" {
+					t.Fatalf("%s: method sequences require exact results and JSON-only arguments", directory)
+				}
+				var results []json.RawMessage
+				if err := json.Unmarshal(test.Expected, &results); err != nil || results == nil || len(results) != len(test.Calls) {
+					t.Fatalf("%s/%s: each method call requires one expected result", directory, test.Name)
+				}
+				for _, call := range test.Calls {
+					if call.Method == "" || call.Args == nil {
+						t.Fatalf("%s/%s: method calls require a method name and args", directory, test.Name)
+					}
+				}
 			}
 			resultKey(t, test.Expected, suite.Check)
 			if suite.Check == "codec-round-trip" && (len(test.Args) != 1 || resultKey(t, test.Args[0], "exact") != resultKey(t, test.Expected, "exact")) {
@@ -205,14 +228,15 @@ func normalizeNumbers(t *testing.T, value any) any {
 	return value
 }
 
-func runPython(t *testing.T, python, directory string, suite fixture, args []json.RawMessage) json.RawMessage {
+func runPython(t *testing.T, python, directory string, suite fixture, args []json.RawMessage, calls []methodCall) json.RawMessage {
 	t.Helper()
 	request := struct {
 		Entry         string            `json:"entry"`
 		Args          []json.RawMessage `json:"args"`
 		ArgAdapters   []string          `json:"argAdapters,omitempty"`
 		ResultAdapter string            `json:"resultAdapter,omitempty"`
-	}{suite.Entry, args, suite.ArgAdapters, suite.ResultAdapter}
+		Calls         []methodCall      `json:"calls"`
+	}{suite.Entry, args, suite.ArgAdapters, suite.ResultAdapter, calls}
 	input, err := json.Marshal(request)
 	if err != nil {
 		t.Fatal(err)

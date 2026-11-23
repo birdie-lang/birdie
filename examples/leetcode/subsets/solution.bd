@@ -1,0 +1,17 @@
+fn subsets(nums: list[int]) list[list[int]]:
+    res = []
+    subset = []
+
+    fn dfs(i: int):
+        if i >= nums.size:
+            res.push(subset.copy())
+            return
+
+        subset.push(nums[i])
+        dfs(i + 1)
+
+        subset.pop()
+        dfs(i + 1)
+
+    dfs(0)
+    return res

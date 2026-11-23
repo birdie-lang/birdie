@@ -1,0 +1,329 @@
+{
+  "entry": "findWords",
+  "check": "unordered",
+  "cases": [
+    {
+      "name": "standard",
+      "args": [
+        [
+          [
+            "o",
+            "a",
+            "a",
+            "n"
+          ],
+          [
+            "e",
+            "t",
+            "a",
+            "e"
+          ],
+          [
+            "i",
+            "h",
+            "k",
+            "r"
+          ],
+          [
+            "i",
+            "f",
+            "l",
+            "v"
+          ]
+        ],
+        [
+          "oath",
+          "pea",
+          "eat",
+          "rain"
+        ]
+      ],
+      "expected": [
+        "oath",
+        "eat"
+      ]
+    },
+    {
+      "name": "no-match",
+      "args": [
+        [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c",
+            "d"
+          ]
+        ],
+        [
+          "abcb"
+        ]
+      ],
+      "expected": []
+    },
+    {
+      "name": "single-cell-found",
+      "args": [
+        [
+          [
+            "a"
+          ]
+        ],
+        [
+          "a"
+        ]
+      ],
+      "expected": [
+        "a"
+      ]
+    },
+    {
+      "name": "single-cell-missing-or-too-long",
+      "args": [
+        [
+          [
+            "a"
+          ]
+        ],
+        [
+          "b",
+          "aa"
+        ]
+      ],
+      "expected": []
+    },
+    {
+      "name": "cells-cannot-be-reused",
+      "args": [
+        [
+          [
+            "a",
+            "a"
+          ]
+        ],
+        [
+          "aa",
+          "aaa"
+        ]
+      ],
+      "expected": [
+        "aa"
+      ]
+    },
+    {
+      "name": "diagonal-is-not-adjacent",
+      "args": [
+        [
+          [
+            "a",
+            "x"
+          ],
+          [
+            "x",
+            "b"
+          ]
+        ],
+        [
+          "ab"
+        ]
+      ],
+      "expected": []
+    },
+    {
+      "name": "prefix-words-survive-pruning",
+      "args": [
+        [
+          [
+            "o",
+            "a",
+            "t",
+            "h"
+          ]
+        ],
+        [
+          "o",
+          "oa",
+          "oat",
+          "oath"
+        ]
+      ],
+      "expected": [
+        "o",
+        "oa",
+        "oat",
+        "oath"
+      ]
+    },
+    {
+      "name": "many-paths-one-result-per-word",
+      "args": [
+        [
+          [
+            "a",
+            "a"
+          ],
+          [
+            "a",
+            "a"
+          ]
+        ],
+        [
+          "a",
+          "aa",
+          "aaa",
+          "aaaa"
+        ]
+      ],
+      "expected": [
+        "a",
+        "aa",
+        "aaa",
+        "aaaa"
+      ]
+    },
+    {
+      "name": "backtrack-between-branches",
+      "args": [
+        [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c",
+            "d"
+          ]
+        ],
+        [
+          "abdc",
+          "acdb",
+          "ab",
+          "ac",
+          "ad"
+        ]
+      ],
+      "expected": [
+        "abdc",
+        "acdb",
+        "ab",
+        "ac"
+      ]
+    },
+    {
+      "name": "prune-only-exhausted-siblings",
+      "args": [
+        [
+          [
+            "c",
+            "a",
+            "t"
+          ],
+          [
+            "r",
+            "r",
+            "e"
+          ]
+        ],
+        [
+          "car",
+          "care",
+          "cat",
+          "cart"
+        ]
+      ],
+      "expected": [
+        "car",
+        "care",
+        "cat"
+      ]
+    },
+    {
+      "name": "empty-dictionary",
+      "args": [
+        [
+          [
+            "a"
+          ]
+        ],
+        []
+      ],
+      "expected": []
+    },
+    {
+      "name": "single-column-both-directions",
+      "args": [
+        [
+          [
+            "a"
+          ],
+          [
+            "b"
+          ],
+          [
+            "c"
+          ],
+          [
+            "d"
+          ]
+        ],
+        [
+          "a",
+          "ab",
+          "abcd",
+          "dcba"
+        ]
+      ],
+      "expected": [
+        "a",
+        "ab",
+        "abcd",
+        "dcba"
+      ]
+    },
+    {
+      "name": "unicode-cells",
+      "args": [
+        [
+          [
+            "猫",
+            "🙂"
+          ]
+        ],
+        [
+          "猫",
+          "猫🙂",
+          "🙂猫",
+          "🙂🙂"
+        ]
+      ],
+      "expected": [
+        "猫",
+        "猫🙂",
+        "🙂猫"
+      ]
+    },
+    {
+      "name": "duplicate-dictionary-words",
+      "args": [
+        [
+          [
+            "a",
+            "b"
+          ]
+        ],
+        [
+          "a",
+          "ab",
+          "ab",
+          "b"
+        ]
+      ],
+      "expected": [
+        "a",
+        "ab",
+        "b"
+      ]
+    }
+  ]
+}

@@ -9,5 +9,16 @@
     "position": 71,
     "category": "Backtracking"
   },
-  "blind75": false
+  "blind75": false,
+  "description": "Return every subset of a list of distinct integers.",
+  "note": "Explore including and excluding each element, saving a copy at every completed choice path.",
+  "notes": [
+    "The input integers are distinct. Each DFS level decides whether to include nums[i]; both branches advance to i + 1, so every subset is produced exactly once. Empty input produces one subset: the empty list.",
+    "The nested dfs is a procedure: it has no result annotation, uses bare return at the base case, and otherwise finishes after visiting both branches. It captures nums, res, and subset. push and pop mutate the captured lists without rebinding their names, so no outer entries are needed.",
+    "subset.copy() creates a fresh list for each saved result. Pushing subset itself would retain a reference to the same list that later calls mutate and eventually empty. Birdie uses the explicit copy method here to make the snapshot visible; subset[:] remains a valid shallow copy too.",
+    "The copy is shallow: nested mutable elements would remain shared references. These elements are immutable integers, so a shallow copy gives the required independent subset contents without recursive cloning. The Python reference uses the same copy operation and statement order.",
+    "After the include branch, pop removes exactly the element pushed at this level. The exclude branch then sees the original subset. This is ordinary backtracking with explicit push, recurse, and undo steps; no additional control-flow feature is needed.",
+    "Fixtures compare results as unordered groups, allowing any subset order or element order while preserving duplicates for comparison. Missing subsets, repeated subsets, or repeated elements remain failures. Cases include empty input, zero, negative and unsorted values, and exact large integers.",
+    "For n elements there are 2^n results containing n * 2^(n - 1) integers when n is positive. Time and output storage are O(n * 2^n), with O(n) auxiliary space for the current subset and recursion stack. Empty input takes constant work and storage. The input list is not modified."
+  ]
 }

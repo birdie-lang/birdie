@@ -1,0 +1,496 @@
+{
+  "entry": "WordDictionary",
+  "cases": [
+    {
+      "name": "constructor-only",
+      "args": [],
+      "calls": [],
+      "expected": []
+    },
+    {
+      "name": "empty-dictionary",
+      "args": [],
+      "calls": [
+        {
+          "method": "search",
+          "args": [
+            "."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ""
+          ]
+        }
+      ],
+      "expected": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "standard",
+      "args": [],
+      "calls": [
+        {
+          "method": "addWord",
+          "args": [
+            "bad"
+          ]
+        },
+        {
+          "method": "addWord",
+          "args": [
+            "dad"
+          ]
+        },
+        {
+          "method": "addWord",
+          "args": [
+            "mad"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "pad"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "bad"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".ad"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "b.."
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        null,
+        null,
+        false,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "exact-length-required",
+      "args": [],
+      "calls": [
+        {
+          "method": "addWord",
+          "args": [
+            "abc"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "ab"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "abcd"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "..."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "...."
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        false,
+        false,
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "wildcard-positions",
+      "args": [],
+      "calls": [
+        {
+          "method": "addWord",
+          "args": [
+            "bad"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "b.d"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".ad"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "ba."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".a."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "..."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "b.x"
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "later-wildcard-branch-matches",
+      "args": [],
+      "calls": [
+        {
+          "method": "addWord",
+          "args": [
+            "bad"
+          ]
+        },
+        {
+          "method": "addWord",
+          "args": [
+            "map"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".ap"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".ax"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "m.."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".ad"
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        null,
+        true,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "prefix-words",
+      "args": [],
+      "calls": [
+        {
+          "method": "addWord",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "method": "addWord",
+          "args": [
+            "ab"
+          ]
+        },
+        {
+          "method": "addWord",
+          "args": [
+            "abc"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "..."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "...."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "a.."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "ab"
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        null,
+        null,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "duplicate-additions-and-misses",
+      "args": [],
+      "calls": [
+        {
+          "method": "search",
+          "args": [
+            "cat"
+          ]
+        },
+        {
+          "method": "addWord",
+          "args": [
+            "cat"
+          ]
+        },
+        {
+          "method": "addWord",
+          "args": [
+            "cat"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "cat"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "c.t"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "ca"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "dog"
+          ]
+        }
+      ],
+      "expected": [
+        false,
+        null,
+        null,
+        true,
+        true,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "empty-word",
+      "args": [],
+      "calls": [
+        {
+          "method": "addWord",
+          "args": [
+            ""
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ""
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "."
+          ]
+        },
+        {
+          "method": "addWord",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".."
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        true,
+        false,
+        null,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "unicode-wildcards-count-scalars",
+      "args": [],
+      "calls": [
+        {
+          "method": "addWord",
+          "args": [
+            "猫🙂"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "猫."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            ".🙂"
+          ]
+        },
+        {
+          "method": "addWord",
+          "args": [
+            "é"
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "e."
+          ]
+        },
+        {
+          "method": "search",
+          "args": [
+            "é"
+          ]
+        }
+      ],
+      "expected": [
+        null,
+        true,
+        false,
+        true,
+        true,
+        null,
+        true,
+        false
+      ]
+    }
+  ]
+}
