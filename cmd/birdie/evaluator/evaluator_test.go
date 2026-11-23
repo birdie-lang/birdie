@@ -1,7 +1,6 @@
 package evaluator
 
 import (
-	"math/big"
 	"testing"
 
 	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
@@ -23,7 +22,14 @@ func TestEvalIntegerExpression(t *testing.T) {
 		{"5 + 2 * 10", "25"},
 		{"20 - 5 - 3", "12"},
 		{"9223372036854775807 + 1", "9223372036854775808"},
+		{"-9223372036854775808 + -1", "-9223372036854775809"},
+		{"-9223372036854775808 - 1", "-9223372036854775809"},
+		{"4611686018427387904 * -2", "-9223372036854775808"},
+		{"4611686018427387904 * 4", "18446744073709551616"},
+		{"-9223372036854775808 * -1", "9223372036854775808"},
 		{"9223372036854775808 * 3", "27670116110564327424"},
+		{"n = -9223372036854775808\n-n", "9223372036854775808"},
+		{"-7 / 2", "-3"},
 		{"5\n10\n15\n", "15"},
 	}
 	for _, tt := range tests {
@@ -49,6 +55,7 @@ func TestEvalFloorDivision(t *testing.T) {
 		{"50 // 2 * 2 + 10", "60"},
 		{"50 // 5 // 2", "5"},
 		{"27670116110564327424 // 3", "9223372036854775808"},
+		{"-9223372036854775808 // -1", "9223372036854775808"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
@@ -82,6 +89,7 @@ func TestEvalBooleanExpression(t *testing.T) {
 		{"true != true", false},
 		{"2 + 3 * 4 == 14", true},
 		{"9223372036854775808 > 9223372036854775807", true},
+		{"-9223372036854775808 > -9223372036854775809", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
@@ -168,12 +176,8 @@ func testIntegerObject(t *testing.T, value object.Object, want string) {
 	if !ok {
 		t.Fatalf("expected an integer, got %T (%+v)", value, value)
 	}
-	expected, ok := new(big.Int).SetString(want, 10)
-	if !ok {
-		t.Fatalf("invalid expected integer %q", want)
-	}
-	if result.Value.Cmp(expected) != 0 {
-		t.Errorf("got %s, want %s", result.Value.String(), want)
+	if got := result.Inspect(); got != want {
+		t.Errorf("got %s, want %s", got, want)
 	}
 }
 

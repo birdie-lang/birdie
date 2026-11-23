@@ -2,7 +2,6 @@ package evaluator
 
 import (
 	"fmt"
-	"math/big"
 
 	"github.com/birdie-lang/birdie/cmd/birdie/ast"
 	"github.com/birdie-lang/birdie/cmd/birdie/diagnostic"
@@ -27,7 +26,7 @@ func Eval(
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
 	case *ast.IntegerLiteral:
-		return &object.Integer{Value: node.Value}, nil
+		return object.IntegerFromBig(&node.Value), nil
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value), nil
 	case *ast.PrefixExpression:
@@ -196,7 +195,7 @@ func evalPrefixExpression(operator token.Token, right object.Object) (object.Obj
 func evalInfixExpression(operator token.Token, left, right object.Object) (object.Object, *diagnostic.Diagnostic) {
 	switch {
 	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
-		return evalIntegerInfixExpression(operator, left, right)
+		return evalIntegerInfixExpression(operator, left.(*object.Integer), right.(*object.Integer))
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(operator, left, right)
 	case operator.Type == token.EQ:
@@ -219,50 +218,30 @@ func evalStringInfixExpression(operator token.Token, left, right object.Object) 
 	return &object.String{Value: leftVal + rightVal}, nil
 }
 
-func evalIntegerInfixExpression(operator token.Token, left, right object.Object) (object.Object, *diagnostic.Diagnostic) {
-	leftVal := &left.(*object.Integer).Value
-	rightVal := &right.(*object.Integer).Value
-
+func evalIntegerInfixExpression(operator token.Token, left, right *object.Integer) (object.Object, *diagnostic.Diagnostic) {
 	switch operator.Type {
 	case token.PLUS:
-		result := &object.Integer{}
-		result.Value.Add(leftVal, rightVal)
-		return result, nil
+		return left.Add(right), nil
 	case token.MINUS:
-		result := &object.Integer{}
-		result.Value.Sub(leftVal, rightVal)
-		return result, nil
+		return left.Sub(right), nil
 	case token.MUL:
-		result := &object.Integer{}
-		result.Value.Mul(leftVal, rightVal)
-		return result, nil
-	case token.DIV:
-		result := &object.Integer{}
-		if rightVal.Sign() == 0 {
+		return left.Mul(right), nil
+	case token.DIV, token.DDIV:
+		if right.IsZero() {
 			return nil, newError(diagnostic.DivisionByZero, operator.Span, "division by zero")
 		}
-		result.Value.Quo(leftVal, rightVal)
-		return result, nil
-	case token.DDIV:
-		if rightVal.Sign() == 0 {
-			return nil, newError(
-				diagnostic.DivisionByZero,
-				operator.Span,
-				"division by zero",
-			)
+		if operator.Type == token.DDIV {
+			return left.FloorDiv(right), nil
 		}
-
-		result := &object.Integer{}
-		result.Value.Divide(leftVal, rightVal, nil, big.Floor)
-		return result, nil
+		return left.Quo(right), nil
 	case token.LT:
-		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) < 0), nil
+		return nativeBoolToBooleanObject(left.Cmp(right) < 0), nil
 	case token.GT:
-		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) > 0), nil
+		return nativeBoolToBooleanObject(left.Cmp(right) > 0), nil
 	case token.EQ:
-		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) == 0), nil
+		return nativeBoolToBooleanObject(left.Cmp(right) == 0), nil
 	case token.NEQ:
-		return nativeBoolToBooleanObject(leftVal.Cmp(rightVal) != 0), nil
+		return nativeBoolToBooleanObject(left.Cmp(right) != 0), nil
 	default:
 		return nil, newError(diagnostic.UnknownOperator, operator.Span, "unknown operator: %s %s %s", left.Type(), operator.Text(), right.Type())
 	}
@@ -282,12 +261,12 @@ func evalBangOperatorExpression(right object.Object) object.Object {
 }
 
 func evalMinusPrefixOperatorExpression(operator token.Token, right object.Object) (object.Object, *diagnostic.Diagnostic) {
-	if right.Type() != object.INTEGER_OBJ {
+	integer, ok := right.(*object.Integer)
+	if !ok {
 		return nil, newError(diagnostic.UnknownOperator, operator.Span, "unknown operator: -%s", right.Type())
 	}
 
-	value := &right.(*object.Integer).Value
-	return &object.Integer{Value: *new(big.Int).Neg(value)}, nil
+	return integer.Neg(), nil
 }
 
 func evalStatements(statements []ast.Statement, env *object.Environment) (object.Object, *diagnostic.Diagnostic) {
@@ -356,12 +335,12 @@ func evalIndexExpression(left, index object.Object, span source.Span) (object.Ob
 		return nil, newError(diagnostic.UnknownOperator, span, "list index must be an integer, got %s", index.Type())
 	}
 
-	idx := &integer.Value
+	idx, ok := integer.AsInt64()
 	length := len(array.Elements)
-	if idx.Sign() < 0 || idx.Cmp(big.NewInt(int64(length))) >= 0 {
-		return nil, newError(diagnostic.IndexOutOfBounds, span, "list index %s out of bounds for length %d", idx, length)
+	if !ok || idx < 0 || idx >= int64(length) {
+		return nil, newError(diagnostic.IndexOutOfBounds, span, "list index %s out of bounds for length %d", integer.Inspect(), length)
 	}
-	return array.Elements[idx.Int64()], nil
+	return array.Elements[idx], nil
 }
 
 func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Environment {

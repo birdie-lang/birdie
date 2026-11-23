@@ -9,7 +9,7 @@ import (
 )
 
 // RequireNoDiagnostics reports unexpected diagnostics with their source context.
-func RequireNoDiagnostics(t *testing.T, stage, input string, diagnostics ...diagnostic.Diagnostic) {
+func RequireNoDiagnostics(t testing.TB, stage, input string, diagnostics ...diagnostic.Diagnostic) {
 	t.Helper()
 	if len(diagnostics) == 0 {
 		return

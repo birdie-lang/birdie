@@ -3,7 +3,6 @@ package object
 import (
 	"fmt"
 	"hash/fnv"
-	"math/big"
 	"strings"
 
 	"github.com/birdie-lang/birdie/cmd/birdie/ast"
@@ -38,17 +37,6 @@ type Object interface {
 	Type() ObjectType
 	Inspect() string
 }
-
-type Integer struct {
-	Value big.Int
-}
-
-func (i *Integer) Type() ObjectType { return INTEGER_OBJ }
-func (i *Integer) Inspect() string  { return i.Value.String() }
-
-// func (i *Integer) HashKey() HashKey {
-// 	return HashKey{Type: i.Type(), Value: uint64(i.Value)}
-// }
 
 type Boolean struct {
 	Value bool

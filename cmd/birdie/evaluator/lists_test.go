@@ -33,7 +33,7 @@ func TestEvalListLiterals(t *testing.T) {
 }
 
 func TestEvalListIndex(t *testing.T) {
-	const input = "rows = [[10, 20], [30]]\nrows[0][1]"
+	const input = "rows = [[10, 20], [30]]\nrows[0][9223372036854775808 - 9223372036854775807]"
 	value, d := testEval(t, input)
 	requireNoRuntimeDiagnostic(t, input, d)
 	testIntegerObject(t, value, "20")
