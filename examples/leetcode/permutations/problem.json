@@ -9,5 +9,16 @@
     "position": 73,
     "category": "Backtracking"
   },
-  "blind75": false
+  "blind75": false,
+  "description": "Return every ordering of a list of distinct integers.",
+  "note": "Track used input positions while extending and undoing one shared working permutation.",
+  "notes": [
+    "The input values are distinct. Each recursive level chooses one unused position, so every input position appears exactly once in a completed permutation and every permutation is generated once. Empty input produces one empty permutation.",
+    "list(nums.size, false) creates a boolean flag for each input position. false is an immutable fill value, so it fits the existing filled-list construction rules. for i, num in nums supplies the position and value directly; Python uses enumerate.",
+    "The nested dfs is a zero-argument procedure. It captures nums, res, perm, and used. Updating a flag or pushing and popping from a list mutates captured collections without rebinding their names, so no outer entries are required.",
+    "Mark the position used, push its value, recurse, then pop and clear that same flag. Both undo steps are required before another choice at the current depth can be explored. The Python reference keeps the same statement order.",
+    "perm.copy() creates an independent result list before backtracking changes the working permutation. The copy is shallow, which is sufficient for immutable integer elements. Storing perm itself would make results share that changing list.",
+    "Fixtures ignore only the outer result order. Element order inside a permutation is significant, and the comparison preserves duplicates so a missing or repeated permutation remains a failure. Cases cover empty input, zero, negatives, unsorted values, and exact large integers.",
+    "For a positive input length n, there are n! results with n elements each. Time and output storage are O(n * n!), while flags, the working permutation, and recursion use O(n) auxiliary space. Empty input takes constant work and storage. The input list is not modified."
+  ]
 }

@@ -1,0 +1,71 @@
+{
+  "entry": "combinationSum2",
+  "check": "unordered-groups",
+  "cases": [
+    {
+      "name": "standard",
+      "args": [[10, 1, 2, 7, 6, 1, 5], 8],
+      "expected": [[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]]
+    },
+    {
+      "name": "duplicate-choices",
+      "args": [[2, 5, 2, 1, 2], 5],
+      "expected": [[1, 2, 2], [5]]
+    },
+    {
+      "name": "equal-values-at-different-depths",
+      "args": [[1, 1, 1, 1], 2],
+      "expected": [[1, 1]]
+    },
+    {
+      "name": "one-position-cannot-be-reused",
+      "args": [[2], 4],
+      "expected": []
+    },
+    {
+      "name": "two-equal-positions-can-be-used",
+      "args": [[2, 2], 4],
+      "expected": [[2, 2]]
+    },
+    {
+      "name": "all-candidates-too-large",
+      "args": [[8, 7, 3], 2],
+      "expected": []
+    },
+    {
+      "name": "unsorted-later-values-fit",
+      "args": [[9, 4, 1, 2], 3],
+      "expected": [[1, 2]]
+    },
+    {
+      "name": "different-length-combinations",
+      "args": [[1, 1, 2, 2, 3], 4],
+      "expected": [[1, 1, 2], [1, 3], [2, 2]]
+    },
+    {
+      "name": "exact-single-candidate",
+      "args": [[7], 7],
+      "expected": [[7]]
+    },
+    {
+      "name": "empty-candidates",
+      "args": [[], 7],
+      "expected": []
+    },
+    {
+      "name": "zero-target",
+      "args": [[2, 2, 3], 0],
+      "expected": [[]]
+    },
+    {
+      "name": "unsorted-duplicate-branches",
+      "args": [[3, 1, 3, 1, 2], 5],
+      "expected": [[1, 1, 3], [2, 3]]
+    },
+    {
+      "name": "exact-large-integer-sum",
+      "args": [[9007199254740993, 9007199254740992, 9007199254740993], 18014398509481985],
+      "expected": [[9007199254740992, 9007199254740993]]
+    }
+  ]
+}

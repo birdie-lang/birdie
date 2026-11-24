@@ -1,0 +1,22 @@
+fn permute(nums: list[int]) list[list[int]]:
+    res = []
+    perm = []
+    used = list(nums.size, false)
+
+    fn dfs():
+        if perm.size == nums.size:
+            res.push(perm.copy())
+            return
+
+        for i, num in nums:
+            if used[i]:
+                continue
+
+            used[i] = true
+            perm.push(num)
+            dfs()
+            perm.pop()
+            used[i] = false
+
+    dfs()
+    return res

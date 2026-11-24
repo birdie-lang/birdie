@@ -9,5 +9,17 @@
     "position": 75,
     "category": "Backtracking"
   },
-  "blind75": false
+  "blind75": false,
+  "description": "Find unique combinations that reach the target, using each candidate position at most once.",
+  "note": "Sort first, skip equal choices at the same recursion depth, and advance past each selected position.",
+  "notes": [
+    "Candidates are positive integers and may contain repeated values. Sorting places equal values together and makes every later candidate at least as large as the current one. The example sorts the caller's list in place in both languages; candidates = candidates.sorted() is the Birdie alternative when input order must be preserved.",
+    "The nested dfs is a procedure and captures candidates, target, res, and subset. Mutating a captured collection does not rebind its name, so no outer entries are required. Each recursive call has its own total and start parameters.",
+    "Passing i + 1 prevents reusing the same input position. Equal values at different positions can still be used together. The i > start guard skips only duplicate choices at the current depth, rather than excluding repeated values from a combination.",
+    "When total + num exceeds target, return ends the current helper call. This is valid because the list is sorted: all remaining choices at this depth are at least as large. The unsorted Combination Sum example uses continue instead.",
+    "After saving subset.copy(), return immediately. Positive candidates cannot extend a matching combination into another match. Both references keep this early return and the same statement order. The shallow copy preserves independent lists of immutable integers.",
+    "Only subset needs an undo step: push the choice, recurse with total + num, then pop. The sum is passed directly instead of being updated and restored. The result list accumulates completed combinations.",
+    "Shared fixtures compare combinations as unordered groups, preserving duplicate elements and duplicate groups for comparison. They cover repeated values at different depths, one-use limits, unsorted input, pruning, multiple answers, and exact large integers. Additional empty-input and zero-target cases return no answers and one empty combination respectively.",
+    "For n candidate positions, sorting takes O(n log n) comparisons. The search is exponential in the worst case; O(n * 2^n) is a loose upper bound including scanning and copying. Recursion and the current subset use O(n) auxiliary space, plus the sorting algorithm's workspace and result storage."
+  ]
 }
