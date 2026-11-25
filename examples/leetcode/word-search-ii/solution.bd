@@ -6,7 +6,7 @@ type TrieNode:
 fn findWords(board: list[list[char]], words: list[str]) list[str]:
     root = TrieNode()
     res = []
-    (m, n) = (board.size, board[0].size)
+    m, n = board.size, board[0].size
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
     for word in words:
@@ -26,7 +26,7 @@ fn findWords(board: list[list[char]], words: list[str]) list[str]:
         board[r][c] = '#'
 
         for (dr, dc) in directions:
-            (nr, nc) = (r + dr, c + dc)
+            nr, nc = r + dr, c + dc
 
             if (
                 0 <= nr < m
