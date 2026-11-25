@@ -9,5 +9,13 @@
     "position": 74,
     "category": "Backtracking"
   },
-  "blind75": false
+  "blind75": false,
+  "description": "Return all distinct subsets of a list that can contain repeated integers.",
+  "note": "Sort the input, then skip the rest of an equal-value run when excluding an element.",
+  "notes": [
+    "Both solutions sort the input in place so equal values are adjacent. The include branch advances one position, allowing a subset to use multiple copies of the same value.",
+    "After undoing the include choice, the exclude branch advances past the remaining copies of that value. Each possible count of an equal value is explored once.",
+    "At the end of each path, subset.copy() saves an independent result before later calls change the working list.",
+    "For n inputs, the worst case is O(n * 2^n) time and output space. The current subset and call stack use O(n) space, plus any workspace used by sorting."
+  ]
 }
